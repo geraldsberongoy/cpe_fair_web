@@ -1,60 +1,28 @@
-import { supabase } from "../supabase/config";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 const useFetchMain = () => {
   const [mainData, setMainData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const fetchMainData = async () => {
-      const { data, error } = await supabase.from("main").select("*");
-
-      if (data) {
-        setMainData(data); // Only set data once
-      } else {
-        console.error(error);
+      try {
+        const res = await fetch("http://localhost:3001/api/main");
+        if (!res.ok) throw new Error("Failed to fetch main data");
+        const data = await res.json();
+        console.log("Fetched main data:", data);
+        setMainData(data);
+      } catch (err) {
+        setError(err);
+      } finally {
+        setLoading(false);
       }
     };
-
-    // Fetch initial data
     fetchMainData();
-
-    // Subscribe to real-time updates
-    const subscription = supabase
-      .channel("realtime:main") // Create a unique channel for this table
-      .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "main" },
-        (payload) => {
-          switch (payload.eventType) {
-            case "INSERT":
-              setMainData((prev) => [...prev, payload.new]); // Add new row
-              break;
-            case "UPDATE":
-              setMainData((prev) =>
-                prev.map((item) =>
-                  item.id === payload.new.id ? payload.new : item
-                )
-              ); // Update existing row
-              break;
-            case "DELETE":
-              setMainData((prev) =>
-                prev.filter((item) => item.id !== payload.old.id)
-              ); // Remove deleted row
-              break;
-            default:
-              break;
-          }
-        }
-      )
-      .subscribe();
-
-    // Cleanup subscription on unmount
-    return () => {
-      subscription.unsubscribe();
-    };
   }, []);
 
-  return { mainData };
+  return { mainData, loading, error };
 };
 
 export default useFetchMain;
