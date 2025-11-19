@@ -140,9 +140,23 @@ export const getScoresByAllSectionTeam = async (
       return res.status(500).json({ error: error.message });
     }
 
+    // Handle query parameters for sorting
+    const { sort, order } = req.query;
+    let scoresData = data || [];
+
+    // Sorting logic
+    if (sort === "points") {
+      scoresData = scoresData.slice().sort((a, b) => {
+        const aPoints = a.points ?? 0;
+        const bPoints = b.points ?? 0;
+        if (order === "asc") return aPoints - bPoints;
+        return bPoints - aPoints; // default to desc
+      });
+    }
+
     // Group scores by section_team (from player.section or team.section)
     const sectionMap: Record<string, ScoreWithJoins[]> = {};
-    (data || []).forEach((score) => {
+    scoresData.forEach((score) => {
       const section = score.player?.section || score.team?.section || "Unknown";
       if (!sectionMap[section]) sectionMap[section] = [];
       sectionMap[section].push(score);
