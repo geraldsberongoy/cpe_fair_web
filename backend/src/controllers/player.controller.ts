@@ -19,10 +19,39 @@ export const getPlayers = async (req: Request, res: Response) => {
   }
 };
 
-// POST /api/player
-export const createPlayer = async (req: Request<{}, {}, CreatePlayerDto>, res: Response) => {
+// GET /api/player/:id
+export const getPlayerById = async (
+  req: Request<{ id: string }>,
+  res: Response
+) => {
   try {
-    const { data, error } = await supabase.from("player").insert(req.body).select().single();
+    const { id } = req.params;
+    const { data, error } = await supabase
+      .from("player")
+      .select("*")
+      .eq("id", id)
+      .single(); // Ensures only one row is returned
+
+    if (error) throw error;
+
+    res.json({ message: "Player fetched successfully", data });
+  } catch (err: any) {
+    logger.error("Failed to get specific player", err);
+    res.status(500).json({ error: err.message });
+  }
+};
+
+// POST /api/player
+export const createPlayer = async (
+  req: Request<{}, {}, CreatePlayerDto>,
+  res: Response
+) => {
+  try {
+    const { data, error } = await supabase
+      .from("player")
+      .insert(req.body)
+      .select()
+      .single();
     if (error) throw error;
     res.status(201).json({ message: "Player created successfully", data });
   } catch (err: any) {
@@ -32,10 +61,18 @@ export const createPlayer = async (req: Request<{}, {}, CreatePlayerDto>, res: R
 };
 
 // PUT /api/player/:id
-export const updatePlayer = async (req: Request<{ id: string }, {}, UpdatePlayerDto>, res: Response) => {
+export const updatePlayer = async (
+  req: Request<{ id: string }, {}, UpdatePlayerDto>,
+  res: Response
+) => {
   try {
     const { id } = req.params;
-    const { data, error } = await supabase.from("player").update(req.body).eq("id", id).select().single();
+    const { data, error } = await supabase
+      .from("player")
+      .update(req.body)
+      .eq("id", id)
+      .select()
+      .single();
     if (error) throw error;
     res.json({ message: "Player updated successfully", data });
   } catch (err: any) {
@@ -56,5 +93,3 @@ export const deletePlayer = async (req: Request, res: Response) => {
     res.status(500).json({ error: err.message });
   }
 };
-
-

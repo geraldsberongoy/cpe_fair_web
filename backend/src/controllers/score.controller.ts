@@ -112,3 +112,56 @@ export const deleteScore = async (req: Request, res: Response) => {
     return res.status(500).json({ error: "Failed to delete score" });
   }
 };
+
+// GET scores by section team
+export const getScoresBySectionTeam = async (req: Request, res: Response) => {
+  const { section_team } = req.params;
+
+  try {
+    // Extend Score type to include joined player and team fields
+    type ScoreWithJoins = Score & {
+      player?: { full_name: string; section: string } | null;
+      team?: { team_name: string; section: string } | null;
+    };
+    const { data, error } = await supabase
+      .from("score")
+      .select(
+        `
+        *,
+        player:player_id(full_name, section),
+        team:team_id(team_name, section)
+      `
+      )
+      .returns<ScoreWithJoins[]>();
+
+    if (error) {
+      logger.error("Failed to fetch scores", error);
+      return res.status(500).json({ error: error.message });
+    }
+
+    // Safely filter scores by section
+    const filteredScores = (data || []).filter((score) => {
+      const playerSection = score.player?.section;
+      const teamSection = score.team?.section;
+      return (
+        (playerSection && playerSection === section_team) ||
+        (teamSection && teamSection === section_team)
+      );
+    });
+
+    // Calculate total points
+    const totalPoints = filteredScores.reduce(
+      (sum, score) => sum + (score.points ?? 0),
+      0
+    );
+
+    res.status(200).json({
+      section_team,
+      totalPoints,
+      scores: filteredScores,
+    });
+  } catch (err: any) {
+    logger.error("Failed to fetch scores", err);
+    res.status(500).json({ error: err.message });
+  }
+};
