@@ -1,14 +1,13 @@
 import type { Request, Response } from "express";
-import { supabase } from "../lib/supabaseClient.js";
+import { supabase } from "../lib/supabaseClient.js"; 
 import { logger } from "../utils/logger.js";
 import type { Score, CreateScoreDto, UpdateScoreDto } from "../types/score.js";
 
-// -------------------- GET ALL SCORES --------------------
+// -------------------- GET ALL SCORES (Feed) --------------------
 export const getScores = async (req: Request, res: Response) => {
   try {
     const { type } = req.query;
 
-    // We type the response from Supabase manually to ensure safety
     let query = supabase
       .from("score")
       .select(`
@@ -17,7 +16,7 @@ export const getScores = async (req: Request, res: Response) => {
         game,
         details,
         created_at,
-        team:team_id ( name, color )
+        team:team_id ( name, color ) 
       `)
       .is("deleted_at", null)
       .order("created_at", { ascending: false });
@@ -35,15 +34,13 @@ export const getScores = async (req: Request, res: Response) => {
       return res.status(500).json({ error: error.message });
     }
 
-    // Transform using the Score type logic
     const formattedData = data.map((score: any) => ({
       id: score.id,
       teamId: score.team?.id,
-      teamName: score.team?.name, // Joined field
-      teamColor: score.team?.color, // Joined field
+      teamName: score.team?.name,
+      teamColor: score.team?.color,
       game: score.game,
       points: score.points,
-      // Safely access the JSONB fields matching our new Interface
       contributor: score.details?.contributor_name || "Traveler",
       isGroup: score.details?.is_group || false,
       members: score.details?.members || [],
@@ -59,17 +56,16 @@ export const getScores = async (req: Request, res: Response) => {
 
 // -------------------- CREATE SCORE --------------------
 export const createScore = async (
-  req: Request<{}, {}, CreateScoreDto>, 
+  req: Request<{}, {}, CreateScoreDto>, // 👈 Using the DTO here
   res: Response
 ) => {
   const { teamId, points, game, contributor, isGroup, members } = req.body;
 
   if (!teamId || !points || !game) {
-    return res.status(400).json({ error: "teamId, points, and game are required" });
+    return res.status(400).json({ error: "Missing required fields: teamId, points, game" });
   }
 
   try {
-    // Construct the DB Payload matches 'Score' interface structure (minus id/created_at)
     const payload = {
       team_id: teamId,
       points,
@@ -83,7 +79,7 @@ export const createScore = async (
 
     const { data, error: insertError } = await supabase
       .from("score")
-      .insert(payload)
+      .insert([payload])
       .select()
       .single();
 
@@ -93,7 +89,7 @@ export const createScore = async (
     }
 
     return res.status(201).json({ message: "Score logged", data });
-  } catch (err) {
+  } catch (err: any) {
     logger.error("Unexpected error in createScore", err);
     return res.status(500).json({ error: "Failed to create score" });
   }
@@ -101,23 +97,28 @@ export const createScore = async (
 
 // -------------------- UPDATE SCORE --------------------
 export const updateScore = async (
-  req: Request<{ id: string }, {}, UpdateScoreDto>, 
+  req: Request<{ id: string }, {}, UpdateScoreDto>, // 👈 Using the Update DTO
   res: Response
 ) => {
   const { id } = req.params;
   const { teamId, points, game, contributor, isGroup, members } = req.body;
 
   try {
-    const updates = {
-      team_id: teamId,
-      points,
-      game,
-      details: {
+    // Only update fields that are present in the request
+    const updates: any = {};
+    if (teamId) updates.team_id = teamId;
+    if (points !== undefined) updates.points = points;
+    if (game) updates.game = game;
+    
+    // For JSONB, we usually need to merge or rewrite the whole object.
+    // Simplicity approach: Rewrite 'details' if any detail field is provided
+    if (contributor || isGroup !== undefined || members) {
+      updates.details = {
         contributor_name: contributor,
         is_group: isGroup,
         members: members
-      }
-    };
+      };
+    }
 
     const { data, error: updateError } = await supabase
       .from("score")
@@ -131,7 +132,7 @@ export const updateScore = async (
       return res.status(500).json({ error: updateError.message });
     }
     return res.status(200).json({ message: "Score updated successfully", data });
-  } catch (err) {
+  } catch (err: any) {
     logger.error("Unexpected error in updateScore", err);
     return res.status(500).json({ error: "Failed to update score" });
   }
@@ -152,16 +153,18 @@ export const deleteScore = async (req: Request, res: Response) => {
       return res.status(500).json({ error: deleteError.message });
     }
     return res.status(200).json({ message: "Score revoked", data: { id } });
-  } catch (err) {
+  } catch (err: any) {
     logger.error("Unexpected error in deleteScore", err);
     return res.status(500).json({ error: "Failed to delete score" });
   }
 };
 
-// -------------------- GROUPED SCORES (Leaderboard) --------------------
+// -------------------- GROUPED SCORES (Main Leaderboard) --------------------
 export const getScoresByAllSectionTeam = async (req: Request, res: Response) => {
   try {
-    const { data, error } = await supabase
+    const { sort, order, game } = req.query;
+
+    let query = supabase
       .from("score")
       .select(`
         id, points, game, details, created_at,
@@ -169,12 +172,17 @@ export const getScoresByAllSectionTeam = async (req: Request, res: Response) => 
       `)
       .is("deleted_at", null);
 
+    if (game) {
+      query = query.eq("game", game);
+    }
+
+    const { data, error } = await query;
+
     if (error) {
       logger.error("Failed to fetch scores", error);
       return res.status(500).json({ error: error.message });
     }
 
-    const { sort, order } = req.query;
     let scoresData = data || [];
 
     const cleanScores = scoresData.map((s: any) => ({
@@ -216,9 +224,10 @@ export const getScoresByAllSectionTeam = async (req: Request, res: Response) => 
 // -------------------- SPECIFIC NATION SCORES --------------------
 export const getScoresBySectionTeam = async (req: Request, res: Response) => {
   const { section_team } = req.params;
+  const { game } = req.query;
 
   try {
-    const { data, error } = await supabase
+    let query = supabase
       .from("score")
       .select(`
         *,
@@ -226,6 +235,12 @@ export const getScoresBySectionTeam = async (req: Request, res: Response) => {
       `)
       .eq("team.name", section_team)
       .is("deleted_at", null);
+
+    if (game) {
+      query = query.eq("game", game);
+    }
+
+    const { data, error } = await query;
 
     if (error) {
       logger.error("Failed to fetch scores", error);
