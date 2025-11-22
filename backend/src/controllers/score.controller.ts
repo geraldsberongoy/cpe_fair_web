@@ -159,11 +159,12 @@ export const deleteScore = async (req: Request, res: Response) => {
   }
 };
 
-// -------------------- GROUPED SCORES (Main Leaderboard) --------------------
+// -------------------- GROUPED SCORES (Leaderboard) --------------------
 export const getScoresByAllSectionTeam = async (req: Request, res: Response) => {
   try {
     const { sort, order, game } = req.query;
 
+    // 1. Build Query
     let query = supabase
       .from("score")
       .select(`
@@ -172,7 +173,8 @@ export const getScoresByAllSectionTeam = async (req: Request, res: Response) => 
       `)
       .is("deleted_at", null);
 
-    if (game) {
+    // 2. Apply Filter
+    if (game && typeof game === 'string') {
       query = query.eq("game", game);
     }
 
@@ -183,6 +185,7 @@ export const getScoresByAllSectionTeam = async (req: Request, res: Response) => 
       return res.status(500).json({ error: error.message });
     }
 
+    // 3. Group By Team
     let scoresData = data || [];
 
     const cleanScores = scoresData.map((s: any) => ({
@@ -201,6 +204,7 @@ export const getScoresByAllSectionTeam = async (req: Request, res: Response) => 
     const result = Object.entries(sectionMap).map(([teamName, scores]) => {
       const totalPoints = scores.reduce((sum, s) => sum + (s.points ?? 0), 0);
       
+      // Sort the internal list of scores if requested
       if (sort === "points") {
         scores.sort((a, b) => (order === "asc" ? a.points - b.points : b.points - a.points));
       }
@@ -212,7 +216,14 @@ export const getScoresByAllSectionTeam = async (req: Request, res: Response) => 
       };
     });
 
-    result.sort((a, b) => b.totalPoints - a.totalPoints);
+    // 4. Sort Leaderboard (The fix is here!)
+    // We now respect the 'order' parameter for the main list too.
+    // Default to 'desc' (Highest points first) if not specified.
+    if (order === 'asc') {
+      result.sort((a, b) => a.totalPoints - b.totalPoints);
+    } else {
+      result.sort((a, b) => b.totalPoints - a.totalPoints);
+    }
 
     res.status(200).json(result);
   } catch (err: any) {
