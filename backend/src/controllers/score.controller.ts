@@ -1,13 +1,14 @@
 import type { Request, Response } from "express";
-import { supabase } from "../lib/supabaseClient.js"; // Ensure this exports the Service Role client
+import { supabase } from "../lib/supabaseClient.js";
 import { logger } from "../utils/logger.js";
+import type { Score, CreateScoreDto, UpdateScoreDto } from "../types/score.js";
 
 // -------------------- GET ALL SCORES --------------------
 export const getScores = async (req: Request, res: Response) => {
   try {
-    const { type } = req.query; // 'solo' or 'group'
+    const { type } = req.query;
 
-    // 1. Select core score data + Join Team data (Nation)
+    // We type the response from Supabase manually to ensure safety
     let query = supabase
       .from("score")
       .select(`
@@ -18,11 +19,9 @@ export const getScores = async (req: Request, res: Response) => {
         created_at,
         team:team_id ( name, color, element )
       `)
-      .is("deleted_at", null) // Hide soft-deleted scores
+      .is("deleted_at", null)
       .order("created_at", { ascending: false });
 
-    // 2. Filter based on JSONB 'details' if needed
-    // Note: Supabase filter syntax for JSONB keys
     if (type === "solo") {
       query = query.eq("details->>is_group", "false");
     } else if (type === "group") {
@@ -36,15 +35,15 @@ export const getScores = async (req: Request, res: Response) => {
       return res.status(500).json({ error: error.message });
     }
 
-    // 3. Transform Data for Frontend
-    // Flattens the 'details' JSON back into top-level properties
+    // Transform using the Score type logic
     const formattedData = data.map((score: any) => ({
       id: score.id,
       teamId: score.team?.id,
-      teamName: score.team?.name,
-      teamColor: score.team?.color,
+      teamName: score.team?.name, // Joined field
+      teamColor: score.team?.color, // Joined field
       game: score.game,
       points: score.points,
+      // Safely access the JSONB fields matching our new Interface
       contributor: score.details?.contributor_name || "Traveler",
       isGroup: score.details?.is_group || false,
       members: score.details?.members || [],
@@ -59,8 +58,10 @@ export const getScores = async (req: Request, res: Response) => {
 };
 
 // -------------------- CREATE SCORE --------------------
-export const createScore = async (req: Request, res: Response) => {
-  // Map Frontend DTO to Database Schema
+export const createScore = async (
+  req: Request<{}, {}, CreateScoreDto>, 
+  res: Response
+) => {
   const { teamId, points, game, contributor, isGroup, members } = req.body;
 
   if (!teamId || !points || !game) {
@@ -68,11 +69,11 @@ export const createScore = async (req: Request, res: Response) => {
   }
 
   try {
+    // Construct the DB Payload matches 'Score' interface structure (minus id/created_at)
     const payload = {
-      team_id: teamId, // Link to the Nation (Team)
+      team_id: teamId,
       points,
       game,
-      // Pack extra info into the JSONB 'backpack'
       details: {
         contributor_name: contributor || (isGroup ? "Unnamed Party" : "Unknown"),
         is_group: isGroup || false,
@@ -91,7 +92,7 @@ export const createScore = async (req: Request, res: Response) => {
       return res.status(500).json({ error: insertError.message });
     }
 
-    return res.status(201).json({ message: "Score logged to Irminsul", data });
+    return res.status(201).json({ message: "Score logged", data });
   } catch (err) {
     logger.error("Unexpected error in createScore", err);
     return res.status(500).json({ error: "Failed to create score" });
@@ -99,7 +100,10 @@ export const createScore = async (req: Request, res: Response) => {
 };
 
 // -------------------- UPDATE SCORE --------------------
-export const updateScore = async (req: Request, res: Response) => {
+export const updateScore = async (
+  req: Request<{ id: string }, {}, UpdateScoreDto>, 
+  res: Response
+) => {
   const { id } = req.params;
   const { teamId, points, game, contributor, isGroup, members } = req.body;
 
@@ -133,12 +137,11 @@ export const updateScore = async (req: Request, res: Response) => {
   }
 };
 
-// -------------------- DELETE SCORE (Soft Delete) --------------------
+// -------------------- DELETE SCORE --------------------
 export const deleteScore = async (req: Request, res: Response) => {
   const { id } = req.params;
 
   try {
-    // We use SOFT DELETE to preserve history audit
     const { error: deleteError } = await supabase
       .from("score")
       .update({ deleted_at: new Date().toISOString() })
@@ -148,18 +151,16 @@ export const deleteScore = async (req: Request, res: Response) => {
       logger.error("Delete error", deleteError);
       return res.status(500).json({ error: deleteError.message });
     }
-    return res.status(200).json({ message: "Score revoked (soft deleted)", data: { id } });
+    return res.status(200).json({ message: "Score revoked", data: { id } });
   } catch (err) {
     logger.error("Unexpected error in deleteScore", err);
     return res.status(500).json({ error: "Failed to delete score" });
   }
 };
 
-// -------------------- GET SCORES GROUPED BY NATION --------------------
-// Equivalent to your "getScoresByAllSectionTeam"
+// -------------------- GROUPED SCORES (Leaderboard) --------------------
 export const getScoresByAllSectionTeam = async (req: Request, res: Response) => {
   try {
-    // 1. Fetch all active scores with team info
     const { data, error } = await supabase
       .from("score")
       .select(`
@@ -176,14 +177,12 @@ export const getScoresByAllSectionTeam = async (req: Request, res: Response) => 
     const { sort, order } = req.query;
     let scoresData = data || [];
 
-    // 2. Map to cleaner structure before grouping
     const cleanScores = scoresData.map((s: any) => ({
       ...s,
       teamName: s.team?.name || "Unknown",
       contributor: s.details?.contributor_name
     }));
 
-    // 3. Group by Team Name (Nation)
     const sectionMap: Record<string, any[]> = {};
     cleanScores.forEach((score) => {
       const nation = score.teamName;
@@ -191,23 +190,20 @@ export const getScoresByAllSectionTeam = async (req: Request, res: Response) => 
       sectionMap[nation].push(score);
     });
 
-    // 4. Calculate Totals and Format
     const result = Object.entries(sectionMap).map(([teamName, scores]) => {
       const totalPoints = scores.reduce((sum, s) => sum + (s.points ?? 0), 0);
       
-      // Sort individual scores if requested
       if (sort === "points") {
         scores.sort((a, b) => (order === "asc" ? a.points - b.points : b.points - a.points));
       }
 
       return {
-        section_team: teamName, // Keeping your naming convention
+        section_team: teamName, 
         totalPoints,
         scores
       };
     });
 
-    // Optional: Sort the Nations by total points (Leaderboard style)
     result.sort((a, b) => b.totalPoints - a.totalPoints);
 
     res.status(200).json(result);
@@ -217,21 +213,18 @@ export const getScoresByAllSectionTeam = async (req: Request, res: Response) => 
   }
 };
 
-// -------------------- GET SCORES FOR ONE NATION --------------------
+// -------------------- SPECIFIC NATION SCORES --------------------
 export const getScoresBySectionTeam = async (req: Request, res: Response) => {
-  const { section_team } = req.params; // e.g., "Sumeru"
+  const { section_team } = req.params;
 
   try {
-    // We can use the Database View for validation or just query directly.
-    // Here we query scores directly filtering by joined team name.
-    // Note: Supabase syntax for filtering on joined tables: !inner ensures we only get matching teams
     const { data, error } = await supabase
       .from("score")
       .select(`
         *,
         team:team_id!inner(name, color)
       `)
-      .eq("team.name", section_team) // Filter by Team Name
+      .eq("team.name", section_team)
       .is("deleted_at", null);
 
     if (error) {
@@ -239,7 +232,6 @@ export const getScoresBySectionTeam = async (req: Request, res: Response) => {
       return res.status(500).json({ error: error.message });
     }
 
-    // Formatting
     const formattedScores = (data || []).map((s: any) => ({
       ...s,
       contributor: s.details?.contributor_name,
