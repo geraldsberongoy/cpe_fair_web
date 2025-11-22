@@ -1,21 +1,32 @@
 import type { Request, Response } from "express";
-import { supabase } from "../lib/supabaseClient.js";
+import { supabase } from "../lib/supabaseClient.js"; // Ensure this exports the Service Role client
 import { logger } from "../utils/logger.js";
-import { Score, CreateScoreDto, UpdateScoreDto } from "../types/score.js";
 
 // -------------------- GET ALL SCORES --------------------
 export const getScores = async (req: Request, res: Response) => {
   try {
-    const { type } = req.query;
+    const { type } = req.query; // 'solo' or 'group'
+
+    // 1. Select core score data + Join Team data (Nation)
     let query = supabase
       .from("score")
-      .select("*, player:player_id(full_name), team:team_id(team_name)")
-      .returns<Score[]>();
+      .select(`
+        id,
+        points,
+        game,
+        details,
+        created_at,
+        team:team_id ( name, color, element )
+      `)
+      .is("deleted_at", null) // Hide soft-deleted scores
+      .order("created_at", { ascending: false });
 
-    if (type === "player") {
-      query = (query as any).is("team_id", null); // Only individual player scores
-    } else if (type === "team") {
-      query = (query as any).is("player_id", null); // Only team scores
+    // 2. Filter based on JSONB 'details' if needed
+    // Note: Supabase filter syntax for JSONB keys
+    if (type === "solo") {
+      query = query.eq("details->>is_group", "false");
+    } else if (type === "group") {
+      query = query.eq("details->>is_group", "true");
     }
 
     const { data, error } = await query;
@@ -24,7 +35,23 @@ export const getScores = async (req: Request, res: Response) => {
       logger.error("Failed to fetch scores", error);
       return res.status(500).json({ error: error.message });
     }
-    res.status(200).json(data);
+
+    // 3. Transform Data for Frontend
+    // Flattens the 'details' JSON back into top-level properties
+    const formattedData = data.map((score: any) => ({
+      id: score.id,
+      teamId: score.team?.id,
+      teamName: score.team?.name,
+      teamColor: score.team?.color,
+      game: score.game,
+      points: score.points,
+      contributor: score.details?.contributor_name || "Traveler",
+      isGroup: score.details?.is_group || false,
+      members: score.details?.members || [],
+      createdAt: score.created_at
+    }));
+
+    res.status(200).json(formattedData);
   } catch (err: any) {
     logger.error("Unexpected error in getScores", err);
     res.status(500).json({ error: "Internal server error" });
@@ -32,29 +59,39 @@ export const getScores = async (req: Request, res: Response) => {
 };
 
 // -------------------- CREATE SCORE --------------------
-export const createScore = async (
-  req: Request<{}, {}, CreateScoreDto>,
-  res: Response
-) => {
-  const newScore = req.body;
+export const createScore = async (req: Request, res: Response) => {
+  // Map Frontend DTO to Database Schema
+  const { teamId, points, game, contributor, isGroup, members } = req.body;
 
-  if (!newScore.player_id && !newScore.team_id) {
-    return res
-      .status(400)
-      .json({ error: "Either player_id or team_id is required" });
+  if (!teamId || !points || !game) {
+    return res.status(400).json({ error: "teamId, points, and game are required" });
   }
 
   try {
+    const payload = {
+      team_id: teamId, // Link to the Nation (Team)
+      points,
+      game,
+      // Pack extra info into the JSONB 'backpack'
+      details: {
+        contributor_name: contributor || (isGroup ? "Unnamed Party" : "Unknown"),
+        is_group: isGroup || false,
+        members: members || []
+      }
+    };
+
     const { data, error: insertError } = await supabase
       .from("score")
-      .insert(newScore)
+      .insert(payload)
       .select()
       .single();
+
     if (insertError) {
       logger.error("Insert error", insertError);
       return res.status(500).json({ error: insertError.message });
     }
-    return res.status(201).json({ message: "Score added successfully", data });
+
+    return res.status(201).json({ message: "Score logged to Irminsul", data });
   } catch (err) {
     logger.error("Unexpected error in createScore", err);
     return res.status(500).json({ error: "Failed to create score" });
@@ -62,17 +99,25 @@ export const createScore = async (
 };
 
 // -------------------- UPDATE SCORE --------------------
-export const updateScore = async (
-  req: Request<{ id: string }, {}, UpdateScoreDto>,
-  res: Response
-) => {
+export const updateScore = async (req: Request, res: Response) => {
   const { id } = req.params;
-  const updateData = req.body;
+  const { teamId, points, game, contributor, isGroup, members } = req.body;
 
   try {
+    const updates = {
+      team_id: teamId,
+      points,
+      game,
+      details: {
+        contributor_name: contributor,
+        is_group: isGroup,
+        members: members
+      }
+    };
+
     const { data, error: updateError } = await supabase
       .from("score")
-      .update(updateData)
+      .update(updates)
       .eq("id", id)
       .select()
       .single();
@@ -81,147 +126,132 @@ export const updateScore = async (
       logger.error("Update error", updateError);
       return res.status(500).json({ error: updateError.message });
     }
-    return res
-      .status(200)
-      .json({ message: "Score updated successfully", data });
+    return res.status(200).json({ message: "Score updated successfully", data });
   } catch (err) {
     logger.error("Unexpected error in updateScore", err);
     return res.status(500).json({ error: "Failed to update score" });
   }
 };
 
-// -------------------- DELETE SCORE --------------------
+// -------------------- DELETE SCORE (Soft Delete) --------------------
 export const deleteScore = async (req: Request, res: Response) => {
   const { id } = req.params;
 
   try {
+    // We use SOFT DELETE to preserve history audit
     const { error: deleteError } = await supabase
       .from("score")
-      .delete()
+      .update({ deleted_at: new Date().toISOString() })
       .eq("id", id);
 
     if (deleteError) {
       logger.error("Delete error", deleteError);
       return res.status(500).json({ error: deleteError.message });
     }
-    return res
-      .status(200)
-      .json({ message: "Score deleted successfully", data: { id } });
+    return res.status(200).json({ message: "Score revoked (soft deleted)", data: { id } });
   } catch (err) {
     logger.error("Unexpected error in deleteScore", err);
     return res.status(500).json({ error: "Failed to delete score" });
   }
 };
 
-// GET scores for all section teams
-export const getScoresByAllSectionTeam = async (
-  req: Request,
-  res: Response
-) => {
+// -------------------- GET SCORES GROUPED BY NATION --------------------
+// Equivalent to your "getScoresByAllSectionTeam"
+export const getScoresByAllSectionTeam = async (req: Request, res: Response) => {
   try {
-    // Extend Score type to include joined player and team fields
-    type ScoreWithJoins = Score & {
-      player?: { full_name: string; section: string } | null;
-      team?: { team_name: string; section: string } | null;
-    };
+    // 1. Fetch all active scores with team info
     const { data, error } = await supabase
       .from("score")
-      .select(
-        `
-        *,
-        player:player_id(full_name, section),
-        team:team_id(team_name, section)
-      `
-      )
-      .returns<ScoreWithJoins[]>();
+      .select(`
+        id, points, game, details, created_at,
+        team:team_id ( name, color, element )
+      `)
+      .is("deleted_at", null);
 
     if (error) {
       logger.error("Failed to fetch scores", error);
       return res.status(500).json({ error: error.message });
     }
 
-    // Handle query parameters for sorting
     const { sort, order } = req.query;
     let scoresData = data || [];
 
-    // Sorting logic
-    if (sort === "points") {
-      scoresData = scoresData.slice().sort((a, b) => {
-        const aPoints = a.points ?? 0;
-        const bPoints = b.points ?? 0;
-        if (order === "asc") return aPoints - bPoints;
-        return bPoints - aPoints; // default to desc
-      });
-    }
+    // 2. Map to cleaner structure before grouping
+    const cleanScores = scoresData.map((s: any) => ({
+      ...s,
+      teamName: s.team?.name || "Unknown",
+      contributor: s.details?.contributor_name
+    }));
 
-    // Group scores by section_team (from player.section or team.section)
-    const sectionMap: Record<string, ScoreWithJoins[]> = {};
-    scoresData.forEach((score) => {
-      const section = score.player?.section || score.team?.section || "Unknown";
-      if (!sectionMap[section]) sectionMap[section] = [];
-      sectionMap[section].push(score);
+    // 3. Group by Team Name (Nation)
+    const sectionMap: Record<string, any[]> = {};
+    cleanScores.forEach((score) => {
+      const nation = score.teamName;
+      if (!sectionMap[nation]) sectionMap[nation] = [];
+      sectionMap[nation].push(score);
     });
 
-    // Build response: array of { section_team, totalPoints, scores }
-    const result = Object.entries(sectionMap).map(([section_team, scores]) => ({
-      section_team,
-      totalPoints: scores.reduce((sum, score) => sum + (score.points ?? 0), 0),
-      scores,
-    }));
+    // 4. Calculate Totals and Format
+    const result = Object.entries(sectionMap).map(([teamName, scores]) => {
+      const totalPoints = scores.reduce((sum, s) => sum + (s.points ?? 0), 0);
+      
+      // Sort individual scores if requested
+      if (sort === "points") {
+        scores.sort((a, b) => (order === "asc" ? a.points - b.points : b.points - a.points));
+      }
+
+      return {
+        section_team: teamName, // Keeping your naming convention
+        totalPoints,
+        scores
+      };
+    });
+
+    // Optional: Sort the Nations by total points (Leaderboard style)
+    result.sort((a, b) => b.totalPoints - a.totalPoints);
 
     res.status(200).json(result);
   } catch (err: any) {
-    logger.error("Failed to fetch scores", err);
+    logger.error("Failed to fetch grouped scores", err);
     res.status(500).json({ error: err.message });
   }
 };
 
-// GET scores by section team
+// -------------------- GET SCORES FOR ONE NATION --------------------
 export const getScoresBySectionTeam = async (req: Request, res: Response) => {
-  const { section_team } = req.params;
+  const { section_team } = req.params; // e.g., "Sumeru"
 
   try {
-    // Extend Score type to include joined player and team fields
-    type ScoreWithJoins = Score & {
-      player?: { full_name: string; section: string } | null;
-      team?: { team_name: string; section: string } | null;
-    };
+    // We can use the Database View for validation or just query directly.
+    // Here we query scores directly filtering by joined team name.
+    // Note: Supabase syntax for filtering on joined tables: !inner ensures we only get matching teams
     const { data, error } = await supabase
       .from("score")
-      .select(
-        `
+      .select(`
         *,
-        player:player_id(full_name, section),
-        team:team_id(team_name, section)
-      `
-      )
-      .returns<ScoreWithJoins[]>();
+        team:team_id!inner(name, color)
+      `)
+      .eq("team.name", section_team) // Filter by Team Name
+      .is("deleted_at", null);
 
     if (error) {
       logger.error("Failed to fetch scores", error);
       return res.status(500).json({ error: error.message });
     }
 
-    // Safely filter scores by section
-    const filteredScores = (data || []).filter((score) => {
-      const playerSection = score.player?.section;
-      const teamSection = score.team?.section;
-      return (
-        (playerSection && playerSection === section_team) ||
-        (teamSection && teamSection === section_team)
-      );
-    });
+    // Formatting
+    const formattedScores = (data || []).map((s: any) => ({
+      ...s,
+      contributor: s.details?.contributor_name,
+      isGroup: s.details?.is_group
+    }));
 
-    // Calculate total points
-    const totalPoints = filteredScores.reduce(
-      (sum, score) => sum + (score.points ?? 0),
-      0
-    );
+    const totalPoints = formattedScores.reduce((sum, score) => sum + (score.points ?? 0), 0);
 
     res.status(200).json({
       section_team,
       totalPoints,
-      scores: filteredScores,
+      scores: formattedScores,
     });
   } catch (err: any) {
     logger.error("Failed to fetch scores", err);

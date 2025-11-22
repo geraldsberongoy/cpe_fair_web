@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { requireAdmin } from "../middlewares/auth.js";
 import {
   getScores,
   createScore,
@@ -10,17 +11,16 @@ import {
 
 const router = Router();
 
-// GET /api/score
+// --- 🌍 PUBLIC ROUTES (Read Only) ---
+// Anyone can view the scores
 router.get("/", getScores);
-// POST /api/score
-router.post("/", createScore);
-// // PUT /api/score/:id
-router.put("/:id", updateScore);
-// Get overall score for all section team
-router.get('/section_team', getScoresByAllSectionTeam)
-// Get overall score for a section team
+router.get("/section_team", getScoresByAllSectionTeam);
 router.get("/section_team/:section_team", getScoresBySectionTeam);
-// DELETE /api/score/:id
-router.delete("/:id", deleteScore);
+
+// --- 🔒 PROTECTED ROUTES (Admin Only) ---
+// Only authenticated admins can change data
+router.post("/", requireAdmin, createScore);
+router.put("/:id", requireAdmin, updateScore);
+router.delete("/:id", requireAdmin, deleteScore);
 
 export default router;
