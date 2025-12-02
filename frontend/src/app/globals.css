@@ -98,3 +98,67 @@
     @apply font-sans antialiased bg-background text-foreground;
   }
 }
+
+/* --- Genshin Toast Customization --- */
+.Toastify__toast-container {
+  width: 400px !important;
+}
+
+.Toastify__toast {
+  background: rgba(30, 33, 48, 0.9) !important; /* Dark blue background */
+  backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(211, 188, 142, 0.3) !important; /* Gold border */
+  border-radius: 12px !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5) !important;
+  color: #ece5d8 !important; /* Light text */
+  font-family: var(--font-genshin) !important;
+  padding: 16px !important;
+}
+
+.Toastify__toast-body {
+  font-size: 0.95rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+.Toastify__progress-bar {
+  background: #d3bc8e !important; /* Gold progress bar */
+  height: 3px !important;
+}
+
+.Toastify__close-button {
+  color: #8a8d99 !important;
+  opacity: 0.7;
+}
+
+.Toastify__close-button:hover {
+  color: #d3bc8e !important;
+  opacity: 1;
+}
+
+/* Success Toast Specifics */
+.Toastify__toast--success {
+  border-left: 4px solid #4ade80 !important; /* Green accent */
+}
+
+.Toastify__toast--success .Toastify__progress-bar {
+  background: #4ade80 !important;
+}
+
+/* Error Toast Specifics */
+.Toastify__toast--error {
+  border-left: 4px solid #f87171 !important; /* Red accent */
+}
+
+.Toastify__toast--error .Toastify__progress-bar {
+  background: #f87171 !important;
+}
+
+/* Info Toast Specifics */
+.Toastify__toast--info {
+  border-left: 4px solid #60a5fa !important; /* Blue accent */
+}
+
+.Toastify__toast--info .Toastify__progress-bar {
+  background: #60a5fa !important;
+}
