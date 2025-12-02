@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import useScore from "@/hooks/useScore";
+import { useScores } from "@/hooks/useScore";
 import SpecificArea from "./SpecificArea";
 
 const teams = [
@@ -29,7 +29,7 @@ const excludedGames = [
 
 const Teams = () => {
 
-  const { scores: mainData } = useScore();
+  const { data: mainData = [] } = useScores();
   const [teamPoints, setTeamPoints] = useState<any[]>([]);
   const [selectedGame, setSelectedGame] = useState("all");
 

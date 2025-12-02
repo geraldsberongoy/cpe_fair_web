@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import "./globals.css";
+import QueryProvider from "../providers/QueryProvider";
 
 const genshin = localFont({
   src: "../assets/fonts/Genshin-Font.ttf",
@@ -26,7 +29,21 @@ export default function RootLayout({
       <body
         className={`${genshin.variable} antialiased`}
       >
-        {children}
+        <QueryProvider>
+          {children}
+          <ToastContainer
+            position="top-right"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="dark"
+          />
+        </QueryProvider>
       </body>
     </html>
   );
