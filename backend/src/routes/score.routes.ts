@@ -11,16 +11,67 @@ import {
 
 const router = Router();
 
-// --- 🌍 PUBLIC ROUTES (Read Only) ---
-// Anyone can view the scores
+// --- PUBLIC ROUTES (Read Only) ---
+
+/**
+ * GET /api/score
+ * List all scores.
+ * Response: List of scores (JSON)
+ */
 router.get("/", getScores);
+
+/**
+ * GET /api/score/section_team
+ * Get aggregated scores by section team.
+ * Response: Aggregated scores (JSON)
+ */
 router.get("/section_team", getScoresByAllSectionTeam);
+
+/**
+ * GET /api/score/section_team/:section_team
+ * Get scores for a specific section team.
+ * Param: section_team (string) - The section team identifier
+ * Response: Scores for the section team (JSON)
+ */
 router.get("/section_team/:section_team", getScoresBySectionTeam);
 
-// --- 🔒 PROTECTED ROUTES (Admin Only) ---
-// Only authenticated admins can change data
+// --- PROTECTED ROUTES (Admin Only) ---
+
+/**
+ * POST /api/score
+ * Create a new score (Admin only).
+ * Body:
+ *  - teamId (string): UUID of the team (Required)
+ *  - points (number): Points to award (Required)
+ *  - game (string): Name of the game (Required)
+ *  - contributor (string): Name of the contributor
+ *  - isGroup (boolean): Whether it is a group score
+ *  - members (string[]): List of member names (if group)
+ * Response: Score created successfully (201)
+ */
 router.post("/", requireAdmin, createScore);
+
+/**
+ * PUT /api/score/:id
+ * Update a score (Admin only).
+ * Param: id (string) - The score ID
+ * Body:
+ *  - teamId (string): UUID of the team
+ *  - points (number): Points to award
+ *  - game (string): Name of the game
+ *  - contributor (string): Name of the contributor
+ *  - isGroup (boolean): Whether it is a group score
+ *  - members (string[]): List of member names (if group)
+ * Response: Score updated successfully (200)
+ */
 router.put("/:id", requireAdmin, updateScore);
+
+/**
+ * DELETE /api/score/:id
+ * Delete a score (Admin only).
+ * Param: id (string) - The score ID
+ * Response: Score deleted successfully (200)
+ */
 router.delete("/:id", requireAdmin, deleteScore);
 
 export default router;
