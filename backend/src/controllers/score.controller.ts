@@ -6,7 +6,7 @@ import type { Score, CreateScoreDto, UpdateScoreDto } from "../types/score.js";
 // -------------------- GET ALL SCORES (Feed) --------------------
 export const getScores = async (req: Request, res: Response) => {
   try {
-    const { type } = req.query;
+    const { type, category } = req.query;
 
     let query = supabase
       .from("score")
@@ -14,9 +14,10 @@ export const getScores = async (req: Request, res: Response) => {
         id,
         points,
         game,
+        category,
         details,
         created_at,
-        team:team_id ( name, color ) 
+        team:team_id ( name ) 
       `)
       .is("deleted_at", null)
       .order("created_at", { ascending: false });
@@ -25,6 +26,10 @@ export const getScores = async (req: Request, res: Response) => {
       query = query.eq("details->>is_group", "false");
     } else if (type === "group") {
       query = query.eq("details->>is_group", "true");
+    }
+
+    if (category && typeof category === 'string') {
+      query = query.eq("category", category);
     }
 
     const { data, error } = await query;
@@ -38,8 +43,8 @@ export const getScores = async (req: Request, res: Response) => {
       id: score.id,
       teamId: score.team?.id,
       teamName: score.team?.name,
-      teamColor: score.team?.color,
       game: score.game,
+      category: score.category,
       points: score.points,
       contributor: score.details?.contributor_name || "Traveler",
       isGroup: score.details?.is_group || false,
@@ -59,10 +64,10 @@ export const createScore = async (
   req: Request<{}, {}, CreateScoreDto>, // 👈 Using the DTO here
   res: Response
 ) => {
-  const { teamId, points, game, contributor, isGroup, members } = req.body;
+  const { teamId, points, game, category, contributor, isGroup, members } = req.body;
 
-  if (!teamId || !points || !game) {
-    return res.status(400).json({ error: "Missing required fields: teamId, points, game" });
+  if (!teamId || !points || !game || !category) {
+    return res.status(400).json({ error: "Missing required fields: teamId, points, game, category" });
   }
 
   try {
@@ -70,6 +75,7 @@ export const createScore = async (
       team_id: teamId,
       points,
       game,
+      category,
       details: {
         contributor_name: contributor || (isGroup ? "Unnamed Party" : "Unknown"),
         is_group: isGroup || false,
@@ -101,7 +107,7 @@ export const updateScore = async (
   res: Response
 ) => {
   const { id } = req.params;
-  const { teamId, points, game, contributor, isGroup, members } = req.body;
+  const { teamId, points, game, category, contributor, isGroup, members } = req.body;
 
   try {
     // Only update fields that are present in the request
@@ -109,6 +115,7 @@ export const updateScore = async (
     if (teamId) updates.team_id = teamId;
     if (points !== undefined) updates.points = points;
     if (game) updates.game = game;
+    if (category) updates.category = category;
     
     // For JSONB, we usually need to merge or rewrite the whole object.
     // Simplicity approach: Rewrite 'details' if any detail field is provided
@@ -162,20 +169,24 @@ export const deleteScore = async (req: Request, res: Response) => {
 // -------------------- GROUPED SCORES (Leaderboard) --------------------
 export const getScoresByAllSectionTeam = async (req: Request, res: Response) => {
   try {
-    const { sort, order, game } = req.query;
+    const { sort, order, game, category } = req.query;
 
     // 1. Build Query
     let query = supabase
       .from("score")
       .select(`
-        id, points, game, details, created_at,
-        team:team_id ( name, color )
+        id, points, game, category, details, created_at,
+        team:team_id ( name )
       `)
       .is("deleted_at", null);
 
     // 2. Apply Filter
     if (game && typeof game === 'string') {
       query = query.eq("game", game);
+    }
+
+    if (category && typeof category === 'string') {
+      query = query.eq("category", category);
     }
 
     const { data, error } = await query;
@@ -234,20 +245,24 @@ export const getScoresByAllSectionTeam = async (req: Request, res: Response) => 
 // -------------------- SPECIFIC NATION SCORES --------------------
 export const getScoresBySectionTeam = async (req: Request, res: Response) => {
   const { section_team } = req.params;
-  const { game } = req.query;
+  const { game, category } = req.query;
 
   try {
     let query = supabase
       .from("score")
       .select(`
         *,
-        team:team_id!inner(name, color)
+        team:team_id!inner(name)
       `)
       .eq("team.name", section_team)
       .is("deleted_at", null);
 
     if (game) {
       query = query.eq("game", game);
+    }
+
+    if (category && typeof category === 'string') {
+      query = query.eq("category", category);
     }
 
     const { data, error } = await query;

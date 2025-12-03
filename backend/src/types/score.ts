@@ -10,6 +10,7 @@ export interface Score {
   team_id: string;     // UUID (Required now, not optional)
   game: string;
   points: number;
+  category: string;    // Added to match DB schema
   details: ScoreDetails; // The new JSONB column
   created_at: string;
   deleted_at?: string | null;
@@ -20,6 +21,7 @@ export interface CreateScoreDto {
   teamId: string;
   points: number;
   game: string;
+  category: string;    // Added
   contributor?: string;
   isGroup?: boolean;
   members?: string[];
