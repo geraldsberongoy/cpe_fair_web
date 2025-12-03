@@ -6,11 +6,18 @@ import type { Game, CreateGameDto, UpdateGameDto } from "../types/game.js";
 // GET /api/game - List all games (Public)
 export const getGames = async (req: Request, res: Response) => {
   try {
-    const { data, error } = await supabase
+    const { category } = req.query;
+
+    let query = supabase
       .from("game")
       .select("*")
-      .order("name", { ascending: true })
-      .returns<Game[]>();
+      .order("name", { ascending: true });
+
+    if (category && typeof category === 'string') {
+      query = query.eq("category", category);
+    }
+
+    const { data, error } = await query.returns<Game[]>();
 
     if (error) throw error;
     res.json(data);
@@ -42,16 +49,16 @@ export const createGame = async (
   req: Request<{}, {}, CreateGameDto>, 
   res: Response
 ) => {
-  const { name, is_group, icon } = req.body;
+  const { name, is_group, category } = req.body;
 
-  if (!name) {
-    return res.status(400).json({ error: "Game name is required" });
+  if (!name || !category) {
+    return res.status(400).json({ error: "Game name and category are required" });
   }
 
   try {
     const { data, error } = await supabase
       .from("game")
-      .insert([{ name, is_group: is_group || false, icon }])
+      .insert([{ name, is_group: is_group || false, category }])
       .select()
       .single();
 
@@ -73,12 +80,12 @@ export const updateGame = async (
   res: Response
 ) => {
   const { id } = req.params;
-  const { name, is_group, icon } = req.body;
+  const { name, is_group, category } = req.body;
 
   try {
     const { data, error } = await supabase
       .from("game")
-      .update({ name, is_group, icon })
+      .update({ name, is_group, category })
       .eq("id", id)
       .select()
       .single();

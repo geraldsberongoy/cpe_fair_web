@@ -15,6 +15,7 @@ const router = Router();
 /**
  * GET /api/game
  * List all games.
+ * Query: category (string) - Optional category filter
  * Response: List of games (JSON)
  */
 router.get("/", getGames);
@@ -35,7 +36,7 @@ router.get("/:id", getGameById);
  * Body:
  *  - name (string): Name of the game (Required)
  *  - is_group (boolean): Whether the game requires a group (Default: false)
- *  - icon (string): Emoji icon for the game
+ *  - category (string): Category of the game (Sports, Board, etc.)
  * Response: Game created successfully (201)
  */
 router.post("/", requireAdmin, createGame);
@@ -47,7 +48,7 @@ router.post("/", requireAdmin, createGame);
  * Body:
  *  - name (string): Name of the game
  *  - is_group (boolean): Whether the game requires a group
- *  - icon (string): Emoji icon for the game
+ *  - category (string): Category of the game
  * Response: Game updated successfully (200)
  */
 router.put("/:id", requireAdmin, updateGame);
