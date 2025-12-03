@@ -6,13 +6,33 @@ import type { Player, CreatePlayerDto, UpdatePlayerDto } from "../types/player.j
 // GET /api/player
 export const getPlayers = async (req: Request, res: Response) => {
   try {
-    const { data, error } = await supabase
+    const { team_name } = req.query;
+
+    let query = supabase
       .from("player")
       .select(`
         *,
-        team:team_id ( name, color )
+        team:team_id ( name )
       `)
       .order("full_name", { ascending: true });
+
+    if (team_name && typeof team_name === 'string') {
+      // First find the team ID
+      const { data: teamData, error: teamError } = await supabase
+        .from("team")
+        .select("id")
+        .eq("name", team_name)
+        .single();
+
+      if (teamError || !teamData) {
+        // If team not found, return empty list
+        return res.json([]);
+      }
+
+      query = query.eq("team_id", teamData.id);
+    }
+
+    const { data, error } = await query;
 
     if (error) throw error;
     res.json(data);
@@ -33,7 +53,7 @@ export const getPlayerById = async (
       .from("player")
       .select(`
         *,
-        team:team_id ( name, color )
+        team:team_id ( name )
       `)
       .eq("id", id)
       .single();

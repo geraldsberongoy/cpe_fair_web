@@ -8,7 +8,6 @@ export interface Player {
   // Optional joined property (if we select team name)
   team?: {
     name: string;
-    color?: string;
   };
 }
 
