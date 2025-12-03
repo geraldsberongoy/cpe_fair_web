@@ -1,4 +1,5 @@
 import api from './api';
+import { GameCategory } from "../types/game";
 
 export interface Score {
   id: number;
@@ -13,6 +14,16 @@ export interface SectionTeamScoreResponse {
   section_team: string;
   totalPoints: number;
   scores: Score[];
+}
+
+export interface CategoryStandings {
+  [gameName: string]: {
+    id: number;
+    teamName: string;
+    points: number;
+    category: GameCategory;
+    details: any;
+  }[];
 }
 
 export const scoreService = {
@@ -32,7 +43,7 @@ export const scoreService = {
   /**
    * Get aggregated scores by section team
    */
-  getAggregatedScores: async () => {
+  getAggregatedScores: async (): Promise<SectionTeamScoreResponse[]> => {
     try {
       const response = await api.get('/score/section_team');
       return response.data;
@@ -54,5 +65,22 @@ export const scoreService = {
       console.error(`Failed to fetch scores for ${sectionTeam}:`, error);
       return null;
     }
+  },
+
+  /**
+   * Get category standings
+   * @param category The category to filter by (e.g., "Sports")
+   */
+  getCategoryStandings: async (category: string): Promise<CategoryStandings | null> => {
+    try {
+      const response = await api.get(`/score/category-standings`, {
+        params: { category }
+      });
+      return response.data;
+    } catch (error) {
+      console.error(`Failed to fetch standings for ${category}:`, error);
+      return null;
+    }
   }
 };
+

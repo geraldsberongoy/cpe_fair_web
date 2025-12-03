@@ -5,6 +5,7 @@ export const SCORE_KEYS = {
   all: ["scores"] as const,
   aggregated: ["scores", "aggregated"] as const,
   sectionTeam: (team: string) => ["scores", "sectionTeam", team] as const,
+  categoryStandings: (category: string) => ["scores", "categoryStandings", category] as const,
 };
 
 export const useScores = () => {
@@ -26,5 +27,13 @@ export const useSectionTeamScores = (sectionTeam: string) => {
     queryKey: SCORE_KEYS.sectionTeam(sectionTeam),
     queryFn: () => scoreService.getScoresBySectionTeam(sectionTeam),
     enabled: !!sectionTeam, // Only fetch if team name is provided
+  });
+};
+
+export const useCategoryStandings = (category: string) => {
+  return useQuery({
+    queryKey: SCORE_KEYS.categoryStandings(category),
+    queryFn: () => scoreService.getCategoryStandings(category),
+    enabled: !!category,
   });
 };
