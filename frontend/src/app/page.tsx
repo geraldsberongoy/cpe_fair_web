@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 
 import MainLogo from "@/assets/images/logos/archons_logo.svg";
 import CategoriesBar from "@/components/landing/categories_bar";
@@ -10,11 +10,15 @@ import MainLogoArchon from "@/components/MainLogo";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Link from "next/link";
+import { GameCategory } from "@/types/game";
 
 export default function Home() {
+  const [selectedCategory, setSelectedCategory] = useState<
+    GameCategory | "Overall"
+  >("Overall");
+
   return (
-    <div className="min-h-screen bg-linear-to-b from-[#050425] to-[#000000] flex flex-col items-center"
-    >
+    <div className="min-h-screen bg-linear-to-b from-[#050425] to-[#000000] flex flex-col items-center">
       <ToastContainer
         position="top-right"
         autoClose={5000}
@@ -27,16 +31,17 @@ export default function Home() {
         pauseOnHover
         theme="dark"
       />
-      
+
       {/* Main Logo */}
       <MainLogoArchon />
-      
-      <div className="w-full flex flex-col gap-4">
 
-        <CategoriesBar />
-        
-        <Leaderboard />
-        
+      <div className="w-full flex flex-col gap-4">
+        <CategoriesBar
+          selectedCategory={selectedCategory}
+          onSelect={setSelectedCategory}
+        />
+
+        <Leaderboard selectedCategory={selectedCategory} />
       </div>
     </div>
   );
