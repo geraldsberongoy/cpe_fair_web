@@ -7,6 +7,7 @@ import {
   deleteScore,
   getScoresByAllSectionTeam,
   getScoresBySectionTeam,
+  getCategoryStandings,
 } from "../controllers/score.controller.js";
 
 const router = Router();
@@ -22,6 +23,15 @@ const router = Router();
  * Response: List of scores (JSON)
  */
 router.get("/", getScores);
+
+/**
+ * GET /api/score/category-standings
+ * Get scores grouped by game for a specific category.
+ * Query:
+ *  - category (string): Filter by category (e.g., "Sports")
+ * Response: Map of games to ranked scores (JSON)
+ */
+router.get("/category-standings", getCategoryStandings);
 
 /**
  * GET /api/score/section_team

@@ -290,3 +290,55 @@ export const getScoresBySectionTeam = async (req: Request, res: Response) => {
     res.status(500).json({ error: err.message });
   }
 };
+
+// -------------------- CATEGORY STANDINGS (Grouped by Game) --------------------
+export const getCategoryStandings = async (req: Request, res: Response) => {
+  try {
+    const { category } = req.query;
+
+    let query = supabase
+      .from("score")
+      .select(`
+        id, points, game, category, details, created_at,
+        team:team_id ( name )
+      `)
+      .is("deleted_at", null);
+
+    if (category && typeof category === 'string') {
+      query = query.eq("category", category);
+    }
+
+    const { data, error } = await query;
+
+    if (error) {
+      logger.error("Failed to fetch category standings", error);
+      return res.status(500).json({ error: error.message });
+    }
+
+    // Group by game
+    const gamesMap: Record<string, any[]> = {};
+
+    (data || []).forEach((score: any) => {
+      const gameName = score.game;
+      if (!gamesMap[gameName]) gamesMap[gameName] = [];
+
+      gamesMap[gameName].push({
+        id: score.id,
+        teamName: score.team?.name || "Unknown",
+        points: score.points,
+        category: score.category,
+        details: score.details,
+      });
+    });
+
+    // Sort each game's scores by points (descending)
+    Object.keys(gamesMap).forEach((game) => {
+      gamesMap[game].sort((a, b) => b.points - a.points);
+    });
+
+    res.status(200).json(gamesMap);
+  } catch (err: any) {
+    logger.error("Unexpected error in getCategoryStandings", err);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
