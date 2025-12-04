@@ -9,6 +9,7 @@ import {
   getScoresBySectionTeam,
   getCategoryStandings,
 } from "../controllers/score.controller.js";
+import { exportMasterScoreLedger, getMasterScoreLedger } from "../controllers/export.controller.js";
 
 const router = Router();
 
@@ -96,5 +97,19 @@ router.put("/:id", requireAdmin, updateScore);
  * Response: Score deleted successfully (200)
  */
 router.delete("/:id", requireAdmin, deleteScore);
+
+/**
+ * GET /api/score/ledger
+ * Get master score ledger as JSON (Admin only).
+ * Response: Array of all ledger records
+ */
+router.get("/ledger", requireAdmin, getMasterScoreLedger);
+
+/**
+ * GET /api/score/export
+ * Export master score ledger to Excel (Admin only).
+ * Response: Excel file download
+ */
+router.get("/export", requireAdmin, exportMasterScoreLedger);
 
 export default router;

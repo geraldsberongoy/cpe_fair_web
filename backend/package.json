@@ -16,6 +16,7 @@
     "@supabase/supabase-js": "^2.81.1",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
+    "exceljs": "^4.4.0",
     "express": "^5.1.0",
     "winston": "^3.18.3"
   },
