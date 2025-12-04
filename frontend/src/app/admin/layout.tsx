@@ -86,16 +86,6 @@ export default function AdminLayout({
             <Users size={24} />
           </button>
           <button
-            onClick={() => navigateTo("settings")}
-            className={`p-3 rounded-2xl transition-all ${
-              isActive("settings")
-                ? "bg-[#2d3042] text-[#d3bc8e] shadow-[inset_0_0_10px_rgba(0,0,0,0.2)]"
-                : "text-[#8a8d99] hover:text-[#ece5d8]"
-            }`}
-          >
-            <Settings size={24} />
-          </button>
-          <button
             onClick={() => navigateTo("games")}
             className={`p-3 rounded-2xl transition-all ${
               isActive("games")
@@ -104,6 +94,16 @@ export default function AdminLayout({
             }`}
           >
             <Gamepad size={24} />
+          </button>
+          <button
+            onClick={() => navigateTo("settings")}
+            className={`p-3 rounded-2xl transition-all ${
+              isActive("settings")
+                ? "bg-[#2d3042] text-[#d3bc8e] shadow-[inset_0_0_10px_rgba(0,0,0,0.2)]"
+                : "text-[#8a8d99] hover:text-[#ece5d8]"
+            }`}
+          >
+            <Settings size={24} />
           </button>
         </nav>
         <button
