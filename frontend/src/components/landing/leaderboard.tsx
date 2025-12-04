@@ -11,6 +11,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import Podium from "./Podium";
 
 import FontaineBG from "@/assets/images/backgrounds/fontaine.jpg";
 import InazumaBG from "@/assets/images/backgrounds/inazuma.jpg";
@@ -43,7 +44,7 @@ interface LeaderboardProps {
   selectedCategory: GameCategory | "Overall";
 }
 
-const TeamScoreModal = ({
+export const TeamScoreModal = ({
   teamName,
   scores,
 }: {
@@ -244,48 +245,44 @@ const Leaderboard = ({ selectedCategory }: LeaderboardProps) => {
     const sortedTeams = [...aggregatedScores].sort(
       (a, b) => b.totalPoints - a.totalPoints
     );
+
+    const topThree = [...sortedTeams]
+                .slice(0, 3);
     
     return (
-      <div className="w-full px-4 flex flex-col gap-4 mb-6">
-        <h2 className="text-2xl font-bold text-white text-center mb-4">
+      <div className="w-full px-40 flex flex-col gap-4 mb-6">
+        <h2 className="text-2xl font-bold text-white text-center">
           Overall Leaderboard
         </h2>
-        {sortedTeams.map((team, index) => {
+        <Podium topTeams={topThree} />
+        {sortedTeams.slice(3).map((team, index) => {
           const bg = pickBg(team.section_team);
           return (
             <Dialog key={team.section_team}>
               <DialogTrigger asChild>
                 <button
                   style={{
-                    backgroundImage: bg ? `linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url(${bg})` : undefined,
+                    backgroundImage: bg ? `linear-gradient(rgba(0,0,0,0.10), rgba(0,0,0,0.10)), url(${bg})` : undefined,
                     backgroundSize: "cover",
                     backgroundPosition: "center",
                   }}
-                  className={`w-full flex items-center justify-between p-6 rounded-xl border transition-all duration-300 hover:scale-[1.02] ${
+                  className={`w-full flex items-center justify-between p-6 rounded-xl border transition-all duration-300 hover:scale-[1.01] ${
                     bg
                       ? "border-white/20"
                       : index === 0
-                      ? "bg-yellow-500/20 border-yellow-500/50 hover:bg-yellow-500/30"
+                      ? "border-yellow-500/50 hover:bg-yellow-500/30"
                       : index === 1
-                      ? "bg-gray-400/20 border-gray-400/50 hover:bg-gray-400/30"
+                      ? "border-gray-400/50 hover:bg-gray-400/30"
                       : index === 2
-                      ? "bg-orange-700/20 border-orange-700/50 hover:bg-orange-700/30"
-                      : "bg-white/10 border-white/20 hover:bg-white/20"
+                      ? "border-orange-700/50 hover:bg-orange-700/30"
+                      : "border-white/20"
                   }`}
                 >
                   <div className="flex items-center gap-6">
                     <span
-                      className={`text-3xl font-bold w-12 text-center ${
-                        index === 0
-                          ? "text-yellow-400"
-                          : index === 1
-                          ? "text-gray-300"
-                          : index === 2
-                          ? "text-orange-400"
-                          : "text-white/60"
-                      }`}
+                      className={`text-3xl font-bold w-12 text-center text-white/60`}
                     >
-                      #{index + 1}
+                      #{index + 4}
                     </span>
                     <div className="text-left">
                       <h3 className="text-2xl font-bold text-white">
@@ -352,68 +349,68 @@ const Leaderboard = ({ selectedCategory }: LeaderboardProps) => {
 
               {/* Corner Ornaments - Top Left */}
               <div className="absolute top-0 left-0 w-12 h-12">
-                <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-amber-300 to-transparent"></div>
-                <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-amber-300 to-transparent"></div>
+                <div className="absolute top-0 left-0 w-full h-1 bg-linear-to-r from-amber-300 to-transparent"></div>
+                <div className="absolute top-0 left-0 w-1 h-full bg-linear-to-b from-amber-300 to-transparent"></div>
                 <div className="absolute top-2 left-2 w-6 h-6 border-t-2 border-l-2 border-amber-400/60"></div>
                 <div
-                  className={`absolute top-0 left-0 w-3 h-3 bg-gradient-to-br group-hover:scale-125 transition-transform duration-300`}
+                  className={`absolute top-0 left-0 w-3 h-3 bg-linear-to-br group-hover:scale-125 transition-transform duration-300`}
                 ></div>
               </div>
 
               {/* Corner Ornaments - Top Right */}
               <div className="absolute top-0 right-0 w-12 h-12">
-                <div className="absolute top-0 right-0 w-full h-1 bg-gradient-to-l from-amber-300 to-transparent"></div>
-                <div className="absolute top-0 right-0 w-1 h-full bg-gradient-to-b from-amber-300 to-transparent"></div>
+                <div className="absolute top-0 right-0 w-full h-1 bg-linear-to-l from-amber-300 to-transparent"></div>
+                <div className="absolute top-0 right-0 w-1 h-full bg-linear-to-b from-amber-300 to-transparent"></div>
                 <div className="absolute top-2 right-2 w-6 h-6 border-t-2 border-r-2 border-amber-400/60"></div>
                 <div
-                  className={`absolute top-0 right-0 w-3 h-3 bg-gradient-to-bl group-hover:scale-125 transition-transform duration-300`}
+                  className={`absolute top-0 right-0 w-3 h-3 bg-linear-to-bl group-hover:scale-125 transition-transform duration-300`}
                 ></div>
               </div>
 
               {/* Corner Ornaments - Bottom Left */}
               <div className="absolute bottom-0 left-0 w-12 h-12">
-                <div className="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-amber-300 to-transparent"></div>
-                <div className="absolute bottom-0 left-0 w-1 h-full bg-gradient-to-t from-amber-300 to-transparent"></div>
+                <div className="absolute bottom-0 left-0 w-full h-1 bg-linear-to-r from-amber-300 to-transparent"></div>
+                <div className="absolute bottom-0 left-0 w-1 h-full bg-linear-to-t from-amber-300 to-transparent"></div>
                 <div className="absolute bottom-2 left-2 w-6 h-6 border-b-2 border-l-2 border-amber-400/60"></div>
                 <div
-                  className={`absolute bottom-0 left-0 w-3 h-3 bg-gradient-to-tr group-hover:scale-125 transition-transform duration-300`}
+                  className={`absolute bottom-0 left-0 w-3 h-3 bg-linear-to-tr group-hover:scale-125 transition-transform duration-300`}
                 ></div>
               </div>
 
               {/* Corner Ornaments - Bottom Right */}
               <div className="absolute bottom-0 right-0 w-12 h-12">
-                <div className="absolute bottom-0 right-0 w-full h-1 bg-gradient-to-l from-amber-300 to-transparent"></div>
-                <div className="absolute bottom-0 right-0 w-1 h-full bg-gradient-to-t from-amber-300 to-transparent"></div>
+                <div className="absolute bottom-0 right-0 w-full h-1 bg-linear-to-l from-amber-300 to-transparent"></div>
+                <div className="absolute bottom-0 right-0 w-1 h-full bg-linear-to-t from-amber-300 to-transparent"></div>
                 <div className="absolute bottom-2 right-2 w-6 h-6 border-b-2 border-r-2 border-amber-400/60"></div>
                 <div
-                  className={`absolute bottom-0 right-0 w-3 h-3 bg-gradient-to-tl  group-hover:scale-125 transition-transform duration-300`}
+                  className={`absolute bottom-0 right-0 w-3 h-3 bg-linear-to-tl  group-hover:scale-125 transition-transform duration-300`}
                 ></div>
               </div>
 
               {/* Side Decorations */}
-              <div className="absolute top-1/2 left-0 transform -translate-y-1/2 w-2 h-16 bg-gradient-to-r from-amber-400/60 to-transparent"></div>
-              <div className="absolute top-1/2 right-0 transform -translate-y-1/2 w-2 h-16 bg-gradient-to-l from-amber-400/60 to-transparent"></div>
-              <div className="absolute top-0 left-1/2 transform -translate-x-1/2 h-2 w-16 bg-gradient-to-b from-amber-400/60 to-transparent"></div>
-              <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 h-2 w-16 bg-gradient-to-t from-amber-400/60 to-transparent"></div>
+              <div className="absolute top-1/2 left-0 transform -translate-y-1/2 w-2 h-16 bg-linear-to-r from-amber-400/60 to-transparent"></div>
+              <div className="absolute top-1/2 right-0 transform -translate-y-1/2 w-2 h-16 bg-linear-to-l from-amber-400/60 to-transparent"></div>
+              <div className="absolute top-0 left-1/2 transform -translate-x-1/2 h-2 w-16 bg-linear-to-b from-amber-400/60 to-transparent"></div>
+              <div className="absolute bottom-0 left-1/2 transform -translate-x-1/2 h-2 w-16 bg-linear-to-t from-amber-400/60 to-transparent"></div>
 
               {/* END BORDER DESIGNS */}
 
               {/* Game title */}
               <div className="flex items-center justify-center mb-6 w-full">
-                        <div className="flex-1 h-px bg-gradient-to-r from-transparent via-amber-500/50 to-transparent max-w-16"></div>
-                        <h3 className={`text-2xl text-yellow-400 font-bold text-center mx-4 bg-gradient-to-r bg-clip-text text-transparent group-hover:scale-105 transition-transform duration-300`} style={{
+                        <div className="flex-1 h-px bg-linear-to-r from-transparent via-amber-500/50 to-transparent max-w-16"></div>
+                        <h3 className={`text-2xl text-yellow-400 font-bold text-center mx-4 bg-linear-to-r bg-clip-text group-hover:scale-105 transition-transform duration-300`} style={{
                           textShadow: '0 0 5px rgba(251, 191, 36, 0.6)',
                         }}>
                           {gameName}
                         </h3>
-                        <div className="flex-1 h-px bg-gradient-to-l from-transparent via-amber-500/50 to-transparent max-w-16"></div>
+                        <div className="flex-1 h-px bg-linear-to-l from-transparent via-amber-500/50 to-transparent max-w-16"></div>
                       </div>
 
               {/* Center Icon/ View Rankings Icon */}
                       <div className="flex flex-col items-center justify-center text-amber-300 space-y-3 my-6">
                         <div className="relative">
                           <div className="absolute inset-0 bg-amber-400/20 blur-xl group-hover:bg-amber-400/40 transition-all duration-300"></div>
-                          <div className="relative w-16 h-16 border-2 border-amber-500/70 group-hover:border-amber-400 flex items-center justify-center transition-all duration-300 bg-gradient-to-br from-[#2a2f4a] to-[#1a1f3a]">
+                          <div className="relative w-16 h-16 border-2 border-amber-500/70 group-hover:border-amber-400 flex items-center justify-center transition-all duration-300 bg-linear-to-br from-[#2a2f4a] to-[#1a1f3a]">
                             <svg className="w-8 h-8 text-amber-400 group-hover:text-amber-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                             </svg>
@@ -479,7 +476,7 @@ const Leaderboard = ({ selectedCategory }: LeaderboardProps) => {
                     }`
                   }
                   style={{
-              backgroundImage: `linear-gradient(rgba(0,0,0,0.25), rgba(0,0,0,0.25)), url(${bg})`,
+              backgroundImage: `linear-gradient(rgba(0,0,0,0.10), rgba(0,0,0,0.10)), url(${bg})`,
               backgroundSize: "cover",
               backgroundPosition: "center",
             }}

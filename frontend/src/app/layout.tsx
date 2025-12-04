@@ -29,7 +29,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${genshin.variable} antialiased`}
+        className={`${genshin.variable} antialiased min-h-screen`}
       >
         <StarryBackground />
         <QueryProvider>

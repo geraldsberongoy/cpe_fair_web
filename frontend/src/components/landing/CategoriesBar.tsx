@@ -1,4 +1,6 @@
 import { useState } from "react";
+import Image from "next/image";
+import OverallLogo from "@/assets/images/logos/categories/overall.svg";
 import SportsLogo from "@/assets/images/logos/categories/sports.svg";
 import BoardLogo from "@/assets/images/logos/categories/boardgames.svg";
 import EsportsLogo from "@/assets/images/logos/categories/esports.svg";
@@ -21,7 +23,7 @@ const CategoriesBar = ({ selectedCategory, onSelect }: CategoriesBarProps) => {
   }[] = [
     {
       name: "Overall Ranking",
-      logo: SportsLogo.src,
+      logo: OverallLogo.src,
       value: "Overall",
     },
     {
@@ -56,15 +58,8 @@ const CategoriesBar = ({ selectedCategory, onSelect }: CategoriesBarProps) => {
     },
   ];
 
-  return (
-    <div className="text-white flex flex-wrap justify-center gap-6 px-2 py-4">
-      {categories.map((category, index) => (
-        <button
-          key={index}
           onClick={() => onSelect(category.value)}
           className={`w-35 flex justify-center items-center flex-col transition-all duration-300 ${
-            selectedCategory === category.value
-              ? "hover:drop-shadow-[0_0_1px_rgb(255,215,50)] drop-shadow-[0_0_1px_rgb(250,215,50)]" 
               : "opacity-50 hover:opacity-100"
           }`}
           style={{
@@ -73,7 +68,7 @@ const CategoriesBar = ({ selectedCategory, onSelect }: CategoriesBarProps) => {
             backgroundPosition: "center -20px",
           }}
         >
-          {category.logo && <img src={category.logo} alt={category.name} />}
+          {category.logo && <img src={category.logo} alt={category.name} loading="lazy" />}
           <span className="text-center">{category.name}</span>
         </button>
       ))}
