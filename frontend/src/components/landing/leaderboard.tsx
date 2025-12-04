@@ -446,7 +446,7 @@ const Leaderboard = ({ selectedCategory }: LeaderboardProps) => {
   const teams = categoryStandings[selectedGame] || [];
 
   return (
-    <div className="w-full px-4">
+    <div className="w-full px-4 mb-6">
       <button
         onClick={() => setSelectedGame(null)}
         className="flex items-center gap-2 text-white/80 hover:text-white mb-6 transition-colors"
