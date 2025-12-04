@@ -1,14 +1,6 @@
-import api from './api';
+import api from "./api";
 import { GameCategory } from "../types/game";
-
-export interface Score {
-  id: number;
-  team_id: string;
-  game: string;
-  points: number;
-  details: any;
-  created_at: string;
-}
+import { Score, CreateScoreDto, UpdateScoreDto } from "../types/score";
 
 export interface SectionTeamScoreResponse {
   section_team: string;
@@ -40,12 +32,15 @@ export const scoreService = {
   /**
    * Get all scores with pagination
    */
-  getAllScores: async (page: number = 1, limit: number = 10): Promise<PaginatedResponse<Score>> => {
+  getAllScores: async (
+    page: number = 1,
+    limit: number = 10
+  ): Promise<PaginatedResponse<Score>> => {
     try {
-      const response = await api.get('/score', { params: { page, limit } });
+      const response = await api.get("/score", { params: { page, limit } });
       return response.data;
     } catch (error) {
-      console.error('Failed to fetch scores:', error);
+      console.error("Failed to fetch scores:", error);
       return { data: [], meta: { total: 0, page, limit, totalPages: 0 } };
     }
   },
@@ -55,10 +50,10 @@ export const scoreService = {
    */
   getAggregatedScores: async (): Promise<SectionTeamScoreResponse[]> => {
     try {
-      const response = await api.get('/score/section_team');
+      const response = await api.get("/score/section_team");
       return response.data;
     } catch (error) {
-      console.error('Failed to fetch aggregated scores:', error);
+      console.error("Failed to fetch aggregated scores:", error);
       return [];
     }
   },
@@ -67,7 +62,9 @@ export const scoreService = {
    * Get scores for a specific section team
    * @param sectionTeam The section team identifier (e.g., "Fontaine")
    */
-  getScoresBySectionTeam: async (sectionTeam: string): Promise<SectionTeamScoreResponse | null> => {
+  getScoresBySectionTeam: async (
+    sectionTeam: string
+  ): Promise<SectionTeamScoreResponse | null> => {
     try {
       const response = await api.get(`/score/section_team/${sectionTeam}`);
       return response.data;
@@ -81,10 +78,12 @@ export const scoreService = {
    * Get category standings
    * @param category The category to filter by (e.g., "Sports")
    */
-  getCategoryStandings: async (category: string): Promise<CategoryStandings | null> => {
+  getCategoryStandings: async (
+    category: string
+  ): Promise<CategoryStandings | null> => {
     try {
       const response = await api.get(`/score/category-standings`, {
-        params: { category }
+        params: { category },
       });
       return response.data;
     } catch (error) {
@@ -96,12 +95,12 @@ export const scoreService = {
   /**
    * Create a new score log
    */
-  createScore: async (data: any): Promise<Score | null> => {
+  createScore: async (data: CreateScoreDto): Promise<Score | null> => {
     try {
-      const response = await api.post('/score', data);
+      const response = await api.post("/score", data);
       return response.data;
     } catch (error) {
-      console.error('Failed to create score:', error);
+      console.error("Failed to create score:", error);
       throw error;
     }
   },
@@ -109,12 +108,15 @@ export const scoreService = {
   /**
    * Update an existing score log
    */
-  updateScore: async (id: string | number, data: any): Promise<Score | null> => {
+  updateScore: async (
+    id: string | number,
+    data: UpdateScoreDto
+  ): Promise<Score | null> => {
     try {
       const response = await api.put(`/score/${id}`, data);
       return response.data;
     } catch (error) {
-      console.error('Failed to update score:', error);
+      console.error("Failed to update score:", error);
       throw error;
     }
   },
@@ -126,9 +128,8 @@ export const scoreService = {
     try {
       await api.delete(`/score/${id}`);
     } catch (error) {
-      console.error('Failed to delete score:', error);
+      console.error("Failed to delete score:", error);
       throw error;
     }
-  }
+  },
 };
-
