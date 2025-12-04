@@ -81,6 +81,44 @@ export const scoreService = {
       console.error(`Failed to fetch standings for ${category}:`, error);
       return null;
     }
+  },
+
+  /**
+   * Create a new score log
+   */
+  createScore: async (data: any): Promise<Score | null> => {
+    try {
+      const response = await api.post('/score', data);
+      return response.data;
+    } catch (error) {
+      console.error('Failed to create score:', error);
+      throw error;
+    }
+  },
+
+  /**
+   * Update an existing score log
+   */
+  updateScore: async (id: string | number, data: any): Promise<Score | null> => {
+    try {
+      const response = await api.put(`/score/${id}`, data);
+      return response.data;
+    } catch (error) {
+      console.error('Failed to update score:', error);
+      throw error;
+    }
+  },
+
+  /**
+   * Delete a score log
+   */
+  deleteScore: async (id: string | number): Promise<void> => {
+    try {
+      await api.delete(`/score/${id}`);
+    } catch (error) {
+      console.error('Failed to delete score:', error);
+      throw error;
+    }
   }
 };
 

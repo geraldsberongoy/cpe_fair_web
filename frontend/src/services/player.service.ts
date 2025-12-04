@@ -8,6 +8,7 @@ export interface Player {
   team?: {
     name: string;
     color?: string;
+    section_represented?: string;
   };
 }
 
@@ -20,6 +21,16 @@ export const playerService = {
     } catch (error) {
       console.error('Failed to fetch players:', error);
       return [];
+    }
+  },
+
+  createPlayer: async (data: Partial<Player>): Promise<Player | null> => {
+    try {
+      const response = await api.post('/player', data);
+      return response.data;
+    } catch (error) {
+      console.error('Failed to create player:', error);
+      throw error;
     }
   }
 };

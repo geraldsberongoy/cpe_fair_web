@@ -6,15 +6,29 @@ import type { Game, CreateGameDto, UpdateGameDto } from "../types/game.js";
 // GET /api/game - List all games (Public)
 export const getGames = async (req: Request, res: Response) => {
   try {
-    const { category } = req.query;
+    const { category, sortBy, order, isGroup } = req.query;
 
     let query = supabase
       .from("game")
-      .select("*")
-      .order("name", { ascending: true });
+      .select("*");
 
     if (category && typeof category === 'string') {
       query = query.eq("category", category);
+    }
+
+    if (isGroup !== undefined && isGroup !== null) {
+      const isGroupBool = String(isGroup).toLowerCase() === 'true';
+      query = query.eq("is_group", isGroupBool);
+    }
+
+    const isDesc = typeof order === 'string' && order.toLowerCase() === 'desc';
+
+    if (sortBy === 'category') {
+      query = query.order('category', { ascending: !isDesc })
+                   .order('name', { ascending: true });
+    } else {
+      // Default to name
+      query = query.order('name', { ascending: !isDesc });
     }
 
     const { data, error } = await query.returns<Game[]>();

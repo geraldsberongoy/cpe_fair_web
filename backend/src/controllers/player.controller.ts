@@ -12,7 +12,7 @@ export const getPlayers = async (req: Request, res: Response) => {
       .from("player")
       .select(`
         *,
-        team:team_id ( name )
+        team:team_id ( name, section_represented )
       `)
       .order("full_name", { ascending: true });
 
@@ -53,7 +53,7 @@ export const getPlayerById = async (
       .from("player")
       .select(`
         *,
-        team:team_id ( name )
+        team:team_id ( name, section_represented )
       `)
       .eq("id", id)
       .single();
@@ -82,7 +82,10 @@ export const createPlayer = async (
     const { data, error } = await supabase
       .from("player")
       .insert([{ full_name, cys, team_id }])
-      .select()
+      .select(`
+        *,
+        team:team_id ( name, section_represented )
+      `)
       .single();
 
     if (error) throw error;
@@ -106,7 +109,10 @@ export const updatePlayer = async (
       .from("player")
       .update({ full_name, cys, team_id })
       .eq("id", id)
-      .select()
+      .select(`
+        *,
+        team:team_id ( name, section_represented )
+      `)
       .single();
 
     if (error) throw error;

@@ -9,7 +9,7 @@ export const getTeams = async (req: Request, res: Response) => {
     const { data, error } = await supabase
       .from("team")
       .select("*")
-      .order("name", { ascending: true })
+      .order("section_represented", { ascending: true })
       .returns<Team[]>();
 
     if (error) throw error;
@@ -42,7 +42,7 @@ export const createTeam = async (
   req: Request<{}, {}, CreateTeamDto>, 
   res: Response
 ) => {
-  const { name, color } = req.body;
+  const { name } = req.body;
 
   if (!name) {
     return res.status(400).json({ error: "Team name is required" });
@@ -51,7 +51,7 @@ export const createTeam = async (
   try {
     const { data, error } = await supabase
       .from("team")
-      .insert([{ name, color }])
+      .insert([{ name }])
       .select()
       .single();
 
@@ -72,12 +72,12 @@ export const updateTeam = async (
   res: Response
 ) => {
   const { id } = req.params;
-  const { name, color } = req.body;
+  const { name } = req.body;
 
   try {
     const { data, error } = await supabase
       .from("team")
-      .update({ name, color })
+      .update({ name })
       .eq("id", id)
       .select()
       .single();
