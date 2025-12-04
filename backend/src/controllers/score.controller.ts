@@ -6,7 +6,12 @@ import type { Score, CreateScoreDto, UpdateScoreDto } from "../types/score.js";
 // -------------------- GET ALL SCORES (Feed) --------------------
 export const getScores = async (req: Request, res: Response) => {
   try {
-    const { type, category } = req.query;
+    const { type, category, page, limit } = req.query;
+
+    const pageInt = page ? parseInt(page as string) : 1;
+    const limitInt = limit ? parseInt(limit as string) : 10;
+    const from = (pageInt - 1) * limitInt;
+    const to = from + limitInt - 1;
 
     let query = supabase
       .from("score")
@@ -18,9 +23,10 @@ export const getScores = async (req: Request, res: Response) => {
         details,
         created_at,
         team:team_id ( name ) 
-      `)
+      `, { count: 'exact' })
       .is("deleted_at", null)
-      .order("created_at", { ascending: false });
+      .order("created_at", { ascending: false })
+      .range(from, to);
 
     if (type === "solo") {
       query = query.eq("details->>is_group", "false");
@@ -32,7 +38,7 @@ export const getScores = async (req: Request, res: Response) => {
       query = query.eq("category", category);
     }
 
-    const { data, error } = await query;
+    const { data, error, count } = await query;
 
     if (error) {
       logger.error("Failed to fetch scores", error);
@@ -52,7 +58,15 @@ export const getScores = async (req: Request, res: Response) => {
       createdAt: score.created_at
     }));
 
-    res.status(200).json(formattedData);
+    res.status(200).json({
+      data: formattedData,
+      meta: {
+        total: count,
+        page: pageInt,
+        limit: limitInt,
+        totalPages: count ? Math.ceil(count / limitInt) : 0
+      }
+    });
   } catch (err: any) {
     logger.error("Unexpected error in getScores", err);
     res.status(500).json({ error: "Internal server error" });

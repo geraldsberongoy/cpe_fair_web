@@ -1,4 +1,4 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient, keepPreviousData } from "@tanstack/react-query";
 import { scoreService, SectionTeamScoreResponse, Score } from "../services/score.service";
 
 export const SCORE_KEYS = {
@@ -9,10 +9,11 @@ export const SCORE_KEYS = {
 
 };
 
-export const useScores = () => {
+export const useScores = (page: number = 1, limit: number = 10) => {
   return useQuery({
-    queryKey: SCORE_KEYS.all,
-    queryFn: scoreService.getAllScores,
+    queryKey: [...SCORE_KEYS.all, page, limit],
+    queryFn: () => scoreService.getAllScores(page, limit),
+    placeholderData: keepPreviousData,
   });
 };
 
