@@ -23,11 +23,13 @@ export const playerService = {
   getPlayers: async (
     page: number = 1,
     limit: number = 10,
-    teamName?: string
+    teamName?: string,
+    search?: string
   ): Promise<PlayersResponse> => {
     try {
       const params: any = { page, limit };
       if (teamName) params.team_name = teamName;
+      if (search) params.search = search;
       const response = await api.get("/player", { params });
 
       return {

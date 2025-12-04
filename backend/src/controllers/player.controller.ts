@@ -10,7 +10,7 @@ import type {
 // GET /api/player
 export const getPlayers = async (req: Request, res: Response) => {
   try {
-    const { team_name, page = 1, limit = 10 } = req.query;
+    const { team_name, search, page = 1, limit = 10 } = req.query;
     const pageNum = Math.max(1, parseInt(page as string) || 1);
     const limitNum = Math.max(1, parseInt(limit as string) || 10);
     const offset = (pageNum - 1) * limitNum;
@@ -27,15 +27,21 @@ export const getPlayers = async (req: Request, res: Response) => {
       .order("full_name", { ascending: true })
       .range(offset, offset + limitNum - 1);
 
+    // Filter by search query (name or CYS)
+    if (search && typeof search === "string") {
+      const searchTerm = `%${search}%`;
+      countQuery = countQuery.or(`full_name.ilike.${searchTerm},cys.ilike.${searchTerm}`);
+      dataQuery = dataQuery.or(`full_name.ilike.${searchTerm},cys.ilike.${searchTerm}`);
+    }
+
     if (team_name && typeof team_name === "string") {
-      // First find the team ID
+      // Find teams by section_represented
       const { data: teamData, error: teamError } = await supabase
         .from("team")
         .select("id")
-        .eq("name", team_name)
-        .single();
+        .eq("section_represented", team_name);
 
-      if (teamError || !teamData) {
+      if (teamError || !teamData || teamData.length === 0) {
         // If team not found, return empty list
         return res.json({
           data: [],
@@ -43,8 +49,11 @@ export const getPlayers = async (req: Request, res: Response) => {
         });
       }
 
-      countQuery = countQuery.eq("team_id", teamData.id);
-      dataQuery = dataQuery.eq("team_id", teamData.id);
+      // Get all team IDs that match this section_represented
+      const teamIds = teamData.map((team) => team.id);
+
+      countQuery = countQuery.in("team_id", teamIds);
+      dataQuery = dataQuery.in("team_id", teamIds);
     }
 
     const { count } = await countQuery;
