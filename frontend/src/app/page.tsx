@@ -6,6 +6,7 @@ import MainLogo from "@/assets/images/logos/archons_logo.svg";
 import CategoriesBar from "@/components/landing/CategoriesBar";
 import Leaderboard from "@/components/landing/leaderboard";
 import MainLogoArchon from "@/components/MainLogo";
+import Footer from "@/components/Footer";
 
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -32,17 +33,22 @@ export default function Home() {
         theme="dark"
       />
 
-      {/* Main Logo */}
-      <MainLogoArchon />
+      <div className="min-h-screen flex flex-col items-center w-full">
+        {/* Main Logo */}
+        <MainLogoArchon />
 
-      <div className="w-full flex flex-col gap-4">
-        <CategoriesBar
-          selectedCategory={selectedCategory}
-          onSelect={setSelectedCategory}
-        />
+        <div className="w-full flex flex-col gap-4">
+          <CategoriesBar
+            selectedCategory={selectedCategory}
+            onSelect={setSelectedCategory}
+          />
 
-        <Leaderboard selectedCategory={selectedCategory} />
+          <Leaderboard selectedCategory={selectedCategory} />
+        </div>
       </div>
+
+      <Footer />
     </div>
   );
+  
 }
