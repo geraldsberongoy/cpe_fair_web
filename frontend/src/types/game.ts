@@ -5,6 +5,7 @@ export interface Game {
   name: string;
   is_group: boolean; // true = requires party members
   category: GameCategory;
+  details: string;
   created_at: string;
 }
 
