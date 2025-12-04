@@ -26,17 +26,27 @@ export interface CategoryStandings {
   }[];
 }
 
+export interface PaginatedResponse<T> {
+  data: T[];
+  meta: {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+  };
+}
+
 export const scoreService = {
   /**
-   * Get all scores
+   * Get all scores with pagination
    */
-  getAllScores: async (): Promise<Score[]> => {
+  getAllScores: async (page: number = 1, limit: number = 10): Promise<PaginatedResponse<Score>> => {
     try {
-      const response = await api.get('/score');
+      const response = await api.get('/score', { params: { page, limit } });
       return response.data;
     } catch (error) {
       console.error('Failed to fetch scores:', error);
-      return [];
+      return { data: [], meta: { total: 0, page, limit, totalPages: 0 } };
     }
   },
 
