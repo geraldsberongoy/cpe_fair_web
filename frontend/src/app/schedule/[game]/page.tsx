@@ -18,7 +18,7 @@ export default async function SchedulePage({ params }: SchedulePageProps) {
       <MainLogoArchon />
 
       <div className="text-white w-screen px-10 mb-10">
-        <div className="bg-white/10 p-6 rounded-3xl shadow-[0_0_5px_rgb(255,255,255)]">
+        <div className="bg-white/10 py-6 rounded-3xl shadow-[0_0_5px_rgb(255,255,255)]">
           <div className="text-white flex flex-col items-center drop-shadow-[0_0_1px_rgb(0,0,0)] gap-1 border-b border-white/30">
             <h1 className="text-3xl">Official Schedule</h1>
             <h2 className="text-2xl pb-2">{MOCK_DATA?.game}</h2>

@@ -5,6 +5,8 @@ import "react-toastify/dist/ReactToastify.css";
 import "./globals.css";
 import QueryProvider from "../providers/QueryProvider";
 
+import StarryBackground from "@/components/StarryBackground";
+
 const genshin = localFont({
   src: "../assets/fonts/Genshin-Font.ttf",
   variable: "--font-genshin",
@@ -29,6 +31,7 @@ export default function RootLayout({
       <body
         className={`${genshin.variable} antialiased`}
       >
+        <StarryBackground />
         <QueryProvider>
           {children}
           <ToastContainer
