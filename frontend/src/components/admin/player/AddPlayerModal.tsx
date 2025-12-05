@@ -10,10 +10,27 @@ import BaseModal from "@/components/ui/base-modal";
 
 interface AddPlayerModalProps {
   trigger?: React.ReactNode;
+  isOpen?: boolean;
+  onClose?: () => void;
 }
 
-export default function AddPlayerModal({ trigger }: AddPlayerModalProps) {
-  const [open, setOpen] = useState(false);
+export default function AddPlayerModal({
+  trigger,
+  isOpen: externalIsOpen,
+  onClose: externalOnClose,
+}: AddPlayerModalProps) {
+  const [internalOpen, setInternalOpen] = useState(false);
+
+  const isControlled = externalIsOpen !== undefined;
+  const open = isControlled ? externalIsOpen : internalOpen;
+
+  const handleClose = () => {
+    if (isControlled) {
+      externalOnClose?.();
+    } else {
+      setInternalOpen(false);
+    }
+  };
   const { data: teams = [], isLoading: teamsLoading } = useTeams();
   const createPlayerMutation = useCreatePlayer();
 
@@ -64,7 +81,7 @@ export default function AddPlayerModal({ trigger }: AddPlayerModalProps) {
             cys: "",
             teamId: teams[0]?.id || "",
           });
-          setOpen(false);
+          handleClose();
           toast.success("Player added successfully!");
         },
         onError: (err) => {
@@ -77,18 +94,19 @@ export default function AddPlayerModal({ trigger }: AddPlayerModalProps) {
 
   return (
     <>
-      {trigger || (
-        <button
-          onClick={() => setOpen(true)}
-          className="w-full py-3 px-4 bg-[#2d3042] hover:bg-[#3b3f54] text-[#ece5d8] rounded-xl font-bold text-xs uppercase tracking-wide border border-[#3b3f54] transition-colors shadow-lg"
-        >
-          Add Player
-        </button>
-      )}
+      {!isControlled &&
+        (trigger || (
+          <button
+            onClick={() => setInternalOpen(true)}
+            className="w-full py-3 px-4 bg-[#2d3042] hover:bg-[#3b3f54] text-[#ece5d8] rounded-xl font-bold text-xs uppercase tracking-wide border border-[#3b3f54] transition-colors shadow-lg"
+          >
+            Add Player
+          </button>
+        ))}
 
       <BaseModal
         isOpen={open}
-        onClose={() => setOpen(false)}
+        onClose={handleClose}
         title="Add Player"
         icon={UserPlus}
         maxWidth="md"
@@ -121,7 +139,7 @@ export default function AddPlayerModal({ trigger }: AddPlayerModalProps) {
               onChange={(e) =>
                 setFormData({ ...formData, cys: e.target.value })
               }
-              placeholder="e.g., BSCS-3A"
+              placeholder="e.g., BSCPE 3-4"
               className="w-full bg-[#0c0e16] border border-[#3b3f54] rounded-lg p-3 text-[#ece5d8] placeholder:text-[#4f5364] focus:border-[#d3bc8e] outline-none transition-colors"
             />
           </div>

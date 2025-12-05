@@ -12,6 +12,7 @@ export default function RegistryPage() {
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
   const [teamFilter, setTeamFilter] = useState<string>("All");
   const [searchQuery, setSearchQuery] = useState<string>("");
+  const [isAddPlayerModalOpen, setIsAddPlayerModalOpen] = useState(false);
   
   const { data: teams = [] } = useTeams();
 
@@ -79,12 +80,15 @@ export default function RegistryPage() {
 
           {/* Add Player Button */}
           <div className="w-48">
+            <button
+              onClick={() => setIsAddPlayerModalOpen(true)}
+              className="w-full bg-[#d3bc8e] text-[#1e2130] font-bold py-1.5 px-4 rounded-lg hover:bg-[#e6cfa3] transition-all shadow-lg"
+            >
+              Add Player
+            </button>
             <AddPlayerModal
-              trigger={
-                <button className="w-full bg-[#d3bc8e] text-[#1e2130] font-bold py-1.5 px-4 rounded-lg hover:bg-[#e6cfa3] transition-all shadow-lg">
-                  Add Player
-                </button>
-              }
+              isOpen={isAddPlayerModalOpen}
+              onClose={() => setIsAddPlayerModalOpen(false)}
             />
           </div>
         </div>
