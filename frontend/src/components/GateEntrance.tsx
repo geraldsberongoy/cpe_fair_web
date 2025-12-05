@@ -31,18 +31,18 @@ const GateEntrance: React.FC<GateEntranceProps> = ({
       sessionStorage.setItem("gateEntranceShown", "true");
     }
 
-    // Start opening after a brief delay
+    // Start opening after a brief delay for smooth entrance
     const startTimer = setTimeout(() => {
       setIsOpening(true);
-    }, 800);
+    }, 1200);
 
-    // Complete the animation
+    // Complete the animation with extra time for smooth exit
     const completeTimer = setTimeout(() => {
       setIsComplete(true);
       if (onComplete) {
         onComplete();
       }
-    }, 3500);
+    }, 4200);
 
     return () => {
       clearTimeout(startTimer);
@@ -56,7 +56,7 @@ const GateEntrance: React.FC<GateEntranceProps> = ({
     <div className="fixed inset-0 z-[9999] overflow-hidden pointer-events-none">
       {/* Mystical Glow Background */}
       <div
-        className={`absolute inset-0 bg-gradient-radial from-[#d3bc8e]/20 via-transparent to-transparent transition-opacity duration-1000 ${
+        className={`absolute inset-0 bg-gradient-radial from-[#d3bc8e]/20 via-transparent to-transparent transition-opacity duration-[1500ms] ease-out ${
           isOpening ? "opacity-0" : "opacity-100"
         }`}
       />
@@ -66,14 +66,14 @@ const GateEntrance: React.FC<GateEntranceProps> = ({
         {[...Array(4)].map((_, i) => (
           <div
             key={i}
-            className={`absolute rounded-full border-2 border-[#d3bc8e] transition-all duration-1000 ${
-              isOpening ? "opacity-0" : "opacity-60"
+            className={`absolute rounded-full border-2 border-[#d3bc8e] transition-all duration-[1500ms] ease-in-out ${
+              isOpening ? "opacity-0 scale-150" : "opacity-60 scale-100"
             }`}
             style={{
               width: `${100 + i * 100}px`,
               height: `${100 + i * 100}px`,
-              animation: `pulse-ring ${2 + i * 0.5}s ease-out infinite`,
-              animationDelay: `${i * 0.2}s`,
+              animation: `pulse-ring ${2.5 + i * 0.5}s ease-in-out infinite`,
+              animationDelay: `${i * 0.3}s`,
             }}
           />
         ))}
@@ -82,8 +82,8 @@ const GateEntrance: React.FC<GateEntranceProps> = ({
       {/* Center Glow Effect */}
       <div className="absolute inset-0 flex items-center justify-center">
         <div
-          className={`w-96 h-96 bg-[#d3bc8e]/30 rounded-full blur-[100px] transition-all duration-1000 ${
-            isOpening ? "scale-[3] opacity-0" : "scale-100 opacity-100"
+          className={`w-96 h-96 bg-[#d3bc8e]/30 rounded-full blur-[120px] transition-all duration-[2000ms] ease-out ${
+            isOpening ? "scale-[4] opacity-0" : "scale-100 opacity-100"
           }`}
         />
       </div>
@@ -93,13 +93,13 @@ const GateEntrance: React.FC<GateEntranceProps> = ({
         {[...Array(12)].map((_, i) => (
           <div
             key={i}
-            className={`absolute w-1 h-full bg-gradient-to-t from-transparent via-[#f0e6d2]/20 to-transparent transition-all duration-1000 ${
-              isOpening ? "opacity-0 scale-y-150" : "opacity-100 scale-y-100"
+            className={`absolute w-1 h-full bg-gradient-to-t from-transparent via-[#f0e6d2]/20 to-transparent transition-all duration-[1800ms] ease-out ${
+              isOpening ? "opacity-0 scale-y-[2]" : "opacity-100 scale-y-100"
             }`}
             style={{
               transform: `rotate(${i * 30}deg)`,
               transformOrigin: "center",
-              transitionDelay: `${i * 50}ms`,
+              transitionDelay: `${i * 40}ms`,
             }}
           />
         ))}
@@ -107,11 +107,12 @@ const GateEntrance: React.FC<GateEntranceProps> = ({
 
       {/* Left Gate */}
       <div
-        className={`absolute top-0 left-0 h-full w-1/2 transition-all duration-[1.5s] ease-in-out ${
-          isOpening ? "-translate-x-full" : "translate-x-0"
+        className={`absolute top-0 left-0 h-full w-1/2 transition-all duration-[2000ms] ${
+          isOpening ? "-translate-x-full opacity-0" : "translate-x-0 opacity-100"
         }`}
         style={{
-          transitionTimingFunction: "cubic-bezier(0.68, -0.55, 0.265, 1.55)",
+          transitionTimingFunction: "cubic-bezier(0.76, 0, 0.24, 1)",
+          transitionDelay: isOpening ? "200ms" : "0ms",
         }}
       >
         {/* Left Gate Cloud */}
@@ -135,7 +136,7 @@ const GateEntrance: React.FC<GateEntranceProps> = ({
           <div 
             className="absolute inset-0 bg-gradient-to-l from-[#d3bc8e]/10 to-transparent"
             style={{
-              animation: "energy-flow 2s ease-in-out infinite",
+              animation: "energy-flow 3s ease-in-out infinite",
             }}
           />
           
@@ -171,11 +172,12 @@ const GateEntrance: React.FC<GateEntranceProps> = ({
 
       {/* Right Gate */}
       <div
-        className={`absolute top-0 right-0 h-full w-1/2 transition-all duration-[1.5s] ease-in-out ${
-          isOpening ? "translate-x-full" : "translate-x-0"
+        className={`absolute top-0 right-0 h-full w-1/2 transition-all duration-[2000ms] ${
+          isOpening ? "translate-x-full opacity-0" : "translate-x-0 opacity-100"
         }`}
         style={{
-          transitionTimingFunction: "cubic-bezier(0.68, -0.55, 0.265, 1.55)",
+          transitionTimingFunction: "cubic-bezier(0.76, 0, 0.24, 1)",
+          transitionDelay: isOpening ? "200ms" : "0ms",
         }}
       >
         {/* Right Gate Cloud */}
@@ -199,7 +201,7 @@ const GateEntrance: React.FC<GateEntranceProps> = ({
           <div 
             className="absolute inset-0 bg-gradient-to-r from-[#d3bc8e]/10 to-transparent"
             style={{
-              animation: "energy-flow 2s ease-in-out infinite",
+              animation: "energy-flow 3s ease-in-out infinite",
             }}
           />
           
@@ -236,13 +238,13 @@ const GateEntrance: React.FC<GateEntranceProps> = ({
       {/* Welcome Text */}
       <div className="absolute top-[35%] left-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
         <div
-          className={`text-center transition-all duration-700 ${
+          className={`text-center transition-all duration-[1000ms] ease-out ${
             isOpening
-              ? "opacity-0 translate-y-10"
-              : "opacity-100 translate-y-0"
+              ? "opacity-0 translate-y-10 scale-95"
+              : "opacity-100 translate-y-0 scale-100"
           }`}
           style={{
-            transitionDelay: "200ms",
+            transitionDelay: isOpening ? "0ms" : "300ms",
           }}
         >
           <h1 
@@ -268,15 +270,18 @@ const GateEntrance: React.FC<GateEntranceProps> = ({
       {/* Center Emblem */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10">
         <div
-          className={`relative transition-all duration-1000 ${
+          className={`relative transition-all duration-[1500ms] ease-in-out ${
             isOpening
-              ? "scale-150 opacity-0 rotate-180"
+              ? "scale-[2] opacity-0 rotate-[360deg]"
               : "scale-100 opacity-100 rotate-0"
           }`}
+          style={{
+            transitionDelay: isOpening ? "100ms" : "400ms",
+          }}
         >
           {/* Outer Ring */}
           <div className="w-32 h-32 rounded-full border-4 border-[#d3bc8e] relative animate-spin-slow"
-            style={{ animation: "spin 4s linear infinite" }}
+            style={{ animation: "spin 6s linear infinite" }}
           >
             {/* Inner Glow */}
             <div className="absolute inset-2 rounded-full bg-gradient-to-br from-[#f0e6d2]/30 to-[#d3bc8e]/10 blur-sm" />
@@ -303,8 +308,8 @@ const GateEntrance: React.FC<GateEntranceProps> = ({
               key={i}
               className="absolute top-1/2 left-1/2 w-2 h-2 -ml-1 -mt-1 rounded-full bg-[#f0e6d2]"
               style={{
-                animation: `orbit 2s linear infinite`,
-                animationDelay: `${i * 0.3}s`,
+                animation: `orbit 3s ease-in-out infinite`,
+                animationDelay: `${i * 0.5}s`,
                 boxShadow: "0 0 10px rgba(240, 230, 210, 0.8)",
               }}
             />
@@ -317,25 +322,29 @@ const GateEntrance: React.FC<GateEntranceProps> = ({
         {[...Array(30)].map((_, i) => (
           <div
             key={i}
-            className={`absolute w-1 h-1 bg-[#f0e6d2] rounded-full transition-all duration-1000 ${
-              isOpening ? "opacity-0 scale-0" : "opacity-70"
+            className={`absolute w-1 h-1 bg-[#f0e6d2] rounded-full transition-all duration-[1500ms] ease-out ${
+              isOpening ? "opacity-0 scale-0" : "opacity-70 scale-100"
             }`}
             style={{
               left: `${Math.random() * 100}%`,
               top: `${Math.random() * 100}%`,
-              animation: `float ${2 + Math.random() * 3}s ease-in-out infinite`,
+              animation: `float ${3 + Math.random() * 3}s ease-in-out infinite`,
               animationDelay: `${Math.random() * 2}s`,
               boxShadow: "0 0 5px rgba(240, 230, 210, 0.6)",
+              transitionDelay: isOpening ? `${Math.random() * 300}ms` : `${200 + Math.random() * 400}ms`,
             }}
           />
         ))}
       </div>
 
-      {/* Fade Overlay */}
+      {/* Fade Overlay - smooth fade out at the end */}
       <div
-        className={`absolute inset-0 bg-black transition-opacity duration-700 ${
+        className={`absolute inset-0 bg-black transition-opacity duration-[800ms] ease-in ${
           isOpening ? "opacity-0" : "opacity-0"
         }`}
+        style={{
+          transitionDelay: isOpening ? "1200ms" : "0ms",
+        }}
       />
 
       {/* Custom Animations */}
@@ -369,24 +378,24 @@ const GateEntrance: React.FC<GateEntranceProps> = ({
         
         @keyframes pulse-ring {
           0% {
-            transform: scale(0.8);
+            transform: scale(0.85);
             opacity: 0;
           }
-          50% {
-            opacity: 0.6;
+          40% {
+            opacity: 0.7;
           }
           100% {
-            transform: scale(1.5);
+            transform: scale(1.8);
             opacity: 0;
           }
         }
         
         @keyframes energy-flow {
           0%, 100% {
-            opacity: 0.1;
+            opacity: 0.05;
           }
           50% {
-            opacity: 0.3;
+            opacity: 0.25;
           }
         }
       `}</style>
