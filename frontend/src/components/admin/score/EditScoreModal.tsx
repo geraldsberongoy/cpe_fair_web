@@ -53,7 +53,7 @@ export default function EditScoreModal({
       ) : (
         <button
           onClick={() => setOpen(true)}
-          className="p-1.5 hover:bg-[#3b3f54] rounded text-[#d3bc8e] transition-all"
+          className="p-1.5 cursor-pointer hover:bg-[#3b3f54] rounded text-[#d3bc8e] transition-all"
           title="Edit score"
         >
           <Edit2 size={14} />

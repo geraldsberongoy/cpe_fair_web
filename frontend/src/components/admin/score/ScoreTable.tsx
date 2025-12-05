@@ -132,7 +132,7 @@ export default function ScoreTable() {
                   }
                 }}
                 disabled={deleteScore.isPending}
-                className="p-1.5 hover:bg-[#3b3f54] disabled:opacity-50 rounded text-red-400 transition-all"
+                className="p-1.5 cursor-pointer hover:bg-[#3b3f54] disabled:opacity-50 rounded text-red-400 transition-all"
                 title="Delete score"
               >
                 <Trash2 size={14} />

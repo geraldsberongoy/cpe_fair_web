@@ -8,6 +8,7 @@ import {
   useDeleteGame,
 } from "@/hooks/useGame";
 import { Plus, ArrowUpDown, Filter } from "lucide-react";
+import { toast } from "react-toastify";
 import GameModal from "@/components/admin/GameModal";
 import GameCard from "@/components/admin/GameCard";
 import QuickScoreModal from "@/components/admin/games/QuickScoreModal";
@@ -55,11 +56,12 @@ export default function GamesPage() {
       } else {
         await createGameMutation.mutateAsync(data);
       }
+      toast.success(editingGame ? "Game updated successfully" : "Game created successfully");
       setIsModalOpen(false);
       setEditingGame(null);
     } catch (error) {
       console.error("Failed to save game:", error);
-      alert("Failed to save game");
+      toast.error("Failed to save game");
     }
   };
 
@@ -72,8 +74,10 @@ export default function GamesPage() {
     if (confirm("Are you sure you want to delete this game?")) {
       try {
         await deleteGameMutation.mutateAsync(id);
+        toast.success("Game deleted successfully");
       } catch (error) {
         console.error("Failed to delete game:", error);
+        toast.error("Failed to delete game");
       }
     }
   };
@@ -140,7 +144,7 @@ export default function GamesPage() {
 
           <button
             onClick={toggleOrder}
-            className="p-1.5 hover:bg-[#d3bc8e]/10 rounded-md transition-colors text-[#d3bc8e] flex items-center gap-1 text-xs font-medium uppercase"
+            className="p-1.5 cursor-pointer hover:bg-[#d3bc8e]/10 rounded-md transition-colors text-[#d3bc8e] flex items-center gap-1 text-xs font-medium uppercase"
           >
             {sortOrder}
             <ArrowUpDown size={14} />

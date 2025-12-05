@@ -136,7 +136,7 @@ export default function LogScoreModal({
         (trigger || (
           <button
             onClick={() => setInternalOpen(true)}
-            className="w-full bg-[#d3bc8e] text-[#1e2130] font-bold py-3 px-4 rounded-lg hover:bg-[#e6cfa3] transition-all shadow-lg"
+            className="w-full cursor-pointer bg-[#d3bc8e] text-[#1e2130] font-bold py-3 px-4 rounded-lg hover:bg-[#e6cfa3] transition-all shadow-lg"
           >
             Log Score
           </button>
