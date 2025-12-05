@@ -15,7 +15,28 @@ import authRoutes from "./routes/auth.routes.js";
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-app.use(cors());
+// Define allowed origins
+const allowedOrigins = [
+  "http://localhost:3000", // Local development
+  "https://cpe-fair-web-fe.vercel.app", // Your production Frontend URL
+];
+
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      // Allow requests with no origin (like mobile apps, curl, or Postman)
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.indexOf(origin) === -1) {
+        const msg =
+          "The CORS policy for this site does not allow access from the specified Origin.";
+        return callback(new Error(msg), false);
+      }
+      return callback(null, true);
+    },
+    credentials: true, // Required if you are sending cookies/headers
+  })
+);
 app.use(express.json());
 
 // --- API Routes ---
@@ -39,7 +60,7 @@ app.get("/api", (req: Request, res: Response) => {
 export default app;
 
 // 2. Only listen to the port if we are running LOCALLY (not in Vercel)
-if (process.env.NODE_ENV !== 'production') {
+if (process.env.NODE_ENV !== "production") {
   app.listen(PORT, () => {
     logger.info("Server started locally", {
       port: PORT,
