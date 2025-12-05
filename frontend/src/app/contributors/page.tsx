@@ -6,11 +6,11 @@ import { ChevronLeft } from "lucide-react";
 import StarryBackground from "@/components/StarryBackground";
 import Image from "next/image";
 import EarlImage from "@/assets/images/contributors/Earl.png";
-import TimmyImage from "@/assets/images/contributors/Timmy.jpg";
-import CharlesImage from "@/assets/images/contributors/Charles.jpg";
+import TimmyImage from "@/assets/images/contributors/Timmy.png";
+import CharlesImage from "@/assets/images/contributors/Charles.png";
 import IanImage from "@/assets/images/contributors/Ian.png";
 import GeraldImage from "@/assets/images/contributors/Gerald.png";
-import EltonImage from "@/assets/images/contributors/Elton.jpg";
+import EltonImage from "@/assets/images/contributors/Elton.png";
 
 // Mock contributors data
 const contributors = [
@@ -22,7 +22,7 @@ const contributors = [
     element: "Electro",
     color: "#9d7ad1",
     glow: "rgba(157, 122, 209, 0.4)",
-    image: EarlImage,
+    image: CharlesImage,
   },
   {
     id: 3,
@@ -63,7 +63,7 @@ const contributors = [
     element: "Electro",
     color: "#9d7ad1",
     glow: "rgba(157, 122, 209, 0.4)",
-    image: EarlImage,
+    image: TimmyImage,
   },
 
   {
@@ -74,7 +74,7 @@ const contributors = [
     element: "Electro",
     color: "#9d7ad1",
     glow: "rgba(157, 122, 209, 0.4)",
-    image: EarlImage,
+    image: IanImage,
   },
 ];
 
