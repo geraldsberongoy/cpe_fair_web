@@ -10,7 +10,9 @@ import {
   Gamepad,
 } from "lucide-react";
 import { useRouter, usePathname } from "next/navigation";
+import Link from "next/link";
 import AdminLogin from "@/components/AdminLogin";
+
 
 export default function AdminLayout({
   children,
@@ -61,7 +63,9 @@ export default function AdminLayout({
       <aside className="fixed left-0 top-0 h-full w-20 bg-[#161822]/95 border-r border-[#d3bc8e]/20 flex flex-col items-center py-8 z-20 backdrop-blur-xl shadow-[0_0_30px_rgba(0,0,0,0.5)]">
         <div className="mb-12">
           <div className="w-12 h-12 bg-gradient-to-br from-[#d3bc8e] to-[#a48b60] rounded-full flex items-center justify-center shadow-[0_0_15px_rgba(211,188,142,0.4)]">
-            <Sparkles size={24} className="text-[#1e2130]" />
+            <Link href="/">
+              <Sparkles size={24} className="text-[#1e2130]" />
+            </Link>
           </div>
         </div>
         <nav className="flex flex-col gap-8 flex-1">

@@ -144,7 +144,7 @@ export default function GamesPage() {
 
           <button
             onClick={toggleOrder}
-            className="p-1.5 hover:bg-[#d3bc8e]/10 rounded-md transition-colors text-[#d3bc8e] flex items-center gap-1 text-xs font-medium uppercase"
+            className="p-1.5 cursor-pointer hover:bg-[#d3bc8e]/10 rounded-md transition-colors text-[#d3bc8e] flex items-center gap-1 text-xs font-medium uppercase"
           >
             {sortOrder}
             <ArrowUpDown size={14} />

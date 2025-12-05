@@ -59,19 +59,18 @@ export default function RegistryPage() {
               <select
                 value={sortBy}
                 onChange={(e) =>
-                  setSortBy(e.target.value as "full_name" | "cys" | "teamName")
+                  setSortBy(e.target.value as "full_name" | "teamName")
                 }
                 className="bg-transparent text-sm text-[#ece5d8] outline-none cursor-pointer [&>option]:bg-[#1e2130]"
               >
                 <option value="full_name">Name</option>
-                <option value="cys">CYS</option>
                 <option value="teamName">Team</option>
               </select>
             </div>
 
             <button
               onClick={toggleOrder}
-              className="p-1.5 hover:bg-[#d3bc8e]/10 rounded-md transition-colors text-[#d3bc8e] flex items-center gap-1 text-xs font-medium uppercase"
+              className="p-1.5 cursor-pointer hover:bg-[#d3bc8e]/10 rounded-md transition-colors text-[#d3bc8e] flex items-center gap-1 text-xs font-medium uppercase"
             >
               {sortOrder}
               <ArrowUpDown size={14} />
@@ -82,7 +81,7 @@ export default function RegistryPage() {
           <div className="w-48">
             <button
               onClick={() => setIsAddPlayerModalOpen(true)}
-              className="w-full bg-[#d3bc8e] text-[#1e2130] font-bold py-1.5 px-4 rounded-lg hover:bg-[#e6cfa3] transition-all shadow-lg"
+              className="w-full cursor-pointer bg-[#d3bc8e] text-[#1e2130] font-bold py-1.5 px-4 rounded-lg hover:bg-[#e6cfa3] transition-all shadow-lg"
             >
               Add Player
             </button>

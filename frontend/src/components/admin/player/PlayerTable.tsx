@@ -135,7 +135,7 @@ export default function PlayerTable({ sortBy = "full_name", sortOrder = "asc", t
                   }
                 }}
                 disabled={deletePlayer.isPending}
-                className="p-1.5 hover:bg-[#3b3f54] disabled:opacity-50 rounded text-red-400 transition-all"
+                className="p-1.5 cursor-pointer hover:bg-[#3b3f54] disabled:opacity-50 rounded text-red-400 transition-all"
                 title="Delete player"
               >
                 <Trash2 size={14} />

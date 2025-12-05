@@ -98,7 +98,7 @@ export default function AddPlayerModal({
         (trigger || (
           <button
             onClick={() => setInternalOpen(true)}
-            className="w-full py-3 px-4 bg-[#2d3042] hover:bg-[#3b3f54] text-[#ece5d8] rounded-xl font-bold text-xs uppercase tracking-wide border border-[#3b3f54] transition-colors shadow-lg"
+            className="w-full py-3 px-4 bg-[#2d3042] cursor-pointer hover:bg-[#3b3f54] text-[#ece5d8] rounded-xl font-bold text-sm tracking-wide border border-[#3b3f54] transition-colors shadow-lg"
           >
             Add Player
           </button>
