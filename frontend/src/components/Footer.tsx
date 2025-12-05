@@ -3,9 +3,24 @@
 "use client";
 
 import React from "react";
+import Image from "next/image";
+import AccessLogo from "@/assets/images/logos/access_logo.svg";
+import { GameCategory } from "@/types/game";
 
-const Footer = () => {
+interface FooterProps {
+  onCategorySelect?: (category: GameCategory | "Overall") => void;
+}
+
+const Footer: React.FC<FooterProps> = ({ onCategorySelect }) => {
   const currentYear = new Date().getFullYear();
+
+  const handleCategoryClick = (category: GameCategory | "Overall") => {
+    if (onCategorySelect) {
+      onCategorySelect(category);
+      // Smooth scroll to top where leaderboard is
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
 
   return (
     <footer className="relative w-full bg-gradient-to-b from-[#000000] to-[#1a1630] text-white overflow-hidden">
@@ -58,12 +73,12 @@ const Footer = () => {
             </h3>
             <ul className="space-y-2 text-center">
               <li>
-                <a
-                  href="/"
-                  className="text-[#c8b896] text-sm hover:text-[#f0e6d2] transition-all duration-300 hover:drop-shadow-[0_0_6px_rgba(211,188,142,0.5)]"
+                <button
+                  onClick={() => handleCategoryClick("Overall")}
+                  className="text-[#c8b896] text-sm hover:text-[#f0e6d2] transition-all duration-300 hover:drop-shadow-[0_0_6px_rgba(211,188,142,0.5)] cursor-pointer"
                 >
                   Leaderboard
-                </a>
+                </button>
               </li>
               <li>
                 <a
@@ -83,44 +98,52 @@ const Footer = () => {
             </h3>
             <ul className="space-y-1.5 text-center md:text-right">
               <li>
-                <a
-                  href="/competitions/sports"
-                  className="text-[#c8b896] text-xs hover:text-[#d3bc8e] transition-colors duration-300"
+                <button
+                  onClick={() => handleCategoryClick("Sports")}
+                  className="text-[#c8b896] text-xs hover:text-[#d3bc8e] transition-colors duration-300 cursor-pointer hover:drop-shadow-[0_0_6px_rgba(211,188,142,0.5)]"
                 >
                   Sports
-                </a>
+                </button>
               </li>
               <li>
-                <a
-                  href="/competitions/esports"
-                  className="text-[#c8b896] text-xs hover:text-[#d3bc8e] transition-colors duration-300"
+                <button
+                  onClick={() => handleCategoryClick("Esports")}
+                  className="text-[#c8b896] text-xs hover:text-[#d3bc8e] transition-colors duration-300 cursor-pointer hover:drop-shadow-[0_0_6px_rgba(211,188,142,0.5)]"
                 >
                   Esports
-                </a>
+                </button>
               </li>
               <li>
-                <a
-                  href="/competitions/logic-board-games"
-                  className="text-[#c8b896] text-xs hover:text-[#d3bc8e] transition-colors duration-300"
+                <button
+                  onClick={() => handleCategoryClick("Board")}
+                  className="text-[#c8b896] text-xs hover:text-[#d3bc8e] transition-colors duration-300 cursor-pointer hover:drop-shadow-[0_0_6px_rgba(211,188,142,0.5)]"
                 >
                   Logic &amp; Board Games
-                </a>
+                </button>
               </li>
               <li>
-                <a
-                  href="/competitions/academics"
-                  className="text-[#c8b896] text-xs hover:text-[#d3bc8e] transition-colors duration-300"
+                <button
+                  onClick={() => handleCategoryClick("Quiz Bee")}
+                  className="text-[#c8b896] text-xs hover:text-[#d3bc8e] transition-colors duration-300 cursor-pointer hover:drop-shadow-[0_0_6px_rgba(211,188,142,0.5)]"
                 >
                   Academics
-                </a>
+                </button>
               </li>
               <li>
-                <a
-                  href="/competitions/talents"
-                  className="text-[#c8b896] text-xs hover:text-[#d3bc8e] transition-colors duration-300"
+                <button
+                  onClick={() => handleCategoryClick("Talents")}
+                  className="text-[#c8b896] text-xs hover:text-[#d3bc8e] transition-colors duration-300 cursor-pointer hover:drop-shadow-[0_0_6px_rgba(211,188,142,0.5)]"
                 >
                   Talents
-                </a>
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => handleCategoryClick("Mini Games")}
+                  className="text-[#c8b896] text-xs hover:text-[#d3bc8e] transition-colors duration-300 cursor-pointer hover:drop-shadow-[0_0_6px_rgba(211,188,142,0.5)]"
+                >
+                  Mini Games
+                </button>
               </li>
             </ul>
           </div>
@@ -129,7 +152,15 @@ const Footer = () => {
         {/* Divider */}
         <div className="relative mb-4">
           <div className="h-px bg-gradient-to-r from-transparent via-[#d3bc8e]/30 to-transparent"></div>
-          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-1.5 h-1.5 bg-[#f0e6d2] rounded-full shadow-[0_0_8px_rgba(211,188,142,0.6)]"></div>
+          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+            <Image 
+              src={AccessLogo} 
+              alt="Access Logo" 
+              width={56} 
+              height={56}
+              className="drop-shadow-[0_0_8px_rgba(211,188,142,0.6)]"
+            />
+          </div>
         </div>
 
         {/* Bottom Section */}

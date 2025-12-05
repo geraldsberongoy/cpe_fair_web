@@ -47,7 +47,7 @@ export default function Home() {
         </div>
       </div>
 
-      <Footer />
+      <Footer onCategorySelect={setSelectedCategory} />
     </div>
   );
   
