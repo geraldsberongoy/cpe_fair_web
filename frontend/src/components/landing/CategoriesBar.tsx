@@ -22,7 +22,7 @@ const CategoriesBar = ({ selectedCategory, onSelect }: CategoriesBarProps) => {
     value: GameCategory | "Overall";
   }[] = [
     {
-      name: "Overall Ranking",
+      name: "Overall\nRanking",
       logo: OverallLogo.src,
       value: "Overall",
     },
@@ -52,7 +52,7 @@ const CategoriesBar = ({ selectedCategory, onSelect }: CategoriesBarProps) => {
       value: "Talents",
     },
     {
-      name: "Mini Games",
+      name: "Mini\nGames",
       logo: MiniGamesLogo.src,
       value: "Mini Games",
     },
@@ -75,7 +75,7 @@ const CategoriesBar = ({ selectedCategory, onSelect }: CategoriesBarProps) => {
           }}
         >
           {category.logo && <img src={category.logo} alt={category.name} loading="lazy" />}
-          <span className="text-[10px] text-center md:text-base">{category.name}</span>
+          <span className="text-[10px] text-center md:text-base whitespace-pre-line">{category.name}</span>
         </button>
       ))}
     </div>

@@ -72,6 +72,7 @@ const Podium = ({ topTeams }: PodiumProps) => {
           textColor: "text-yellow-300",
           borderColor: "border-yellow-400",
           sideDecorColor: "from-yellow-400/60",
+          cornerColor: "from-[#fcdb60]",
           rank: 1,
         };
       case 2:
@@ -84,6 +85,7 @@ const Podium = ({ topTeams }: PodiumProps) => {
           textColor: "text-gray-200",
           borderColor: "border-gray-400",
           sideDecorColor: "from-gray-400/60",
+          cornerColor: "from-[#FEF4BF]",
           rank: 2,
         };
       case 3:
@@ -96,6 +98,7 @@ const Podium = ({ topTeams }: PodiumProps) => {
           textColor: "text-[#c98138]",
           borderColor: "border-amber-500",
           sideDecorColor: "from-amber-400/60",
+          cornerColor: "from-amber-600",
           rank: 3,
         };
       default:
@@ -147,9 +150,9 @@ const Podium = ({ topTeams }: PodiumProps) => {
 
               {/* Corner Ornaments - Top Left */}
               <div className="absolute top-0 left-0 w-12 h-12 z-10">
-                <div className="absolute top-0 left-0 w-full h-1 bg-linear-to-r from-amber-300 to-transparent"></div>
-                <div className="absolute top-0 left-0 w-1 h-full bg-linear-to-b from-amber-300 to-transparent"></div>
-                <div className="absolute top-2 left-2 w-6 h-6 border-t-2 border-l-2 border-amber-400/60"></div>
+                <div className={`absolute top-0 left-0 w-full h-1 bg-linear-to-r ${rankData.cornerColor} to-transparent`}></div>
+                <div className={`absolute top-0 left-0 w-1 h-full bg-linear-to-b ${rankData.cornerColor} to-transparent`}></div>
+                <div className="absolute top-2 left-2 w-6 h-6 border-t-2 border-l-2 border-[#FEF4BF]/60"></div>
                 <div
                   className={`absolute top-0 left-0 w-3 h-3 bg-linear-to-br group-hover:scale-125 transition-transform duration-300`}
                 ></div>
@@ -157,9 +160,9 @@ const Podium = ({ topTeams }: PodiumProps) => {
 
               {/* Corner Ornaments - Top Right */}
               <div className="absolute top-0 right-0 w-12 h-12 z-10">
-                <div className="absolute top-0 right-0 w-full h-1 bg-linear-to-l from-amber-300 to-transparent"></div>
-                <div className="absolute top-0 right-0 w-1 h-full bg-linear-to-b from-amber-300 to-transparent"></div>
-                <div className="absolute top-2 right-2 w-6 h-6 border-t-2 border-r-2 border-amber-400/60"></div>
+                <div className={`absolute top-0 right-0 w-full h-1 bg-linear-to-l ${rankData.cornerColor} to-transparent`}></div>
+                <div className={`absolute top-0 right-0 w-1 h-full bg-linear-to-b ${rankData.cornerColor} to-transparent`}></div>
+                <div className="absolute top-2 right-2 w-6 h-6 border-t-2 border-r-2 border-[#FEF4BF]/60"></div>
                 <div
                   className={`absolute top-0 right-0 w-3 h-3 bg-linear-to-bl group-hover:scale-125 transition-transform duration-300`}
                 ></div>
@@ -167,9 +170,9 @@ const Podium = ({ topTeams }: PodiumProps) => {
 
               {/* Corner Ornaments - Bottom Left */}
               <div className="absolute bottom-0 left-0 w-12 h-12 z-10">
-                <div className="absolute bottom-0 left-0 w-full h-1 bg-linear-to-r from-amber-300 to-transparent"></div>
-                <div className="absolute bottom-0 left-0 w-1 h-full bg-linear-to-t from-amber-300 to-transparent"></div>
-                <div className="absolute bottom-2 left-2 w-6 h-6 border-b-2 border-l-2 border-amber-400/60"></div>
+                <div className={`absolute bottom-0 left-0 w-full h-1 bg-linear-to-r ${rankData.cornerColor} to-transparent`}></div>
+                <div className={`absolute bottom-0 left-0 w-1 h-full bg-linear-to-t ${rankData.cornerColor} to-transparent`}></div>
+                <div className="absolute bottom-2 left-2 w-6 h-6 border-b-2 border-l-2 border-[#FEF4BF]/60"></div>
                 <div
                   className={`absolute bottom-0 left-0 w-3 h-3 bg-linear-to-tr group-hover:scale-125 transition-transform duration-300`}
                 ></div>
@@ -177,9 +180,9 @@ const Podium = ({ topTeams }: PodiumProps) => {
 
               {/* Corner Ornaments - Bottom Right */}
               <div className="absolute bottom-0 right-0 w-12 h-12 z-10">
-                <div className="absolute bottom-0 right-0 w-full h-1 bg-linear-to-l from-amber-300 to-transparent"></div>
-                <div className="absolute bottom-0 right-0 w-1 h-full bg-linear-to-t from-amber-300 to-transparent"></div>
-                <div className="absolute bottom-2 right-2 w-6 h-6 border-b-2 border-r-2 border-amber-400/60"></div>
+                <div className={`absolute bottom-0 right-0 w-full h-1 bg-linear-to-l ${rankData.cornerColor} to-transparent`}></div>
+                <div className={`absolute bottom-0 right-0 w-1 h-full bg-linear-to-t ${rankData.cornerColor} to-transparent`}></div>
+                <div className="absolute bottom-2 right-2 w-6 h-6 border-b-2 border-r-2 border-[#FEF4BF]/60"></div>
                 <div
                   className={`absolute bottom-0 right-0 w-3 h-3 bg-linear-to-tl  group-hover:scale-125 transition-transform duration-300`}
                 ></div>
