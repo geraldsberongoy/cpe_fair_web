@@ -7,7 +7,7 @@ import {
 import { usePlayers } from "@/hooks/usePlayer";
 import { useGames } from "@/hooks/useGame";
 import { GameCategory } from "@/types/game";
-import { ChevronLeft } from "lucide-react";
+import { ChevronLeft, Star } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -25,6 +25,8 @@ import MondstadtBG from "@/assets/images/backgrounds/mondstadt.jpg";
 import NatlanBG from "@/assets/images/backgrounds/natlan.jpg";
 import SumeruBG from "@/assets/images/backgrounds/sumeru.jpg";
 import SnezhnayaBG from "@/assets/images/backgrounds/snezhnaya.jpg";
+import BorderDesign from "./BorderDesign";
+import StarryBackground from "../StarryBackground";
 
 const BG_MAP: Record<string, string> = {
   fontaine: FontaineBG.src,
@@ -79,13 +81,20 @@ export const TeamScoreModal = ({
     );
   };
 
+  const bg=pickBg(teamName);
   return (
-    <DialogContent className="max-w-2xl max-h-[80vh] bg-[#0a0a2e] border-white/20 text-white">
+    <DialogContent className="max-w-[90%] sm:max-w-md max-h-[80vh] bg-[#2a2640]/10 bg-linear-to-b from-[#2a2640]/30 to-[#1a1630]/70 text-white" 
+      style={{
+                      backgroundImage: `linear-gradient(rgba(0,0,0,0.30), rgba(0,0,0,0.30)), url(${bg})`,
+                      backgroundSize: "cover",
+                      backgroundPosition: "center",
+                    }}>
+      <BorderDesign />
       <DialogHeader>
-        <DialogTitle className="text-2xl font-bold text-white flex items-center gap-3">
+        <DialogTitle className="px-2 text-2xl font-bold flex flex-col items-center text-transparent bg-clip-text bg-linear-to-b from-[#f0e6d2] via-[#d3bc8e] to-[#9d8f6f] drop-shadow-[0_0_30px_rgba(211,188,142,0.8)]">
           <span>{teamName}</span>
-          <span className="text-white/60 text-base font-normal">
-            - Score Breakdown
+          <span className="text-white/50 text-base font-normal">
+            Score Breakdown
           </span>
         </DialogTitle>
       </DialogHeader>
@@ -96,12 +105,12 @@ export const TeamScoreModal = ({
             .map((score) => (
               <div
                 key={score.id}
-                className="bg-white/5 p-4 rounded-lg border border-white/10 flex justify-between items-center"
+                className="p-4 rounded-lg border border-white/10 flex justify-between items-center bg-linear-to-br from-[#FEF4BF]/30 to-transparent"
               >
                 <div>
-                  <p className="font-bold text-lg text-white">{score.game}</p>
-                  <div className="flex flex-col gap-1 text-sm text-white/60">
-                    <span className="bg-white/10 px-2 py-0.5 rounded text-xs w-fit">
+                  <p className="font-bold text-sm md:text-lg text-white">{score.game}</p>
+                  <div className="flex flex-col gap-1 text-[10px] md:text-sm text-white/60">
+                    <span className="bg-white/10 px-2 py-0.5 rounded text-[8px] md:text-xs w-fit">
                       {score.category}
                     </span>
                     <span className="text-white/80">
@@ -110,10 +119,10 @@ export const TeamScoreModal = ({
                   </div>
                 </div>
                 <div className="text-right">
-                  <p className="font-bold text-xl text-yellow-400">
+                  <p className="font-bold text-xl text-white/10 text-transparent bg-clip-text bg-linear-to-b from-[#f0e6d2] via-[#d3bc8e] to-[#9d8f6f]">
                     {score.points}
                   </p>
-                  <p className="text-xs text-white/40">Points</p>
+                  <p className="text-[8px] md:text-xs text-white/40">Points</p>
                 </div>
               </div>
             ))}
@@ -167,10 +176,17 @@ const GamePlayersModal = ({
     ];
   }, [details, players]);
 
+  const bg=pickBg(teamName);
   return (
-    <DialogContent className="max-w-md max-h-[80vh] bg-[#0a0a2e] border-white/20 text-white">
+    <DialogContent className="max-w-[90%] sm:max-w-md max-h-[80vh] bg-[#2a2640]/10 bg-linear-to-b from-[#2a2640]/30 to-[#1a1630]/70 text-white" 
+      style={{
+                      backgroundImage: `linear-gradient(rgba(0,0,0,0.30), rgba(0,0,0,0.30)), url(${bg})`,
+                      backgroundSize: "cover",
+                      backgroundPosition: "center",
+                    }}>
+      <BorderDesign />
       <DialogHeader>
-        <DialogTitle className="text-2xl font-bold text-white flex flex-col gap-1">
+        <DialogTitle className="px-2 text-2xl font-bold flex flex-col items-center text-transparent bg-clip-text bg-linear-to-b from-[#f0e6d2] via-[#d3bc8e] to-[#9d8f6f] drop-shadow-[0_0_30px_rgba(211,188,142,0.8)]">
           <span>{teamName}</span>
           <span className="text-white/60 text-base font-normal">
             {gameName} Roster
@@ -183,7 +199,7 @@ const GamePlayersModal = ({
             (p: { fullName: string; cys: string }, i: number) => (
               <div
                 key={i}
-                className="bg-white/5 p-4 rounded-lg border border-white/10 flex justify-between items-center"
+                className="bg-linear-to-br from-[#FEF4BF]/30 to-transparent p-4 rounded-lg border border-white/10 flex justify-between items-center"
               >
                 <span className="font-bold text-white">{p.fullName}</span>
                 {p.cys && (
@@ -278,6 +294,7 @@ const Leaderboard = ({ selectedCategory }: LeaderboardProps) => {
           const bg = pickBg(team.section_team);
           return (
             <Dialog key={team.section_team}>
+              
               <DialogTrigger asChild>
                 <button
                   style={{
@@ -287,7 +304,7 @@ const Leaderboard = ({ selectedCategory }: LeaderboardProps) => {
                     backgroundSize: "cover",
                     backgroundPosition: "center",
                   }}
-                  className={`w-full flex items-center justify-between p-6 rounded-xl border transition-all duration-300 hover:scale-[1.01] ${
+                  className={`w-full flex items-center justify-between p-6 rounded-xl border transition-scale duration-300 scale-[1.01] hover:scale-[1.02] group relative overflow-hidden ${
                     bg
                       ? "border-white/20"
                       : index === 0
@@ -299,6 +316,8 @@ const Leaderboard = ({ selectedCategory }: LeaderboardProps) => {
                       : "border-white/20"
                   }`}
                 >
+                  <div className="absolute inset-0 bg-gradient-to-r from-[#d3bc8e]/0 via-[#f0e6d2]/30 to-[#d3bc8e]/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-500"></div>
+                  <StarryBackground starCount={10} />
                   <div className="flex items-center gap-3 md:gap-6">
                     <span
                       className={`text-lg md:text-3xl font-bold w-12 text-center text-white/60`}
@@ -362,6 +381,7 @@ const Leaderboard = ({ selectedCategory }: LeaderboardProps) => {
                  className="bg-white/10 backdrop-blur-md rounded-xl p-6 border border-white/20 bg-linear-to-b from-[#2a2640]/60 to-[#1a1630]/70
                           transition-all duration-300 group text-left"
             >
+              <StarryBackground starCount={10} />
               {/* BORDER DESIGNS */}
               <div
                 className="absolute inset-0 border-4 border-[#A89265] group-hover:border-[#f2d9a7] transition-colors duration-300"
@@ -579,17 +599,17 @@ const Leaderboard = ({ selectedCategory }: LeaderboardProps) => {
   }
 
   return (
-    <div className="w-full mb-6 px-[5vw] md:px-[10vw]">
+    <div className="w-full mb-6 px-[5vw] md:px-[10vw] ">
       <button
         onClick={() => setSelectedGame(null)}
-        className="flex items-center gap-2 text-white/80 hover:text-white mb-3 md:mb-6 transition-colors"
+        className="flex items-center gap-2 text-white/80  hover:text-white mb-3 md:mb-6 transition-colors"
       >
         <ChevronLeft size={20} />
         <span>Back to Games</span>
       </button>
 
-      <div className="bg-white/10 backdrop-blur-md rounded-xl p-4 md:p-6 border border-white/20">
-        <h3 className="text-lg md:text-2xl font-bold text-white mb-4 border-b border-white/20 pb-2">
+      <div className="bg-white/10 bg-linear-to-b from-[#2a2640]/30 to-[#1a1630]/70 backdrop-blur-md rounded-xl p-4 md:p-6 border border-white/20">
+        <h3 className="text-lg md:text-2xl font-bold text-white/10 mb-4 border-b border-white/20 pb-2 text-transparent bg-clip-text bg-linear-to-b from-[#f0e6d2] via-[#d3bc8e] to-[#9d8f6f] drop-shadow-[0_0_30px_rgba(211,188,142,0.8)]">
           {selectedGame}
         </h3>
 
@@ -600,7 +620,7 @@ const Leaderboard = ({ selectedCategory }: LeaderboardProps) => {
               <Dialog key={score.id}>
                 <DialogTrigger asChild>
                   <button
-                    className={`w-full flex items-center justify-between p-4 rounded-lg border transition-all duration-300 hover:scale-[1.01] ${
+                    className={`w-full group relative overflow-hidden flex items-center justify-between p-4 rounded-lg border transition-all duration-300 hover:scale-[1.01] ${
                       index === 0
                         ? "bg-yellow-500/20 border-yellow-500/50 hover:bg-yellow-500/30"
                         : index === 1
@@ -615,7 +635,9 @@ const Leaderboard = ({ selectedCategory }: LeaderboardProps) => {
                       backgroundPosition: "center",
                     }}
                   >
+                    <div className="absolute inset-0 bg-gradient-to-r from-[#d3bc8e]/0 via-[#f0e6d2]/30 to-[#d3bc8e]/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-500"></div>
                     <div className="flex items-center gap-4">
+                      <StarryBackground starCount={10} />
                       <span
                         className={`text-xl font-bold w-8 text-center ${
                           index === 0

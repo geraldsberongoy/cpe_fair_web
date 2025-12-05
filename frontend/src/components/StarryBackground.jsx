@@ -1,6 +1,6 @@
 import React from "react";
 
-const StarryBackground = () => {
+const StarryBackground = ({starCount}) => {
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
       {/* Layered star fields */}
@@ -12,7 +12,7 @@ const StarryBackground = () => {
       </div>
 
       {/* Floating particles / glows */}
-      {[...Array(50)].map((_, i) => {
+      {[...Array(starCount)].map((_, i) => {
         const size = Math.random() * 2 + 1; // 1px to 3px
         const opacity = Math.random() * 0.7 + 0.3; // 0.3 to 1
         const duration = Math.random() * 10 + 5; // 5s to 15s
@@ -35,7 +35,7 @@ const StarryBackground = () => {
       })}
 
       {/* Floating glow animations (optional) */}
-      {[...Array(75)].map((_, i) => {
+      {[...Array(starCount)].map((_, i) => {
         const size = Math.random() * 2 + 1; // 1px to 3px
         const opacity = Math.random() * 0.7 + 0.3; // 0.3 to 1
         const duration = Math.random() * 10 + 5; // 5s to 15s

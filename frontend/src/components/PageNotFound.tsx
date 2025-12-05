@@ -30,7 +30,7 @@ export default function NotFound() {
 
   return (
     <div className="bg-gradient-to-b from-[#050425] to-[#000000] flex flex-col relative overflow-hidden">
-      <StarryBackground />
+      <StarryBackground starCount={75}/>
       
       {/* Floating Elements Background */}
       <div className="absolute inset-0 pointer-events-none">

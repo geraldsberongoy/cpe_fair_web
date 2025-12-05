@@ -31,7 +31,7 @@ export default function RootLayout({
       <body
         className={`${genshin.variable} antialiased min-h-screen`}
       >
-        <StarryBackground />
+        <StarryBackground starCount={75}/>
         <QueryProvider>
           {children}
           <ToastContainer

@@ -59,7 +59,8 @@ const CategoriesBar = ({ selectedCategory, onSelect }: CategoriesBarProps) => {
   ];
 
   return (
-    <div className="text-white flex flex-wrap justify-center gap-6 px-2 py-4">
+    <div className="px-3 relative overflow-x-auto hide-scrollbar">
+    <div className="text-white flex lg:flex lg:justify-center gap-1 lg:gap-6 px-2 py-4 w-max lg:w-full">
       {categories.map((category, index) => (
         <button
           key={index}
@@ -78,6 +79,7 @@ const CategoriesBar = ({ selectedCategory, onSelect }: CategoriesBarProps) => {
           <span className="text-[10px] text-center md:text-base whitespace-pre-line">{category.name}</span>
         </button>
       ))}
+    </div>
     </div>
   );
 };
