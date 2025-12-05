@@ -8,6 +8,7 @@ import Leaderboard from "@/components/landing/leaderboard";
 import MainLogoArchon from "@/components/MainLogo";
 import Footer from "@/components/Footer";
 import GateEntrance from "@/components/GateEntrance";
+import Contributors from "@/components/Contributors";
 
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -23,6 +24,9 @@ export default function Home() {
     <div className="min-h-screen bg-linear-to-b from-[#050425] to-[#000000] flex flex-col items-center">
       {/* Grand Entrance - Shows once per session */}
       <GateEntrance />
+      
+      {/* Contributors Button - Upper Right */}
+      <Contributors />
       
       <ToastContainer
         position="top-right"
