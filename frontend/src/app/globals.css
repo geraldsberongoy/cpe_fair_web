@@ -1,0 +1,428 @@
+@import "tailwindcss";
+
+@plugin "tailwindcss-animate";
+
+@font-face {
+  font-family: "Genshin-Font";
+  src: url("/fonts/Genshin-Font.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@theme {
+  --font-genshin: "Genshin-Font", sans-serif;
+  --font-sans: "Genshin-Font", sans-serif;
+
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
+}
+
+:root {
+  --background: 0 0% 100%;
+  --foreground: 222.2 47.4% 11.2%;
+  --muted: 210 40% 96.1%;
+  --muted-foreground: 215.4 16.3% 46.9%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 222.2 47.4% 11.2%;
+  --border: 214.3 31.8% 91.4%;
+  --input: 214.3 31.8% 91.4%;
+  --card: 0 0% 100%;
+  --card-foreground: 222.2 47.4% 11.2%;
+  --primary: 222.2 47.4% 11.2%;
+  --primary-foreground: 210 40% 98%;
+  --secondary: 210 40% 96.1%;
+  --secondary-foreground: 222.2 47.4% 11.2%;
+  --accent: 210 40% 96.1%;
+  --accent-foreground: 222.2 47.4% 11.2%;
+  --destructive: 0 100% 50%;
+  --destructive-foreground: 210 40% 98%;
+  --ring: 215 20.2% 65.1%;
+  --radius: 0.5rem;
+}
+
+.dark {
+  --background: 224 71% 4%;
+  --foreground: 213 31% 91%;
+  --muted: 223 47% 11%;
+  --muted-foreground: 215.4 16.3% 56.9%;
+  --accent: 216 34% 17%;
+  --accent-foreground: 210 40% 98%;
+  --popover: 224 71% 4%;
+  --popover-foreground: 215 20.2% 65.1%;
+  --border: 216 34% 17%;
+  --input: 216 34% 17%;
+  --card: 224 71% 4%;
+  --card-foreground: 213 31% 91%;
+  --primary: 210 40% 98%;
+  --primary-foreground: 222.2 47.4% 1.2%;
+  --secondary: 222.2 47.4% 11.2%;
+  --secondary-foreground: 210 40% 98%;
+  --destructive: 0 63% 31%;
+  --destructive-foreground: 210 40% 98%;
+  --ring: 216 34% 17%;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply font-sans antialiased bg-background text-foreground;
+  }
+}
+/* --- Genshin Impact UI Components --- */
+
+/* Genshin Card Style */
+.genshin-card {
+  @apply relative bg-gradient-to-br from-[#2a2640]/80 to-[#1a1630]/90;
+  @apply border-2 border-[#d3bc8e]/40 rounded-lg p-6 backdrop-blur-sm;
+  @apply transition-all duration-300;
+}
+
+.genshin-card:hover {
+  @apply border-[#d3bc8e]/60 shadow-[0_0_20px_rgba(211,188,142,0.3)];
+}
+
+/* Genshin Card Corners */
+.genshin-card-corners::before,
+.genshin-card-corners::after,
+.genshin-card-corners .corner-tl,
+.genshin-card-corners .corner-tr,
+.genshin-card-corners .corner-bl,
+.genshin-card-corners .corner-br {
+  content: '';
+  position: absolute;
+  width: 12px;
+  height: 12px;
+}
+
+.genshin-card-corners .corner-tl {
+  top: 4px;
+  left: 4px;
+  border-top: 2px solid #f0e6d2;
+  border-left: 2px solid #f0e6d2;
+}
+
+.genshin-card-corners .corner-tr {
+  top: 4px;
+  right: 4px;
+  border-top: 2px solid #f0e6d2;
+  border-right: 2px solid #f0e6d2;
+}
+
+.genshin-card-corners .corner-bl {
+  bottom: 4px;
+  left: 4px;
+  border-bottom: 2px solid #f0e6d2;
+  border-left: 2px solid #f0e6d2;
+}
+
+
+.genshin-card-corners .corner-br {
+  bottom: 4px;
+  right: 4px;
+  border-bottom: 2px solid #f0e6d2;
+  border-right: 2px solid #f0e6d2;
+}
+
+/* Genshin Button Primary */
+.genshin-btn-primary {
+  @apply relative px-6 py-3;
+  @apply bg-gradient-to-br from-[#d3bc8e]/30 to-[#9d8f6f]/20;
+  @apply border-2 border-[#d3bc8e] rounded-lg;
+  @apply text-[#f0e6d2] font-bold;
+  @apply transition-all duration-300;
+  @apply overflow-hidden;
+}
+
+.genshin-btn-primary:hover {
+  @apply border-[#f0e6d2] shadow-[0_0_20px_rgba(211,188,142,0.5)] scale-105;
+}
+
+/* Genshin Button Secondary */
+.genshin-btn-secondary {
+  @apply relative px-6 py-3;
+  @apply bg-gradient-to-br from-[#4a4460]/30 to-[#2a2640]/40;
+  @apply border-2 border-[#7a7090] rounded-lg;
+  @apply text-[#c8b8d8] font-bold;
+  @apply transition-all duration-300;
+  @apply overflow-hidden;
+}
+
+.genshin-btn-secondary:hover {
+  @apply border-[#9a90b0] shadow-[0_0_15px_rgba(122,112,144,0.4)] scale-105;
+}
+
+/* Genshin Text Colors */
+.genshin-text-primary {
+  @apply text-[#f0e6d2] drop-shadow-[0_0_10px_rgba(240,230,210,0.4)];
+}
+
+.genshin-text-secondary {
+  @apply text-[#c8b896];
+}
+
+.genshin-text-muted {
+  @apply text-[#9d8f6f];
+}
+
+/* Genshin Divider */
+.genshin-divider {
+  @apply relative h-[2px] bg-gradient-to-r from-transparent via-[#d3bc8e]/50 to-transparent my-6;
+}
+
+/* Genshin Glow Effect */
+.genshin-glow {
+  @apply drop-shadow-[0_0_15px_rgba(211,188,142,0.6)];
+}
+
+.genshin-glow-strong {
+  @apply drop-shadow-[0_0_25px_rgba(211,188,142,0.8)];
+}
+
+/* Ornate Border Top */
+.genshin-border-top {
+  @apply relative;
+  border-top: 3px solid transparent;
+  border-image: linear-gradient(90deg, transparent, #d3bc8e, transparent) 1;
+}
+
+/* Ornate Border Bottom */
+.genshin-border-bottom {
+  @apply relative;
+  border-bottom: 3px solid transparent;
+  border-image: linear-gradient(90deg, transparent, #d3bc8e, transparent) 1;
+}
+
+/* Element Icon Container */
+.element-icon {
+  @apply relative w-12 h-12 p-2;
+  @apply bg-gradient-to-br from-[#2a2640]/60 to-[#1a1630]/60;
+  @apply border-2 border-[#d3bc8e]/40 rounded-full;
+  @apply transition-all duration-300;
+  @apply shadow-lg;
+}
+
+.element-icon:hover {
+  @apply border-[#f0e6d2] scale-110;
+}
+
+/* Shimmer Animation for Buttons */
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.genshin-shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.genshin-shimmer::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(240, 230, 210, 0.3),
+    transparent
+  );
+  animation: shimmer 2s infinite;
+}
+
+/* Fade In Animation */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in-up {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+/* Pulse Glow Animation */
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 10px rgba(211, 188, 142, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 25px rgba(211, 188, 142, 0.8);
+  }
+}
+
+.pulse-glow {
+  animation: pulseGlow 2s ease-in-out infinite;
+}
+/* --- Genshin Toast Customization --- */
+.Toastify__toast-container {
+  width: 400px !important;
+}
+
+.Toastify__toast {
+  background: rgba(30, 33, 48, 0.9) !important; /* Dark blue background */
+  backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(211, 188, 142, 0.3) !important; /* Gold border */
+  border-radius: 12px !important;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5) !important;
+  color: #ece5d8 !important; /* Light text */
+  font-family: var(--font-genshin) !important;
+  padding: 16px !important;
+}
+
+.Toastify__toast-body {
+  font-size: 0.95rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+.Toastify__progress-bar {
+  background: #d3bc8e !important; /* Gold progress bar */
+  height: 3px !important;
+}
+
+.Toastify__close-button {
+  color: #8a8d99 !important;
+  opacity: 0.7;
+}
+
+.Toastify__close-button:hover {
+  color: #d3bc8e !important;
+  opacity: 1;
+}
+
+/* Success Toast Specifics */
+.Toastify__toast--success {
+  border-left: 4px solid #4ade80 !important; /* Green accent */
+}
+
+.Toastify__toast--success .Toastify__progress-bar {
+  background: #4ade80 !important;
+}
+
+/* Error Toast Specifics */
+.Toastify__toast--error {
+  border-left: 4px solid #f87171 !important; /* Red accent */
+}
+
+.Toastify__toast--error .Toastify__progress-bar {
+  background: #f87171 !important;
+}
+
+/* Info Toast Specifics */
+.Toastify__toast--info {
+  border-left: 4px solid #60a5fa !important; /* Blue accent */
+}
+
+.Toastify__toast--info .Toastify__progress-bar {
+  background: #60a5fa !important;
+}
+
+/* --- Gate Entrance Animations --- */
+@keyframes gate-open-left {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+@keyframes gate-open-right {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@keyframes emblem-dissolve {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1) rotate(0deg);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1.5) rotate(180deg);
+  }
+}
+
+@keyframes particle-float {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+    opacity: 0.7;
+  }
+  50% {
+    transform: translateY(-30px) scale(1.2);
+    opacity: 1;
+  }
+}
+
+@keyframes rays-expand {
+  0% {
+    opacity: 1;
+    transform: scaleY(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scaleY(1.5);
+  }
+}
+
+@keyframes glow-pulse {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1.1);
+  }
+}
+
+/* Radial gradient utility */
+.bg-gradient-radial {
+  background: radial-gradient(circle, var(--tw-gradient-stops));
+}
