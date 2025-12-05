@@ -13,7 +13,7 @@ interface GateEntranceProps {
 
 const GateEntrance: React.FC<GateEntranceProps> = ({ 
   onComplete, 
-  showOnce = false 
+  showOnce = true // Default to showing once per session
 }) => {
   const [isOpening, setIsOpening] = useState(false);
   const [isComplete, setIsComplete] = useState(false);

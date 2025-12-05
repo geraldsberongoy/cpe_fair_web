@@ -7,6 +7,7 @@ import CategoriesBar from "@/components/landing/CategoriesBar";
 import Leaderboard from "@/components/landing/leaderboard";
 import MainLogoArchon from "@/components/MainLogo";
 import Footer from "@/components/Footer";
+import GateEntrance from "@/components/GateEntrance";
 
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -20,6 +21,9 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-linear-to-b from-[#050425] to-[#000000] flex flex-col items-center">
+      {/* Grand Entrance - Shows once per session */}
+      <GateEntrance />
+      
       <ToastContainer
         position="top-right"
         autoClose={5000}

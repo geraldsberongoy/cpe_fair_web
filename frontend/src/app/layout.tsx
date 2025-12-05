@@ -6,7 +6,6 @@ import "./globals.css";
 import QueryProvider from "../providers/QueryProvider";
 
 import StarryBackground from "@/components/StarryBackground";
-import GateEntrance from "@/components/GateEntrance";
 
 const genshin = localFont({
   src: "../assets/fonts/Genshin-Font.ttf",
@@ -32,7 +31,6 @@ export default function RootLayout({
       <body
         className={`${genshin.variable} antialiased min-h-screen`}
       >
-        <GateEntrance />
         <StarryBackground />
         <QueryProvider>
           {children}
