@@ -18,7 +18,7 @@ const PORT = process.env.PORT || 3001;
 // Define allowed origins
 const allowedOrigins = [
   "http://localhost:3000", // Local development
-  "https://cpefair2025.vercel.app/", // Your production Frontend URL
+  "https://cpefair2025.vercel.app", // Your production Frontend URL
 ];
 
 app.use(
