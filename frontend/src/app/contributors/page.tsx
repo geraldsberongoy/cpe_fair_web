@@ -6,8 +6,8 @@ import { ChevronLeft } from "lucide-react";
 import StarryBackground from "@/components/StarryBackground";
 import Image from "next/image";
 import EarlImage from "@/assets/images/contributors/Earl.png";
-import TimmyImage from "@/assets/images/contributors/Timmy.png";
-import CharlesImage from "@/assets/images/contributors/Charles.png";
+import TimmyImage from "@/assets/images/contributors/Timmy.jpg";
+import CharlesImage from "@/assets/images/contributors/Charles.jpg";
 import IanImage from "@/assets/images/contributors/Ian.png";
 import GeraldImage from "@/assets/images/contributors/Gerald.png";
 import EltonImage from "@/assets/images/contributors/Elton.jpg";
@@ -101,7 +101,7 @@ export default function ContributorsPage() {
         {/* Header */}
         <div className="text-center mb-12">
           <h1 className="text-4xl md:text-6xl font-bold text-[#f0e6d2] mb-4 drop-shadow-[0_0_30px_rgba(211,188,142,0.8)]">
-            The Seven Archons
+            The Six Gnosis
           </h1>
           <div className="flex items-center justify-center gap-3 mb-3">
             <div className="h-px flex-1 max-w-48 bg-gradient-to-r from-transparent via-[#d3bc8e] to-transparent" />
