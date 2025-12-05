@@ -1,18 +1,5 @@
 import api from "./api";
-
-export interface MasterScoreLedger {
-  id: string;
-  team_id: string;
-  team_name: string;
-  section_represented: string;
-  points: number;
-  game: string;
-  category: string;
-  contributor_name: string;
-  is_group: boolean;
-  members: string[];
-  created_at: string;
-}
+import { MasterScoreLedger } from "@/types/master_ledger_score";
 
 export const exportService = {
   getMasterScoreLedger: async (): Promise<MasterScoreLedger[]> => {

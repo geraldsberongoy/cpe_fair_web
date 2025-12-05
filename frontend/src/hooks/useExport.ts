@@ -8,17 +8,21 @@ export const useExportMasterScoreLedger = () => {
     onSuccess: (data) => {
       // Transform data for Excel
       const excelData = data.map((row) => ({
-        "Score ID": row.score_id,
+        "Score ID": row.score_id || row.id,
         Points: row.points,
-        "Created At": row.created_at ? new Date(row.created_at).toLocaleString() : "",
-        Game: row.game_name,
-        Category: row.game_category,
+        "Created At": row.created_at
+          ? new Date(row.created_at).toLocaleString()
+          : "",
+        Game: row.game_name || row.game,
+        Category: row.game_category || row.category,
         "Is Group": row.is_group ? "Yes" : "No",
         "Team ID": row.team_id,
         "Team Name": row.team_name,
         "Section Represented": row.section_represented,
-        Contributor: row.contributor,
-        Members: row.members && row.members !== "[]" ? row.members : "",
+        Contributor: row.contributor || row.contributor_name,
+        Members: Array.isArray(row.members)
+          ? row.members.join(", ")
+          : row.members || "",
       }));
 
       // Create worksheet and workbook
@@ -27,7 +31,9 @@ export const useExportMasterScoreLedger = () => {
       XLSX.utils.book_append_sheet(workbook, worksheet, "Score Ledger");
 
       // Download file
-      const fileName = `Master_Score_Ledger_${new Date().toISOString().split("T")[0]}.xlsx`;
+      const fileName = `Master_Score_Ledger_${
+        new Date().toISOString().split("T")[0]
+      }.xlsx`;
       XLSX.writeFile(workbook, fileName);
     },
   });
