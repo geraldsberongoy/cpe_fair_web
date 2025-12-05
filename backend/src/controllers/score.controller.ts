@@ -102,11 +102,9 @@ export const createScore = async (
     req.body;
 
   if (!teamId || !points || !game || !category) {
-    return res
-      .status(400)
-      .json({
-        error: "Missing required fields: teamId, points, game, category",
-      });
+    return res.status(400).json({
+      error: "Missing required fields: teamId, points, game, category",
+    });
   }
 
   try {

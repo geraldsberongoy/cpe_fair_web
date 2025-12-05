@@ -12,9 +12,9 @@ import { Score, CreateScoreDto, UpdateScoreDto } from "../types/score";
 
 export const SCORE_KEYS = {
   all: ["scores"] as const,
-  aggregated: (includeMiniGames?: boolean) => 
+  aggregated: (includeMiniGames?: boolean) =>
     ["scores", "aggregated", includeMiniGames] as const,
-  sectionTeam: (team: string, includeMiniGames?: boolean) => 
+  sectionTeam: (team: string, includeMiniGames?: boolean) =>
     ["scores", "sectionTeam", team, includeMiniGames] as const,
   categoryStandings: (category: string) =>
     ["scores", "categoryStandings", category] as const,
@@ -61,7 +61,8 @@ export const useSectionTeamScores = (
 ) => {
   return useQuery({
     queryKey: SCORE_KEYS.sectionTeam(sectionTeam, includeMiniGames),
-    queryFn: () => scoreService.getScoresBySectionTeam(sectionTeam, includeMiniGames),
+    queryFn: () =>
+      scoreService.getScoresBySectionTeam(sectionTeam, includeMiniGames),
     enabled: !!sectionTeam, // Only fetch if team name is provided
   });
 };
