@@ -6,6 +6,7 @@ import {
 } from "@/hooks/useScore";
 import { usePlayers } from "@/hooks/usePlayer";
 import { useGames } from "@/hooks/useGame";
+import { useTeams } from "@/hooks/useTeams";
 import { GameCategory } from "@/types/game";
 import { ChevronLeft, Star } from "lucide-react";
 import {
@@ -81,14 +82,16 @@ export const TeamScoreModal = ({
     );
   };
 
-  const bg=pickBg(teamName);
+  const bg = pickBg(teamName);
   return (
-    <DialogContent className="max-w-[90%] sm:max-w-md max-h-[80vh] bg-[#2a2640]/10 bg-linear-to-b from-[#2a2640]/30 to-[#1a1630]/70 text-white" 
+    <DialogContent
+      className="max-w-[90%] sm:max-w-md max-h-[80vh] bg-[#2a2640]/10 bg-linear-to-b from-[#2a2640]/30 to-[#1a1630]/70 text-white"
       style={{
-                      backgroundImage: `linear-gradient(rgba(0,0,0,0.30), rgba(0,0,0,0.30)), url(${bg})`,
-                      backgroundSize: "cover",
-                      backgroundPosition: "center",
-                    }}>
+        backgroundImage: `linear-gradient(rgba(0,0,0,0.30), rgba(0,0,0,0.30)), url(${bg})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
+    >
       <BorderDesign />
       <DialogHeader>
         <DialogTitle className="px-2 text-2xl font-bold flex flex-col items-center text-transparent bg-clip-text bg-linear-to-b from-[#f0e6d2] via-[#d3bc8e] to-[#9d8f6f] drop-shadow-[0_0_30px_rgba(211,188,142,0.8)]">
@@ -108,7 +111,9 @@ export const TeamScoreModal = ({
                 className="p-4 rounded-lg border border-white/10 flex justify-between items-center bg-linear-to-br from-[#FEF4BF]/30 to-transparent"
               >
                 <div>
-                  <p className="font-bold text-sm md:text-lg text-white">{score.game}</p>
+                  <p className="font-bold text-sm md:text-lg text-white">
+                    {score.game}
+                  </p>
                   <div className="flex flex-col gap-1 text-[10px] md:text-sm text-white/60">
                     <span className="bg-white/10 px-2 py-0.5 rounded text-[8px] md:text-xs w-fit">
                       {score.category}
@@ -176,14 +181,16 @@ const GamePlayersModal = ({
     ];
   }, [details, players]);
 
-  const bg=pickBg(teamName);
+  const bg = pickBg(teamName);
   return (
-    <DialogContent className="max-w-[90%] sm:max-w-md max-h-[80vh] bg-[#2a2640]/10 bg-linear-to-b from-[#2a2640]/30 to-[#1a1630]/70 text-white" 
+    <DialogContent
+      className="max-w-[90%] sm:max-w-md max-h-[80vh] bg-[#2a2640]/10 bg-linear-to-b from-[#2a2640]/30 to-[#1a1630]/70 text-white"
       style={{
-                      backgroundImage: `linear-gradient(rgba(0,0,0,0.30), rgba(0,0,0,0.30)), url(${bg})`,
-                      backgroundSize: "cover",
-                      backgroundPosition: "center",
-                    }}>
+        backgroundImage: `linear-gradient(rgba(0,0,0,0.30), rgba(0,0,0,0.30)), url(${bg})`,
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+      }}
+    >
       <BorderDesign />
       <DialogHeader>
         <DialogTitle className="px-2 text-2xl font-bold flex flex-col items-center text-transparent bg-clip-text bg-linear-to-b from-[#f0e6d2] via-[#d3bc8e] to-[#9d8f6f] drop-shadow-[0_0_30px_rgba(211,188,142,0.8)]">
@@ -218,6 +225,9 @@ const GamePlayersModal = ({
 
 const Leaderboard = ({ selectedCategory }: LeaderboardProps) => {
   const [selectedGame, setSelectedGame] = useState<string | null>(null);
+
+  // Fetch teams for when there are no scores
+  const { data: teams = [], isLoading: teamsLoading } = useTeams();
 
   // Fetch games for the selected category (for non-Overall view)
   const { data: gamesData = [], isLoading: gamesLoading } = useGames(
@@ -261,7 +271,7 @@ const Leaderboard = ({ selectedCategory }: LeaderboardProps) => {
   };
 
   if (selectedCategory === "Overall") {
-    if (isAggregatedLoading) {
+    if (isAggregatedLoading || teamsLoading) {
       return (
         <div className="text-white text-center">
           Loading overall standings...
@@ -269,10 +279,60 @@ const Leaderboard = ({ selectedCategory }: LeaderboardProps) => {
       );
     }
 
+    // If no scores exist, show teams from /team endpoint
     if (!aggregatedScores || aggregatedScores.length === 0) {
+      if (!teams || teams.length === 0) {
+        return (
+          <div className="text-white text-center">No teams available.</div>
+        );
+      }
+
+      // Display teams with 0 points
       return (
-        <div className="text-white text-center">
-          No overall standings available.
+        <div className="w-full px-[5vw] md:px-[10vw] flex flex-col gap-4 mb-6">
+          <h2 className="text-2xl font-bold text-white text-center">
+            Overall Leaderboard
+          </h2>
+          <p className="text-white/60 text-center mb-4">
+            No scores recorded yet. Teams will appear here once games are
+            played.
+          </p>
+          {teams.map((team, index) => {
+            const bg = pickBg(team.name);
+            return (
+              <div
+                key={team.id}
+                style={{
+                  backgroundImage: bg
+                    ? `linear-gradient(rgba(0,0,0,0.10), rgba(0,0,0,0.10)), url(${bg})`
+                    : undefined,
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                }}
+                className={`w-full flex items-center justify-between p-6 rounded-xl border transition-scale duration-300 scale-[1.01] relative overflow-hidden ${
+                  bg ? "border-white/20" : "border-white/20"
+                }`}
+              >
+                <StarryBackground starCount={10} />
+                <div className="flex items-center gap-3 md:gap-6">
+                  <div className="text-left">
+                    <h3 className="text-md md:text-2xl font-bold text-white">
+                      {team.name}
+                    </h3>
+                    <p className="text-white/60 text-sm md:text-base">
+                      {team.section_represented}
+                    </p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className="text-lg md:text-3xl font-bold text-white">0</p>
+                  <p className="text-[10px] md:text-sm text-white/60 uppercase tracking-wider">
+                    Points
+                  </p>
+                </div>
+              </div>
+            );
+          })}
         </div>
       );
     }
@@ -294,7 +354,6 @@ const Leaderboard = ({ selectedCategory }: LeaderboardProps) => {
           const bg = pickBg(team.section_team);
           return (
             <Dialog key={team.section_team}>
-              
               <DialogTrigger asChild>
                 <button
                   style={{
@@ -378,7 +437,7 @@ const Leaderboard = ({ selectedCategory }: LeaderboardProps) => {
             <button
               key={game.id}
               onClick={() => setSelectedGame(game.name)}
-                 className="bg-white/10 backdrop-blur-md rounded-xl p-6 border border-white/20 bg-linear-to-b from-[#2a2640]/60 to-[#1a1630]/70
+              className="bg-white/10 backdrop-blur-md rounded-xl p-6 border border-white/20 bg-linear-to-b from-[#2a2640]/60 to-[#1a1630]/70
                           transition-all duration-300 group text-left"
             >
               <StarryBackground starCount={10} />
@@ -666,7 +725,7 @@ const Leaderboard = ({ selectedCategory }: LeaderboardProps) => {
                       </p>
                       <p className="text-[10px] md:text-xs text-white/60 uppercase">
                         Points
-                      </p>           
+                      </p>
                     </div>
                   </button>
                 </DialogTrigger>
