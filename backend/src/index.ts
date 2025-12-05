@@ -35,15 +35,17 @@ app.get("/api", (req: Request, res: Response) => {
 });
 
 // --- Start Server ---
-app.listen(PORT, () => {
-  logger.info("Server started successfully", {
-    port: PORT,
-    environment: process.env.NODE_ENV || "development",
-    nodeVersion: process.version,
-    timestamp: new Date().toISOString(),
+// 1. Export the app for Vercel (Serverless)
+export default app;
+
+// 2. Only listen to the port if we are running LOCALLY (not in Vercel)
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(PORT, () => {
+    logger.info("Server started locally", {
+      port: PORT,
+      timestamp: new Date().toISOString(),
+    });
+    console.log(`\nServer is running on http://localhost:${PORT}/api\n`);
+    console.log(`Welcome to the ACCESS Leaderboard Express API!\n`);
   });
-  // Keep console.log for immediate visibility during development
-  console.log(`\nServer is running on http://localhost:${PORT}/api`);
-  console.log(`Environment: ${process.env.NODE_ENV || "development"}`);
-  console.log(process.env.SUPABASE_SERVICE_ROLE_KEY?.slice(0, 4));
-});
+}
