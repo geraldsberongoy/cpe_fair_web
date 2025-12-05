@@ -294,6 +294,7 @@ const Leaderboard = ({ selectedCategory }: LeaderboardProps) => {
           const bg = pickBg(team.section_team);
           return (
             <Dialog key={team.section_team}>
+              
               <DialogTrigger asChild>
                 <button
                   style={{
@@ -303,7 +304,7 @@ const Leaderboard = ({ selectedCategory }: LeaderboardProps) => {
                     backgroundSize: "cover",
                     backgroundPosition: "center",
                   }}
-                  className={`w-full flex items-center justify-between p-6 rounded-xl border transition-scale duration-300 scale-[1.01] hover:scale-[1.02] ${
+                  className={`w-full flex items-center justify-between p-6 rounded-xl border transition-scale duration-300 scale-[1.01] hover:scale-[1.02] group relative overflow-hidden ${
                     bg
                       ? "border-white/20"
                       : index === 0
@@ -315,6 +316,7 @@ const Leaderboard = ({ selectedCategory }: LeaderboardProps) => {
                       : "border-white/20"
                   }`}
                 >
+                  <div className="absolute inset-0 bg-gradient-to-r from-[#d3bc8e]/0 via-[#f0e6d2]/30 to-[#d3bc8e]/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-500"></div>
                   <StarryBackground starCount={10} />
                   <div className="flex items-center gap-3 md:gap-6">
                     <span
@@ -618,7 +620,7 @@ const Leaderboard = ({ selectedCategory }: LeaderboardProps) => {
               <Dialog key={score.id}>
                 <DialogTrigger asChild>
                   <button
-                    className={`w-full flex items-center justify-between p-4 rounded-lg border transition-all duration-300 hover:scale-[1.01] ${
+                    className={`w-full group relative overflow-hidden flex items-center justify-between p-4 rounded-lg border transition-all duration-300 hover:scale-[1.01] ${
                       index === 0
                         ? "bg-yellow-500/20 border-yellow-500/50 hover:bg-yellow-500/30"
                         : index === 1
@@ -633,6 +635,7 @@ const Leaderboard = ({ selectedCategory }: LeaderboardProps) => {
                       backgroundPosition: "center",
                     }}
                   >
+                    <div className="absolute inset-0 bg-gradient-to-r from-[#d3bc8e]/0 via-[#f0e6d2]/30 to-[#d3bc8e]/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-500"></div>
                     <div className="flex items-center gap-4">
                       <StarryBackground starCount={10} />
                       <span

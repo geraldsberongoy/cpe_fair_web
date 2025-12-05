@@ -110,7 +110,6 @@ const Podium = ({ topTeams }: PodiumProps) => {
   return (
     <div className="">
       <div className="flex justify-center items-end gap-2 md:gap-8 ">
-        
         {podiumOrder.map((team, index) => {
           // Use the restored pickBg function to get the actual image src
           const bg = pickBg(team?.section_team || null);
@@ -124,13 +123,13 @@ const Podium = ({ topTeams }: PodiumProps) => {
                   key={team.section_team}
                   // Increased width here: w-40 (10rem) and sm:w-56 (14rem)
                   className={`flex flex-col items-center transition-all duration-300 ${rankData.height} w-24 md:w-75`}
-                >        
-                            
+                >
                   {/* Rank Label (Above Block) */}
-                  <div className={`text-sm md:text-xl font-bold mb-2 ${rankData.textColor} drop-shadow-lg`}>
+                  <div
+                    className={`text-sm md:text-xl font-bold mb-2 ${rankData.textColor} drop-shadow-lg`}
+                  >
                     {rankData.rankLabel}
                   </div>
-                  
 
                   {/* Podium Block - The wider, themed block */}
                   <div
@@ -138,66 +137,94 @@ const Podium = ({ topTeams }: PodiumProps) => {
                     drop-shadow-[0_0_1px_rgb(250,215,50)]`}
                   >
                     {/* BORDER DESIGNS */}
-              <div
-                className={`absolute z-10 inset-0 border-4 ${rankData.borderColor} group-hover:border-amber-400 transition-colors duration-300`}
-                style={{
-                  clipPath: "polygon(0 0, 100% 0, 100% 100%, 0 100%)",
-                }}
-              ></div>
-              <div className="absolute inset-2 border-2 border-amber-600/40 z-10"></div>
+                    <div
+                      className={`absolute z-10 inset-0 border-4 ${rankData.borderColor} group-hover:border-white transition-colors duration-300`}
+                      style={{
+                        clipPath: "polygon(0 0, 100% 0, 100% 100%, 0 100%)",
+                      }}
+                    ></div>
+                    <div className="absolute inset-2 border-2 border-amber-600/40 z-10"></div>
 
-              {/* Corner Ornaments - Top Left */}
-              <div className="absolute top-0 left-0 w-12 h-12 z-10">
-                <div className={`absolute top-0 left-0 w-full h-1 bg-linear-to-r ${rankData.cornerColor} to-transparent`}></div>
-                <div className={`absolute top-0 left-0 w-1 h-full bg-linear-to-b ${rankData.cornerColor} to-transparent`}></div>
-                <div className="absolute top-2 left-2 w-6 h-6 border-t-2 border-l-2 border-[#FEF4BF]/60"></div>
-                <div
-                  className={`absolute top-0 left-0 w-3 h-3 bg-linear-to-br group-hover:scale-125 transition-transform duration-300`}
-                ></div>
-              </div>
+                    {/* Corner Ornaments - Top Left */}
+                    <div className="absolute top-0 left-0 w-12 h-12 z-10">
+                      <div
+                        className={`absolute top-0 left-0 w-full h-1 bg-linear-to-r ${rankData.cornerColor} to-transparent`}
+                      ></div>
+                      <div
+                        className={`absolute top-0 left-0 w-1 h-full bg-linear-to-b ${rankData.cornerColor} to-transparent`}
+                      ></div>
+                      <div className="absolute top-2 left-2 w-6 h-6 border-t-2 border-l-2 border-[#FEF4BF]/60"></div>
+                      <div
+                        className={`absolute top-0 left-0 w-3 h-3 bg-linear-to-br group-hover:scale-125 transition-transform duration-300`}
+                      ></div>
+                    </div>
 
-              {/* Corner Ornaments - Top Right */}
-              <div className="absolute top-0 right-0 w-12 h-12 z-10">
-                <div className={`absolute top-0 right-0 w-full h-1 bg-linear-to-l ${rankData.cornerColor} to-transparent`}></div>
-                <div className={`absolute top-0 right-0 w-1 h-full bg-linear-to-b ${rankData.cornerColor} to-transparent`}></div>
-                <div className="absolute top-2 right-2 w-6 h-6 border-t-2 border-r-2 border-[#FEF4BF]/60"></div>
-                <div
-                  className={`absolute top-0 right-0 w-3 h-3 bg-linear-to-bl group-hover:scale-125 transition-transform duration-300`}
-                ></div>
-              </div>
+                    {/* Corner Ornaments - Top Right */}
+                    <div className="absolute top-0 right-0 w-12 h-12 z-10">
+                      <div
+                        className={`absolute top-0 right-0 w-full h-1 bg-linear-to-l ${rankData.cornerColor} to-transparent`}
+                      ></div>
+                      <div
+                        className={`absolute top-0 right-0 w-1 h-full bg-linear-to-b ${rankData.cornerColor} to-transparent`}
+                      ></div>
+                      <div className="absolute top-2 right-2 w-6 h-6 border-t-2 border-r-2 border-[#FEF4BF]/60"></div>
+                      <div
+                        className={`absolute top-0 right-0 w-3 h-3 bg-linear-to-bl group-hover:scale-125 transition-transform duration-300`}
+                      ></div>
+                    </div>
 
-              {/* Corner Ornaments - Bottom Left */}
-              <div className="absolute bottom-0 left-0 w-12 h-12 z-10">
-                <div className={`absolute bottom-0 left-0 w-full h-1 bg-linear-to-r ${rankData.cornerColor} to-transparent`}></div>
-                <div className={`absolute bottom-0 left-0 w-1 h-full bg-linear-to-t ${rankData.cornerColor} to-transparent`}></div>
-                <div className="absolute bottom-2 left-2 w-6 h-6 border-b-2 border-l-2 border-[#FEF4BF]/60"></div>
-                <div
-                  className={`absolute bottom-0 left-0 w-3 h-3 bg-linear-to-tr group-hover:scale-125 transition-transform duration-300`}
-                ></div>
-              </div>
+                    {/* Corner Ornaments - Bottom Left */}
+                    <div className="absolute bottom-0 left-0 w-12 h-12 z-10">
+                      <div
+                        className={`absolute bottom-0 left-0 w-full h-1 bg-linear-to-r ${rankData.cornerColor} to-transparent`}
+                      ></div>
+                      <div
+                        className={`absolute bottom-0 left-0 w-1 h-full bg-linear-to-t ${rankData.cornerColor} to-transparent`}
+                      ></div>
+                      <div className="absolute bottom-2 left-2 w-6 h-6 border-b-2 border-l-2 border-[#FEF4BF]/60"></div>
+                      <div
+                        className={`absolute bottom-0 left-0 w-3 h-3 bg-linear-to-tr group-hover:scale-125 transition-transform duration-300`}
+                      ></div>
+                    </div>
 
-              {/* Corner Ornaments - Bottom Right */}
-              <div className="absolute bottom-0 right-0 w-12 h-12 z-10">
-                <div className={`absolute bottom-0 right-0 w-full h-1 bg-linear-to-l ${rankData.cornerColor} to-transparent`}></div>
-                <div className={`absolute bottom-0 right-0 w-1 h-full bg-linear-to-t ${rankData.cornerColor} to-transparent`}></div>
-                <div className="absolute bottom-2 right-2 w-6 h-6 border-b-2 border-r-2 border-[#FEF4BF]/60"></div>
-                <div
-                  className={`absolute bottom-0 right-0 w-3 h-3 bg-linear-to-tl  group-hover:scale-125 transition-transform duration-300`}
-                ></div>
-              </div>
+                    {/* Corner Ornaments - Bottom Right */}
+                    <div className="absolute bottom-0 right-0 w-12 h-12 z-10">
+                      <div
+                        className={`absolute bottom-0 right-0 w-full h-1 bg-linear-to-l ${rankData.cornerColor} to-transparent`}
+                      ></div>
+                      <div
+                        className={`absolute bottom-0 right-0 w-1 h-full bg-linear-to-t ${rankData.cornerColor} to-transparent`}
+                      ></div>
+                      <div className="absolute bottom-2 right-2 w-6 h-6 border-b-2 border-r-2 border-[#FEF4BF]/60"></div>
+                      <div
+                        className={`absolute bottom-0 right-0 w-3 h-3 bg-linear-to-tl  group-hover:scale-125 transition-transform duration-300`}
+                      ></div>
+                    </div>
 
-              {/* Side Decorations */}
-              <div className={`absolute top-1/2 left-0 transform -translate-y-1/2 w-2 h-16 bg-linear-to-r ${rankData.sideDecorColor} to-transparent z-10`}></div>
-              <div className={`absolute top-1/2 right-0 transform -translate-y-1/2 w-2 h-16 bg-linear-to-l ${rankData.sideDecorColor} to-transparent z-10`}></div>
-              <div className={`absolute top-0 left-1/2 transform -translate-x-1/2 h-2 w-16 bg-linear-to-b ${rankData.sideDecorColor} to-transparent z-10`}></div>
-              <div className={`absolute bottom-0 left-1/2 transform -translate-x-1/2 h-2 w-16 bg-linear-to-t ${rankData.sideDecorColor} to-transparent z-10`}></div>
+                    {/* Side Decorations */}
+                    <div
+                      className={`absolute top-1/2 left-0 transform -translate-y-1/2 w-2 h-16 bg-linear-to-r ${rankData.sideDecorColor} to-transparent z-10`}
+                    ></div>
+                    <div
+                      className={`absolute top-1/2 right-0 transform -translate-y-1/2 w-2 h-16 bg-linear-to-l ${rankData.sideDecorColor} to-transparent z-10`}
+                    ></div>
+                    <div
+                      className={`absolute top-0 left-1/2 transform -translate-x-1/2 h-2 w-16 bg-linear-to-b ${rankData.sideDecorColor} to-transparent z-10`}
+                    ></div>
+                    <div
+                      className={`absolute bottom-0 left-1/2 transform -translate-x-1/2 h-2 w-16 bg-linear-to-t ${rankData.sideDecorColor} to-transparent z-10`}
+                    ></div>
 
-              {/* END BORDER DESIGNS */}
+                    {/* END BORDER DESIGNS */}
                     {/* Background Image Layer */}
                     <div
                       className="absolute inset-0 bg-cover bg-center transition-all duration-500 hover:scale-105 z-0"
                       // Use style for background image derived from the restored imports
-                      style={{ backgroundImage: bg ? `linear-gradient(rgba(0,0,0,0.15), rgba(0,0,0,0.15)), url(${bg})` : "none" }}
+                      style={{
+                        backgroundImage: bg
+                          ? `linear-gradient(rgba(0,0,0,0.15), rgba(0,0,0,0.15)), url(${bg})`
+                          : "none",
+                      }}
                     />
                     <StarryBackground starCount={10} />
 
