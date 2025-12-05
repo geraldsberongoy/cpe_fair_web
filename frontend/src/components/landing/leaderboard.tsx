@@ -303,7 +303,7 @@ const Leaderboard = ({ selectedCategory }: LeaderboardProps) => {
                     backgroundSize: "cover",
                     backgroundPosition: "center",
                   }}
-                  className={`w-full flex items-center justify-between p-6 rounded-xl border transition-scale duration-300 hover:scale-[1.01] ${
+                  className={`w-full flex items-center justify-between p-6 rounded-xl border transition-scale duration-300 scale-[1.01] hover:scale-[1.02] ${
                     bg
                       ? "border-white/20"
                       : index === 0
@@ -315,6 +315,7 @@ const Leaderboard = ({ selectedCategory }: LeaderboardProps) => {
                       : "border-white/20"
                   }`}
                 >
+                  <StarryBackground starCount={10} />
                   <div className="flex items-center gap-3 md:gap-6">
                     <span
                       className={`text-lg md:text-3xl font-bold w-12 text-center text-white/60`}
