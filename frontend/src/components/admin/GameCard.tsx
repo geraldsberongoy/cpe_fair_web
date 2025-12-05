@@ -1,14 +1,15 @@
 import React from 'react';
-import { Edit2, Trash2 } from 'lucide-react';
+import { Edit2, Trash2, Plus } from 'lucide-react';
 import { Game } from '@/types/game';
 
 interface GameCardProps {
   game: Game;
   onEdit: (game: Game) => void;
   onDelete: (id: string) => void;
+  onAddScore: (game: Game) => void;
 }
 
-const GameCard: React.FC<GameCardProps> = ({ game, onEdit, onDelete }) => {
+const GameCard: React.FC<GameCardProps> = ({ game, onEdit, onDelete, onAddScore }) => {
   return (
     <div className="bg-[#1e2130]/80 border border-[#d3bc8e]/20 rounded-xl p-4 shadow-lg backdrop-blur-sm hover:border-[#d3bc8e]/50 transition-all group relative min-h-[100px]">
       <div className="flex justify-between items-start mb-2">
@@ -30,9 +31,20 @@ const GameCard: React.FC<GameCardProps> = ({ game, onEdit, onDelete }) => {
         <button
           onClick={(e) => {
             e.stopPropagation();
+            onAddScore(game);
+          }}
+          className="p-2 text-[#8a8d99] hover:text-green-400 bg-[#161822]/80 hover:bg-[#161822] backdrop-blur-sm rounded-full shadow-lg border border-[#d3bc8e]/10 hover:border-green-500/40 transition-all transform hover:scale-110"
+          title="Add Score"
+        >
+          <Plus size={14} />
+        </button>
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
             onEdit(game);
           }}
           className="p-2 text-[#8a8d99] hover:text-[#d3bc8e] bg-[#161822]/80 hover:bg-[#161822] backdrop-blur-sm rounded-full shadow-lg border border-[#d3bc8e]/10 hover:border-[#d3bc8e]/40 transition-all transform hover:scale-110"
+          title="Edit Game"
         >
           <Edit2 size={14} />
         </button>
@@ -42,6 +54,7 @@ const GameCard: React.FC<GameCardProps> = ({ game, onEdit, onDelete }) => {
             onDelete(game.id);
           }}
           className="p-2 text-[#8a8d99] hover:text-red-400 bg-[#161822]/80 hover:bg-[#161822] backdrop-blur-sm rounded-full shadow-lg border border-[#d3bc8e]/10 hover:border-red-500/30 transition-all transform hover:scale-110"
+          title="Delete Game"
         >
           <Trash2 size={14} />
         </button>

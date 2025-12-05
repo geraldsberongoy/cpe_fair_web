@@ -1,6 +1,11 @@
 import { useState, useEffect, useMemo } from "react";
-import { useCategoryStandings, useAggregatedScores } from "@/hooks/useScore";
+import {
+  useCategoryStandings,
+  useAggregatedScores,
+  useScoresByGame,
+} from "@/hooks/useScore";
 import { usePlayers } from "@/hooks/usePlayer";
+import { useGames } from "@/hooks/useGame";
 import { GameCategory } from "@/types/game";
 import { ChevronLeft } from "lucide-react";
 import {
@@ -198,6 +203,20 @@ const GamePlayersModal = ({
 const Leaderboard = ({ selectedCategory }: LeaderboardProps) => {
   const [selectedGame, setSelectedGame] = useState<string | null>(null);
 
+  // Fetch games for the selected category (for non-Overall view)
+  const { data: gamesData = [], isLoading: gamesLoading } = useGames(
+    undefined,
+    undefined,
+    selectedCategory === "Overall" ? undefined : selectedCategory
+  );
+
+  // Fetch scores by game when a game is selected
+  const { data: gameScoresData, isLoading: scoresLoading } = useScoresByGame(
+    selectedGame,
+    "points"
+  );
+  const gameScores = gameScoresData?.data || [];
+
   const { data: categoryStandings, isLoading: isCategoryLoading } =
     useCategoryStandings(
       selectedCategory === "Overall" ? "" : selectedCategory
@@ -247,9 +266,8 @@ const Leaderboard = ({ selectedCategory }: LeaderboardProps) => {
       (a, b) => b.totalPoints - a.totalPoints
     );
 
-    const topThree = [...sortedTeams]
-                .slice(0, 3);
-    
+    const topThree = [...sortedTeams].slice(0, 3);
+
     return (
       <div className="w-full px-[5vw] md:px-[10vw] flex flex-col gap-4 mb-6">
         <h2 className="text-2xl font-bold text-white text-center">
@@ -263,7 +281,9 @@ const Leaderboard = ({ selectedCategory }: LeaderboardProps) => {
               <DialogTrigger asChild>
                 <button
                   style={{
-                    backgroundImage: bg ? `linear-gradient(rgba(0,0,0,0.10), rgba(0,0,0,0.10)), url(${bg})` : undefined,
+                    backgroundImage: bg
+                      ? `linear-gradient(rgba(0,0,0,0.10), rgba(0,0,0,0.10)), url(${bg})`
+                      : undefined,
                     backgroundSize: "cover",
                     backgroundPosition: "center",
                   }}
@@ -315,14 +335,14 @@ const Leaderboard = ({ selectedCategory }: LeaderboardProps) => {
     );
   }
 
-  if (isCategoryLoading) {
-    return <div className="text-white text-center">Loading standings...</div>;
+  if (gamesLoading) {
+    return <div className="text-white text-center">Loading games...</div>;
   }
 
-  if (!categoryStandings || Object.keys(categoryStandings).length === 0) {
+  if (!gamesData || gamesData.length === 0) {
     return (
       <div className="text-white text-center">
-        No standings available for this category.
+        No games available for this category.
       </div>
     );
   }
@@ -335,10 +355,10 @@ const Leaderboard = ({ selectedCategory }: LeaderboardProps) => {
           Select a Game
         </h3>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {Object.keys(categoryStandings).map((gameName) => (
+          {gamesData.map((game: any) => (
             <button
-              key={gameName}
-              onClick={() => setSelectedGame(gameName)}
+              key={game.id}
+              onClick={() => setSelectedGame(game.name)}
               className="bg-white/10 backdrop-blur-md rounded-xl p-6 border border-white/20 transition-all duration-300 group text-left
               hover:shadow-amber-300"
             >
@@ -401,27 +421,42 @@ const Leaderboard = ({ selectedCategory }: LeaderboardProps) => {
 
               {/* Game title */}
               <div className="flex items-center justify-center mb-6 w-full">
-                        <div className="flex-1 h-px bg-linear-to-r from-transparent via-amber-500/50 to-transparent max-w-16"></div>
-                        <h3 className={`text-2xl text-yellow-400 font-bold text-center mx-4 bg-linear-to-r bg-clip-text group-hover:scale-105 transition-transform duration-300`} style={{
-                          textShadow: '0 0 5px rgba(251, 191, 36, 0.6)',
-                        }}>
-                          {gameName}
-                        </h3>
-                        <div className="flex-1 h-px bg-linear-to-l from-transparent via-amber-500/50 to-transparent max-w-16"></div>
-                      </div>
+                <div className="flex-1 h-px bg-linear-to-r from-transparent via-amber-500/50 to-transparent max-w-16"></div>
+                <h3
+                  className={`text-2xl text-yellow-400 font-bold text-center mx-4 bg-linear-to-r bg-clip-text group-hover:scale-105 transition-transform duration-300`}
+                  style={{
+                    textShadow: "0 0 5px rgba(251, 191, 36, 0.6)",
+                  }}
+                >
+                  {game.name}
+                </h3>
+                <div className="flex-1 h-px bg-linear-to-l from-transparent via-amber-500/50 to-transparent max-w-16"></div>
+              </div>
 
               {/* Center Icon/ View Rankings Icon */}
-                      <div className="flex flex-col items-center justify-center text-amber-300 space-y-3 my-6">
-                        <div className="relative">
-                          <div className="absolute inset-0 bg-amber-400/20 blur-xl group-hover:bg-amber-400/40 transition-all duration-300"></div>
-                          <div className="relative w-16 h-16 border-2 border-amber-500/70 group-hover:border-amber-400 flex items-center justify-center transition-all duration-300 bg-linear-to-br from-[#2a2f4a] to-[#1a1f3a]">
-                            <svg className="w-8 h-8 text-amber-400 group-hover:text-amber-300 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                            </svg>
-                          </div>
-                        </div>
-                        <p className="text-xs text-amber-400/80 group-hover:text-amber-300 transition-colors uppercase tracking-wider">View Rankings</p>
-                      </div>
+              <div className="flex flex-col items-center justify-center text-amber-300 space-y-3 my-6">
+                <div className="relative">
+                  <div className="absolute inset-0 bg-amber-400/20 blur-xl group-hover:bg-amber-400/40 transition-all duration-300"></div>
+                  <div className="relative w-16 h-16 border-2 border-amber-500/70 group-hover:border-amber-400 flex items-center justify-center transition-all duration-300 bg-linear-to-br from-[#2a2f4a] to-[#1a1f3a]">
+                    <svg
+                      className="w-8 h-8 text-amber-400 group-hover:text-amber-300 transition-colors"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M13 10V3L4 14h7v7l9-11h-7z"
+                      />
+                    </svg>
+                  </div>
+                </div>
+                <p className="text-xs text-amber-400/80 group-hover:text-amber-300 transition-colors uppercase tracking-wider">
+                  View Rankings
+                </p>
+              </div>
 
               {/* Bottom ornamental dots */}
               <div className="flex gap-2 mt-4 justify-center">
@@ -444,7 +479,44 @@ const Leaderboard = ({ selectedCategory }: LeaderboardProps) => {
   }
 
   // View 2: Specific Game Leaderboard
-  const teams = categoryStandings[selectedGame] || [];
+  if (scoresLoading) {
+    return (
+      <div className="w-full mb-6 px-[5vw] md:px-[10vw]">
+        <button
+          onClick={() => setSelectedGame(null)}
+          className="flex items-center gap-2 text-white/80 hover:text-white mb-3 md:mb-6 transition-colors"
+        >
+          <ChevronLeft size={20} />
+          <span>Back to Games</span>
+        </button>
+        <div className="text-white text-center">Loading rankings...</div>
+      </div>
+    );
+  }
+
+  if (gameScores.length === 0) {
+    return (
+      <div className="w-full mb-6 px-[5vw] md:px-[10vw]">
+        <button
+          onClick={() => setSelectedGame(null)}
+          className="flex items-center gap-2 text-white/80 hover:text-white mb-3 md:mb-6 transition-colors"
+        >
+          <ChevronLeft size={20} />
+          <span>Back to Games</span>
+        </button>
+
+        <div className="bg-white/10 backdrop-blur-md rounded-xl p-4 md:p-6 border border-white/20 text-center py-12">
+          <h3 className="text-lg md:text-2xl font-bold text-white mb-2">
+            {selectedGame}
+          </h3>
+          <p className="text-white/60 text-lg">🎮 Event not yet started</p>
+          <p className="text-white/40 text-sm mt-2">
+            Check back later for rankings!
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full mb-6 px-[5vw] md:px-[10vw]">
@@ -462,10 +534,10 @@ const Leaderboard = ({ selectedCategory }: LeaderboardProps) => {
         </h3>
 
         <div className="flex flex-col gap-3">
-          {teams.map((team, index) => {
-            const bg = pickBg(team.teamName);
+          {gameScores.map((score, index) => {
+            const bg = pickBg(score.teamName);
             return (
-              <Dialog key={team.id}>
+              <Dialog key={score.id}>
                 <DialogTrigger asChild>
                   <button
                     className={`w-full flex items-center justify-between p-4 rounded-lg border transition-all duration-300 hover:scale-[1.01] ${
@@ -476,14 +548,12 @@ const Leaderboard = ({ selectedCategory }: LeaderboardProps) => {
                         : index === 2
                         ? "bg-orange-700/20 border-orange-700/50 hover:bg-orange-700/30"
                         : "bg-white/5 border-transparent hover:bg-white/10"
-                        
-                    }`
-                  }
-                  style={{
-              backgroundImage: `linear-gradient(rgba(0,0,0,0.10), rgba(0,0,0,0.10)), url(${bg})`,
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-            }}
+                    }`}
+                    style={{
+                      backgroundImage: `linear-gradient(rgba(0,0,0,0.10), rgba(0,0,0,0.10)), url(${bg})`,
+                      backgroundSize: "cover",
+                      backgroundPosition: "center",
+                    }}
                   >
                     <div className="flex items-center gap-4">
                       <span
@@ -501,26 +571,28 @@ const Leaderboard = ({ selectedCategory }: LeaderboardProps) => {
                       </span>
                       <div className="text-left">
                         <p className="font-bold text-sm md:text-lg text-white">
-                          {team.teamName}
+                          {score.teamName}
                         </p>
                         <p className="text-[10px] md:text-sm text-white/60 text-left line-clamp-1">
-                          {getParticipantsSimple(team.details)}
+                          {score.contributor || "Unknown"}
                         </p>
                       </div>
                     </div>
                     <div className="text-right">
                       <p className="text-lg md:text-xl font-bold text-white">
-                        {team.points}
+                        {score.points}
                       </p>
-                      <p className="text-[10px] md:text-xs text-white/60 uppercase">Points</p>
+                      <p className="text-[10px] md:text-xs text-white/60 uppercase">
+                        Points
+                      </p>
                     </div>
                   </button>
                 </DialogTrigger>
 
                 <GamePlayersModal
-                  teamName={team.teamName}
-                  gameName={selectedGame}
-                  details={team.details}
+                  teamName={score.teamName || "Unknown"}
+                  gameName={selectedGame || ""}
+                  details={score}
                 />
               </Dialog>
             );

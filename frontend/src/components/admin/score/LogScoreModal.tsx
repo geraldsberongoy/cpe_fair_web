@@ -8,6 +8,7 @@ import { useTeams } from "@/hooks/useTeams";
 import { Users } from "lucide-react";
 import { Team } from "@/services/team.service";
 import { Player } from "@/services/player.service";
+import { Game } from "@/types/game";
 import type { PlayerWithTeam } from "@/types/player";
 import { toast } from "react-toastify";
 import BaseModal from "@/components/ui/base-modal";
@@ -18,10 +19,30 @@ import GroupSection from "./GroupSection";
 
 interface LogScoreModalProps {
   trigger?: React.ReactNode;
+  isOpen?: boolean;
+  onClose?: () => void;
+  prefilledGame?: Game;
 }
 
-export default function LogScoreModal({ trigger }: LogScoreModalProps) {
-  const [open, setOpen] = useState(false);
+export default function LogScoreModal({
+  trigger,
+  isOpen: externalIsOpen,
+  onClose: externalOnClose,
+  prefilledGame,
+}: LogScoreModalProps) {
+  const [internalOpen, setInternalOpen] = useState(false);
+
+  const isControlled = externalIsOpen !== undefined;
+  const open = isControlled ? externalIsOpen : internalOpen;
+
+  const handleClose = () => {
+    if (isControlled) {
+      externalOnClose?.();
+    } else {
+      setInternalOpen(false);
+    }
+  };
+
   const { data: gamesData = [], isLoading: gamesLoading } = useGames();
   const { data: teams = [], isLoading: teamsLoading } = useTeams();
   const { data: playersResponse } = usePlayers(1, 100); // Fetch first 100 players
@@ -39,6 +60,22 @@ export default function LogScoreModal({ trigger }: LogScoreModalProps) {
   });
 
   const [members, setMembers] = useState<string[]>(["", ""]);
+
+  // --- Pre-fill Game ---
+  useEffect(() => {
+    if (open && prefilledGame) {
+      setFormData((prev) => ({
+        ...prev,
+        game: prefilledGame.name,
+        category: prefilledGame.category,
+        isGroup: prefilledGame.is_group,
+        contributor: "",
+      }));
+      if (prefilledGame.is_group) {
+        setMembers(["", ""]);
+      }
+    }
+  }, [open, prefilledGame]);
 
   // --- Auto-select first team ---
   useEffect(() => {
@@ -82,7 +119,7 @@ export default function LogScoreModal({ trigger }: LogScoreModalProps) {
             isGroup: false,
           }));
           setMembers(["", ""]);
-          setOpen(false);
+          handleClose();
           toast.success("Score logged successfully!");
         },
         onError: (err) => {
@@ -95,18 +132,19 @@ export default function LogScoreModal({ trigger }: LogScoreModalProps) {
 
   return (
     <>
-      {trigger || (
-        <button
-          onClick={() => setOpen(true)}
-          className="w-full bg-[#d3bc8e] text-[#1e2130] font-bold py-3 px-4 rounded-lg hover:bg-[#e6cfa3] transition-all shadow-lg"
-        >
-          Log Score
-        </button>
-      )}
+      {!isControlled &&
+        (trigger || (
+          <button
+            onClick={() => setInternalOpen(true)}
+            className="w-full bg-[#d3bc8e] text-[#1e2130] font-bold py-3 px-4 rounded-lg hover:bg-[#e6cfa3] transition-all shadow-lg"
+          >
+            Log Score
+          </button>
+        ))}
 
       <BaseModal
         isOpen={open}
-        onClose={() => setOpen(false)}
+        onClose={handleClose}
         title="Log Score"
         icon={Users}
         maxWidth="2xl"
@@ -133,7 +171,7 @@ export default function LogScoreModal({ trigger }: LogScoreModalProps) {
               >
                 {teams.map((t: Team) => (
                   <option key={t.id} value={t.id}>
-                    {t.name} <span className="text-xs text-[#4f5364]">({t.section_represented})</span>
+                    {t.name} ({t.section_represented})
                   </option>
                 ))}
               </select>
@@ -144,6 +182,7 @@ export default function LogScoreModal({ trigger }: LogScoreModalProps) {
           <GameSelector
             games={gamesData}
             isLoading={gamesLoading}
+            selectedGameName={formData.game}
             onSelect={(game) => {
               setFormData({
                 ...formData,
