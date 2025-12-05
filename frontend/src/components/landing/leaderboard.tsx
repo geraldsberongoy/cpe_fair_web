@@ -450,13 +450,46 @@ const Leaderboard = ({ selectedCategory }: LeaderboardProps) => {
                 <div className="flex-1 h-px bg-linear-to-l from-transparent via-[#FEF4BF]/50 to-transparent max-w-16"></div>
               </div>
 
-              {/* Center Icon/ View Rankings Icon */}
-              <div className="flex flex-col items-center justify-center text-amber-300 space-y-3 my-6">
-                <div className="relative">
-                  <div className="absolute inset-0 bg-[#9d8f6f]/20 blur-xl group-hover:bg-amber-400/40 transition-all duration-300"></div>
-                  <div className="relative w-16 h-16 border-2 border-[#9d8f6f] group-hover:border-[#d3bc8e] flex items-center justify-center transition-all duration-300 bg-linear-to-br from-[#2a2f4a] to-[#1a1f3a]">
+              {/* Action Buttons Section */}
+              <div className="flex flex-col items-center justify-center space-y-4 my-6">
+                {/* View Rankings - Primary Action */}
+                <div className="flex flex-col items-center space-y-2">
+                  <div className="relative">
+                    <div className="absolute inset-0 bg-[#9d8f6f]/20 blur-xl group-hover:bg-amber-400/40 transition-all duration-300"></div>
+                    <div className="relative w-16 h-16 border-2 border-[#9d8f6f] group-hover:border-[#d3bc8e] flex items-center justify-center transition-all duration-300 bg-linear-to-br from-[#2a2f4a] to-[#1a1f3a]">
+                      <svg
+                        className="w-8 h-8 text-[#d3bc8e] group-hover:text-[#f0e6d2] transition-colors"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M13 10V3L4 14h7v7l9-11h-7z"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                  <p className="text-xs text-transparent bg-clip-text bg-linear-to-b from-[#f0e6d2] via-[#d3bc8e] to-[#9d8f6f] transition-colors uppercase tracking-wider">
+                    View Rankings
+                  </p>
+                </div>
+
+                {/* Secondary Actions Row */}
+                <div className="flex gap-3 items-center justify-center w-full px-4">
+                  {/* View Bracketing Button */}
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      // TODO: Implement bracketing view
+                      alert(`View bracketing for ${game.name}`);
+                    }}
+                    className="flex-1 flex flex-col items-center gap-2 px-3 py-2 border border-[#9d8f6f]/40 hover:border-[#d3bc8e]/60 rounded bg-[#1a1f3a]/50 hover:bg-[#2a2f4a]/70 transition-all duration-300 group/btn"
+                  >
                     <svg
-                      className="w-8 h-8 text-[#d3bc8e] group-hover:text-[#f0e6d2] transition-colors"
+                      className="w-5 h-5 text-[#c8b896] group-hover/btn:text-[#d3bc8e] transition-colors"
                       fill="none"
                       stroke="currentColor"
                       viewBox="0 0 24 24"
@@ -465,14 +498,41 @@ const Leaderboard = ({ selectedCategory }: LeaderboardProps) => {
                         strokeLinecap="round"
                         strokeLinejoin="round"
                         strokeWidth={2}
-                        d="M13 10V3L4 14h7v7l9-11h-7z"
+                        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"
                       />
                     </svg>
-                  </div>
+                    <span className="text-[10px] text-[#c8b896] group-hover/btn:text-[#d3bc8e] uppercase tracking-wide transition-colors">
+                      Bracketing
+                    </span>
+                  </button>
+
+                  {/* View Schedule Button */}
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      // TODO: Implement schedule view
+                      alert(`View schedule for ${game.name}`);
+                    }}
+                    className="flex-1 flex flex-col items-center gap-2 px-3 py-2 border border-[#9d8f6f]/40 hover:border-[#d3bc8e]/60 rounded bg-[#1a1f3a]/50 hover:bg-[#2a2f4a]/70 transition-all duration-300 group/btn"
+                  >
+                    <svg
+                      className="w-5 h-5 text-[#c8b896] group-hover/btn:text-[#d3bc8e] transition-colors"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                      />
+                    </svg>
+                    <span className="text-[10px] text-[#c8b896] group-hover/btn:text-[#d3bc8e] uppercase tracking-wide transition-colors">
+                      Schedule
+                    </span>
+                  </button>
                 </div>
-                <p className="text-xs text-transparent bg-clip-text bg-linear-to-b from-[#f0e6d2] via-[#d3bc8e] to-[#9d8f6f]  transition-colors uppercase tracking-wider">
-                  View Rankings
-                </p>
               </div>
 
               {/* Bottom ornamental dots */}

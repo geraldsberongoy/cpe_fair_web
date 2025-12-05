@@ -15,7 +15,28 @@ import authRoutes from "./routes/auth.routes.js";
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-app.use(cors());
+// Define allowed origins
+const allowedOrigins = [
+  "http://localhost:3000", // Local development
+  "https://cpefair2025.vercel.app", // Your production Frontend URL
+];
+
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      // Allow requests with no origin (like mobile apps, curl, or Postman)
+      if (!origin) return callback(null, true);
+
+      if (allowedOrigins.indexOf(origin) === -1) {
+        const msg =
+          "The CORS policy for this site does not allow access from the specified Origin.";
+        return callback(new Error(msg), false);
+      }
+      return callback(null, true);
+    },
+    credentials: true, // Required if you are sending cookies/headers
+  })
+);
 app.use(express.json());
 
 // --- API Routes ---
@@ -35,15 +56,17 @@ app.get("/api", (req: Request, res: Response) => {
 });
 
 // --- Start Server ---
-app.listen(PORT, () => {
-  logger.info("Server started successfully", {
-    port: PORT,
-    environment: process.env.NODE_ENV || "development",
-    nodeVersion: process.version,
-    timestamp: new Date().toISOString(),
+// 1. Export the app for Vercel (Serverless)
+export default app;
+
+// 2. Only listen to the port if we are running LOCALLY (not in Vercel)
+if (process.env.NODE_ENV !== "production") {
+  app.listen(PORT, () => {
+    logger.info("Server started locally", {
+      port: PORT,
+      timestamp: new Date().toISOString(),
+    });
+    console.log(`\nServer is running on http://localhost:${PORT}/api\n`);
+    console.log(`Welcome to the ACCESS Leaderboard Express API!\n`);
   });
-  // Keep console.log for immediate visibility during development
-  console.log(`\nServer is running on http://localhost:${PORT}/api`);
-  console.log(`Environment: ${process.env.NODE_ENV || "development"}`);
-  console.log(process.env.SUPABASE_SERVICE_ROLE_KEY?.slice(0, 4));
-});
+}
