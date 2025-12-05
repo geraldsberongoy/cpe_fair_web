@@ -1,6 +1,10 @@
 import React from "react";
 
-const StarryBackground = ({starCount}) => {
+interface StarryBackgroundProps {
+  starCount?: number;
+}
+
+const StarryBackground: React.FC<StarryBackgroundProps> = ({ starCount = 100 }) => {
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
       {/* Layered star fields */}
@@ -19,7 +23,7 @@ const StarryBackground = ({starCount}) => {
         const delay = Math.random() * 5; // staggered animation
         return (
           <div
-            key={i}
+            key={`glow-${i}`}
             className="absolute rounded-full bg-amber-300"
             style={{
               width: `${size}px`,
@@ -42,7 +46,7 @@ const StarryBackground = ({starCount}) => {
         const delay = Math.random() * 5; // staggered animation
         return (
           <div
-            key={i}
+            key={`white-${i}`}
             className="absolute rounded-full bg-white"
             style={{
               width: `${size}px`,
