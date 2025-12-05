@@ -67,10 +67,15 @@ export const scoreService = {
 
   /**
    * Get aggregated scores by section team
+   * @param includeMiniGames - Whether to include Mini Games category in overall scores (default: false)
    */
-  getAggregatedScores: async (): Promise<SectionTeamScoreResponse[]> => {
+  getAggregatedScores: async (
+    includeMiniGames: boolean = false
+  ): Promise<SectionTeamScoreResponse[]> => {
     try {
-      const response = await api.get("/score/section_team");
+      const response = await api.get("/score/section_team", {
+        params: { includeMiniGames: includeMiniGames.toString() },
+      });
       return response.data;
     } catch (error) {
       console.error("Failed to fetch aggregated scores:", error);
@@ -81,12 +86,16 @@ export const scoreService = {
   /**
    * Get scores for a specific section team
    * @param sectionTeam The section team identifier (e.g., "Fontaine")
+   * @param includeMiniGames - Whether to include Mini Games category (default: false)
    */
   getScoresBySectionTeam: async (
-    sectionTeam: string
+    sectionTeam: string,
+    includeMiniGames: boolean = false
   ): Promise<SectionTeamScoreResponse | null> => {
     try {
-      const response = await api.get(`/score/section_team/${sectionTeam}`);
+      const response = await api.get(`/score/section_team/${sectionTeam}`, {
+        params: { includeMiniGames: includeMiniGames.toString() },
+      });
       return response.data;
     } catch (error) {
       console.error(`Failed to fetch scores for ${sectionTeam}:`, error);
