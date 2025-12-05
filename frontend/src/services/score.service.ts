@@ -46,6 +46,26 @@ export const scoreService = {
   },
 
   /**
+   * Get scores for a specific game with sorting
+   */
+  getScoresByGame: async (
+    game: string,
+    sortBy: string = "points",
+    page: number = 1,
+    limit: number = 100
+  ): Promise<PaginatedResponse<Score>> => {
+    try {
+      const response = await api.get("/score", {
+        params: { game, sortBy, page, limit },
+      });
+      return response.data;
+    } catch (error) {
+      console.error(`Failed to fetch scores for game ${game}:`, error);
+      return { data: [], meta: { total: 0, page, limit, totalPages: 0 } };
+    }
+  },
+
+  /**
    * Get aggregated scores by section team
    */
   getAggregatedScores: async (): Promise<SectionTeamScoreResponse[]> => {

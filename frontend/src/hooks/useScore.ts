@@ -16,12 +16,32 @@ export const SCORE_KEYS = {
   sectionTeam: (team: string) => ["scores", "sectionTeam", team] as const,
   categoryStandings: (category: string) =>
     ["scores", "categoryStandings", category] as const,
+  byGame: (game: string, sortBy: string) =>
+    ["scores", "game", game, sortBy] as const,
 };
 
 export const useScores = (page: number = 1, limit: number = 10) => {
   return useQuery({
     queryKey: [...SCORE_KEYS.all, page, limit],
     queryFn: () => scoreService.getAllScores(page, limit),
+    placeholderData: keepPreviousData,
+  });
+};
+
+export const useScoresByGame = (
+  game: string | null,
+  sortBy: string = "points"
+) => {
+  return useQuery({
+    queryKey: game ? SCORE_KEYS.byGame(game, sortBy) : ["scores", "none"],
+    queryFn: () =>
+      game
+        ? scoreService.getScoresByGame(game, sortBy)
+        : Promise.resolve({
+            data: [],
+            meta: { total: 0, page: 1, limit: 100, totalPages: 0 },
+          }),
+    enabled: !!game,
     placeholderData: keepPreviousData,
   });
 };
