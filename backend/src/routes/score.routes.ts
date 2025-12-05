@@ -42,7 +42,9 @@ router.get("/category-standings", getCategoryStandings);
  *  - category (string): Filter by category
  *  - sort (string): "points"
  *  - order (string): "asc" or "desc"
+ *  - includeMiniGames (string): "true" to include Mini Games category (default: false)
  * Response: Aggregated scores (JSON)
+ * Note: Mini Games are excluded from overall rankings by default
  */
 router.get("/section_team", getScoresByAllSectionTeam);
 
@@ -53,7 +55,9 @@ router.get("/section_team", getScoresByAllSectionTeam);
  * Query:
  *  - game (string): Filter by game
  *  - category (string): Filter by category
+ *  - includeMiniGames (string): "true" to include Mini Games category (default: false)
  * Response: Scores for the section team (JSON)
+ * Note: Mini Games are excluded from overall rankings by default
  */
 router.get("/section_team/:section_team", getScoresBySectionTeam);
 

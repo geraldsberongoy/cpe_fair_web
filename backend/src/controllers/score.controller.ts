@@ -215,7 +215,7 @@ export const getScoresByAllSectionTeam = async (
   res: Response
 ) => {
   try {
-    const { sort, order, game, category } = req.query;
+    const { sort, order, game, category, includeMiniGames } = req.query;
 
     // 1. Build Query
     let query = supabase
@@ -235,6 +235,12 @@ export const getScoresByAllSectionTeam = async (
 
     if (category && typeof category === "string") {
       query = query.eq("category", category);
+    }
+
+    // 3. Exclude Mini Games from overall calculations by default
+    // Only include if explicitly requested via includeMiniGames=true
+    if (includeMiniGames !== "true" && !category) {
+      query = query.neq("category", "Mini Games");
     }
 
     const { data, error } = await query;
@@ -295,7 +301,7 @@ export const getScoresByAllSectionTeam = async (
 // -------------------- SPECIFIC NATION SCORES --------------------
 export const getScoresBySectionTeam = async (req: Request, res: Response) => {
   const { section_team } = req.params;
-  const { game, category } = req.query;
+  const { game, category, includeMiniGames } = req.query;
 
   try {
     let query = supabase
@@ -315,6 +321,11 @@ export const getScoresBySectionTeam = async (req: Request, res: Response) => {
 
     if (category && typeof category === "string") {
       query = query.eq("category", category);
+    }
+
+    // Exclude Mini Games from overall calculations by default
+    if (includeMiniGames !== "true" && !category) {
+      query = query.neq("category", "Mini Games");
     }
 
     const { data, error } = await query;

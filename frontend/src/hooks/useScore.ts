@@ -12,8 +12,10 @@ import { Score, CreateScoreDto, UpdateScoreDto } from "../types/score";
 
 export const SCORE_KEYS = {
   all: ["scores"] as const,
-  aggregated: ["scores", "aggregated"] as const,
-  sectionTeam: (team: string) => ["scores", "sectionTeam", team] as const,
+  aggregated: (includeMiniGames?: boolean) => 
+    ["scores", "aggregated", includeMiniGames] as const,
+  sectionTeam: (team: string, includeMiniGames?: boolean) => 
+    ["scores", "sectionTeam", team, includeMiniGames] as const,
   categoryStandings: (category: string) =>
     ["scores", "categoryStandings", category] as const,
   byGame: (game: string, sortBy: string) =>
@@ -46,17 +48,20 @@ export const useScoresByGame = (
   });
 };
 
-export const useAggregatedScores = () => {
+export const useAggregatedScores = (includeMiniGames: boolean = false) => {
   return useQuery({
-    queryKey: SCORE_KEYS.aggregated,
-    queryFn: scoreService.getAggregatedScores,
+    queryKey: SCORE_KEYS.aggregated(includeMiniGames),
+    queryFn: () => scoreService.getAggregatedScores(includeMiniGames),
   });
 };
 
-export const useSectionTeamScores = (sectionTeam: string) => {
+export const useSectionTeamScores = (
+  sectionTeam: string,
+  includeMiniGames: boolean = false
+) => {
   return useQuery({
-    queryKey: SCORE_KEYS.sectionTeam(sectionTeam),
-    queryFn: () => scoreService.getScoresBySectionTeam(sectionTeam),
+    queryKey: SCORE_KEYS.sectionTeam(sectionTeam, includeMiniGames),
+    queryFn: () => scoreService.getScoresBySectionTeam(sectionTeam, includeMiniGames),
     enabled: !!sectionTeam, // Only fetch if team name is provided
   });
 };
@@ -75,8 +80,7 @@ export const useCreateScore = () => {
   return useMutation({
     mutationFn: (data: CreateScoreDto) => scoreService.createScore(data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: SCORE_KEYS.all });
-      queryClient.invalidateQueries({ queryKey: SCORE_KEYS.aggregated });
+      queryClient.invalidateQueries({ queryKey: ["scores"] });
     },
   });
 };
@@ -88,8 +92,7 @@ export const useUpdateScore = () => {
     mutationFn: ({ id, data }: { id: string | number; data: UpdateScoreDto }) =>
       scoreService.updateScore(id, data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: SCORE_KEYS.all });
-      queryClient.invalidateQueries({ queryKey: SCORE_KEYS.aggregated });
+      queryClient.invalidateQueries({ queryKey: ["scores"] });
     },
   });
 };
@@ -100,8 +103,7 @@ export const useDeleteScore = () => {
   return useMutation({
     mutationFn: (id: string | number) => scoreService.deleteScore(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: SCORE_KEYS.all });
-      queryClient.invalidateQueries({ queryKey: SCORE_KEYS.aggregated });
+      queryClient.invalidateQueries({ queryKey: ["scores"] });
     },
   });
 };
