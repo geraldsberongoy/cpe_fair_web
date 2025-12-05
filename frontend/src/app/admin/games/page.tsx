@@ -10,6 +10,7 @@ import {
 import { Plus, ArrowUpDown, Filter } from "lucide-react";
 import GameModal from "@/components/admin/GameModal";
 import GameCard from "@/components/admin/GameCard";
+import QuickScoreModal from "@/components/admin/games/QuickScoreModal";
 import { CreateGameDto, Game } from "@/types/game";
 
 export default function GamesPage() {
@@ -34,6 +35,12 @@ export default function GamesPage() {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingGame, setEditingGame] = useState<Game | null>(null);
+
+  // Add Score Modal State
+  const [isScoreModalOpen, setIsScoreModalOpen] = useState(false);
+  const [selectedGameForScore, setSelectedGameForScore] = useState<Game | null>(
+    null
+  );
 
   // Toggle Order Function
   const toggleOrder = () => {
@@ -76,11 +83,21 @@ export default function GamesPage() {
     setEditingGame(null);
   };
 
+  const handleOpenAddScore = (game: Game) => {
+    setSelectedGameForScore(game);
+    setIsScoreModalOpen(true);
+  };
+
+  const handleCloseScoreModal = () => {
+    setIsScoreModalOpen(false);
+    setSelectedGameForScore(null);
+  };
+
   return (
     <>
       <div className="mb-8 flex items-center justify-between">
         <h1 className="text-3xl font-bold text-[#ece5d8]">Manage Games</h1>
-        
+
         {/* SORT CONTROLS */}
         <div className="flex items-center gap-2 bg-[#1e2130]/50 p-1 rounded-lg border border-[#d3bc8e]/20">
           <div className="flex items-center px-2 gap-2 border-r border-[#d3bc8e]/10">
@@ -113,9 +130,7 @@ export default function GamesPage() {
           <div className="flex items-center px-2 gap-2 border-r border-[#d3bc8e]/10">
             <select
               value={sortBy}
-              onChange={(e) =>
-                setSortBy(e.target.value as "name" | "category")
-              }
+              onChange={(e) => setSortBy(e.target.value as "name" | "category")}
               className="bg-transparent text-sm text-[#ece5d8] outline-none cursor-pointer [&>option]:bg-[#1e2130]"
             >
               <option value="name">Name</option>
@@ -146,6 +161,7 @@ export default function GamesPage() {
                   game={game}
                   onEdit={handleOpenEdit}
                   onDelete={handleDelete}
+                  onAddScore={handleOpenAddScore}
                 />
               ))}
 
@@ -180,6 +196,14 @@ export default function GamesPage() {
           }
           initialData={editingGame}
         />
+
+        {selectedGameForScore && (
+          <QuickScoreModal
+            isOpen={isScoreModalOpen}
+            onClose={handleCloseScoreModal}
+            game={selectedGameForScore}
+          />
+        )}
       </div>
     </>
   );

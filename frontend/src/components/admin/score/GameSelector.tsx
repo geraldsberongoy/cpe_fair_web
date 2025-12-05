@@ -1,21 +1,30 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { Game } from "@/types/game"; // Assuming type exists, or use 'any'
 
 interface GameSelectorProps {
   games: Game[];
   onSelect: (game: Game) => void;
   isLoading: boolean;
+  selectedGameName?: string;
 }
 
 export default function GameSelector({
   games,
   onSelect,
   isLoading,
+  selectedGameName,
 }: GameSelectorProps) {
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState(selectedGameName || "");
   const [isOpen, setIsOpen] = useState(false);
+
+  // Sync search with selectedGameName when it changes (e.g. pre-filling)
+  useEffect(() => {
+    if (selectedGameName) {
+      setSearch(selectedGameName);
+    }
+  }, [selectedGameName]);
 
   const filteredGames = useMemo(() => {
     if (!search) return games;
