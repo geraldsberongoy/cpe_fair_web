@@ -29,6 +29,8 @@ import SnezhnayaBG from "@/assets/images/backgrounds/snezhnaya.jpg";
 import BorderDesign from "./BorderDesign";
 import StarryBackground from "../StarryBackground";
 
+import { Score } from "@/types/score";
+
 const BG_MAP: Record<string, string> = {
   fontaine: FontaineBG.src,
   inazuma: InazumaBG.src,
@@ -343,6 +345,26 @@ const Leaderboard = ({ selectedCategory }: LeaderboardProps) => {
     );
 
     const topThree = [...sortedTeams].slice(0, 3);
+    const sectionTeams = [
+      "Fontaine", "Snezhnaya", "Sumeru", "Mondstadt",
+      "Liyue", "Inazuma", "Natlan"
+    ]
+// Start with existing team objects
+const completeTeams = [...sortedTeams]; // assuming gameScores is in this shape
+
+// Find missing teams
+const missingTeams = sectionTeams.filter(
+  (teamName) => !sortedTeams.some((t) => t.section_team === teamName)
+);
+
+// Append missing teams
+missingTeams.forEach((teamName) => {
+  completeTeams.push({
+    section_team: teamName,
+    totalPoints: 0,
+    scores: [], // no individual scores yet
+  });
+});
 
     return (
       <div className="w-full px-[5vw] md:px-[10vw] flex flex-col gap-4 mb-6">
@@ -657,6 +679,32 @@ const Leaderboard = ({ selectedCategory }: LeaderboardProps) => {
     );
   }
 
+  const sectionTeams = [
+      "Fontaine", "Snezhnaya", "Sumeru", "Mondstadt",
+      "Liyue", "Inazuma", "Natlan"
+    ]
+// Start with existing scores
+const completeScores = [...gameScores];
+
+// Find missing teams
+const missingTeams = sectionTeams.filter(
+  (teamName) => !gameScores.some((s) => s.teamName === teamName)
+);
+
+// Append missing teams with points = 0
+missingTeams.forEach((teamName) => {
+  completeScores.push({
+    id: Math.random(), // temporary unique id
+    teamName,
+    game: selectedGame || "",
+    category: "",
+    points: 0,
+    contributor: "",
+    isGroup: false,
+    members: [],
+    createdAt: new Date().toISOString(),
+  } as Score);
+});
   return (
     <div className="w-full mb-6 px-[5vw] md:px-[10vw] ">
       <button
@@ -673,7 +721,7 @@ const Leaderboard = ({ selectedCategory }: LeaderboardProps) => {
         </h3>
 
         <div className="flex flex-col gap-3">
-          {gameScores.map((score, index) => {
+          {completeScores.map((score, index) => {
             const bg = pickBg(score.teamName);
             return (
               <Dialog key={score.id}>
