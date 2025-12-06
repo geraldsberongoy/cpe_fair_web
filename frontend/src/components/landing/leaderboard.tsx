@@ -281,27 +281,19 @@ const Leaderboard = ({ selectedCategory }: LeaderboardProps) => {
       );
     }
 
-    if (!aggregatedScores || aggregatedScores.length === 0) {
-      return (
-        <div className="text-white text-center">
-          No overall standings available.
-        </div>
-      );
-    }
-
     // Sort by totalPoints descending
-    const sortedTeams = [...aggregatedScores].sort(
+    const sortedTeams = [...aggregatedScores || []].sort(
       (a, b) => b.totalPoints - a.totalPoints
     );
 
-    const topThree = [...sortedTeams].slice(0, 3);
+    
     const sectionTeams = [
       "Fontaine", "Snezhnaya", "Sumeru", "Mondstadt",
       "Liyue", "Inazuma", "Natlan"
     ]
 // Start with existing team objects
 const completeTeams = [...sortedTeams]; // assuming gameScores is in this shape
-
+const topThree = [...completeTeams].slice(0, 3);
 // Find missing teams
 const missingTeams = sectionTeams.filter(
   (teamName) => !sortedTeams.some((t) => t.section_team === teamName)
@@ -322,7 +314,7 @@ missingTeams.forEach((teamName) => {
           Overall Leaderboard
         </h2>
         <Podium topTeams={topThree} />
-        {sortedTeams.slice(3).map((team, index) => {
+        {completeTeams.slice(3).map((team, index) => {
           const bg = pickBg(team.section_team);
           return (
             <Dialog key={team.section_team}>
@@ -689,7 +681,7 @@ missingTeams.forEach((teamName) => {
                           {score.teamName}
                         </p>
                         <p className="text-[10px] md:text-sm text-white/60 text-left line-clamp-1">
-                          {score.contributor || "Unknown"}
+                          {score.contributor || "None"}
                         </p>
                       </div>
                     </div>
