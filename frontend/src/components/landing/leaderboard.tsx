@@ -712,16 +712,18 @@ const Leaderboard = ({ selectedCategory }: LeaderboardProps) => {
         <div className="flex flex-col gap-3">
           {completeScores.map((score, index) => {
             const bg = pickBg(score.teamName);
+            const hasScore = score.points > 0;
+
             return (
               <Dialog key={score.id}>
                 <DialogTrigger asChild>
                   <button
                     className={`w-full group relative overflow-hidden flex items-center justify-between p-4 rounded-lg border transition-all duration-300 hover:scale-[1.01] ${
-                      index === 0
+                      hasScore && index === 0
                         ? "bg-yellow-500/20 border-yellow-500/50 hover:bg-yellow-500/30"
-                        : index === 1
+                        : hasScore && index === 1
                         ? "bg-gray-400/20 border-gray-400/50 hover:bg-gray-400/30"
-                        : index === 2
+                        : hasScore && index === 2
                         ? "bg-orange-700/20 border-orange-700/50 hover:bg-orange-700/30"
                         : "bg-white/5 border-transparent hover:bg-white/10"
                     }`}
@@ -734,25 +736,29 @@ const Leaderboard = ({ selectedCategory }: LeaderboardProps) => {
                     <div className="absolute inset-0 bg-gradient-to-r from-[#d3bc8e]/0 via-[#f0e6d2]/30 to-[#d3bc8e]/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-500"></div>
                     <div className="flex items-center gap-4">
                       <StarryBackground starCount={10} />
-                      <span
-                        className={`text-xl font-bold w-8 text-center ${
-                          index === 0
-                            ? "text-yellow-400"
-                            : index === 1
-                            ? "text-gray-300"
-                            : index === 2
-                            ? "text-orange-400"
-                            : "text-white/60"
-                        }`}
-                      >
-                        #{index + 1}
-                      </span>
+                      {hasScore && (
+                        <span
+                          className={`text-xl font-bold w-8 text-center ${
+                            index === 0
+                              ? "text-yellow-400"
+                              : index === 1
+                              ? "text-gray-300"
+                              : index === 2
+                              ? "text-orange-400"
+                              : "text-white/60"
+                          }`}
+                        >
+                          #{index + 1}
+                        </span>
+                      )}
                       <div className="text-left">
                         <p className="font-bold text-sm md:text-lg text-white">
                           {score.teamName}
                         </p>
                         <p className="text-[10px] md:text-sm text-white/60 text-left line-clamp-1">
-                          {score.contributor || "None"}
+                          {hasScore
+                            ? score.contributor || "None"
+                            : "No score yet"}
                         </p>
                       </div>
                     </div>
@@ -767,11 +773,38 @@ const Leaderboard = ({ selectedCategory }: LeaderboardProps) => {
                   </button>
                 </DialogTrigger>
 
-                <GamePlayersModal
-                  teamName={score.teamName || "Unknown"}
-                  gameName={selectedGame || ""}
-                  details={score}
-                />
+                {hasScore ? (
+                  <GamePlayersModal
+                    teamName={score.teamName || "Unknown"}
+                    gameName={selectedGame || ""}
+                    details={score}
+                  />
+                ) : (
+                  <DialogContent
+                    className="max-w-[90%] sm:max-w-md max-h-[80vh] bg-[#2a2640]/10 bg-linear-to-b from-[#2a2640]/30 to-[#1a1630]/70 text-white"
+                    style={{
+                      backgroundImage: `linear-gradient(rgba(0,0,0,0.30), rgba(0,0,0,0.30)), url(${bg})`,
+                      backgroundSize: "cover",
+                      backgroundPosition: "center",
+                    }}
+                  >
+                    <BorderDesign />
+                    <DialogHeader>
+                      <DialogTitle className="px-2 text-2xl font-bold flex flex-col items-center text-transparent bg-clip-text bg-linear-to-b from-[#f0e6d2] via-[#d3bc8e] to-[#9d8f6f] drop-shadow-[0_0_30px_rgba(211,188,142,0.8)]">
+                        <span>{score.teamName}</span>
+                        <span className="text-white/50 text-base font-normal">
+                          No Score Available
+                        </span>
+                      </DialogTitle>
+                    </DialogHeader>
+                    <div className="p-4 text-center">
+                      <p className="text-white/70 text-sm">
+                        This team hasn't participated in {selectedGame} yet.
+                        Check back later for results.
+                      </p>
+                    </div>
+                  </DialogContent>
+                )}
               </Dialog>
             );
           })}
