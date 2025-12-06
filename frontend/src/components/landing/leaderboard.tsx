@@ -372,7 +372,35 @@ const Leaderboard = ({ selectedCategory }: LeaderboardProps) => {
       (a, b) => b.totalPoints - a.totalPoints
     );
 
-    const topThree = [...sortedTeams].slice(0, 3);
+    // Add missing teams with 0 points
+    const sectionTeams = [
+      "Fontaine",
+      "Snezhnaya",
+      "Sumeru",
+      "Mondstadt",
+      "Liyue",
+      "Inazuma",
+      "Natlan",
+    ];
+
+    // Start with existing team objects
+    const completeTeams = [...sortedTeams];
+
+    // Find missing teams
+    const missingTeams = sectionTeams.filter(
+      (teamName) => !sortedTeams.some((t) => t.section_team === teamName)
+    );
+
+    // Append missing teams with 0 points
+    missingTeams.forEach((teamName) => {
+      completeTeams.push({
+        section_team: teamName,
+        totalPoints: 0,
+        scores: [],
+      });
+    });
+
+    const topThree = [...completeTeams].slice(0, 3);
 
     return (
       <div className="w-full px-[5vw] md:px-[10vw] flex flex-col gap-4 mb-6">
@@ -380,7 +408,7 @@ const Leaderboard = ({ selectedCategory }: LeaderboardProps) => {
           Overall Leaderboard
         </h2>
         <Podium topTeams={topThree} />
-        {sortedTeams.slice(3).map((team, index) => {
+        {completeTeams.slice(3).map((team, index) => {
           const bg = pickBg(team.section_team);
           return (
             <Dialog key={team.section_team}>
