@@ -293,7 +293,6 @@ const Leaderboard = ({ selectedCategory }: LeaderboardProps) => {
     ]
 // Start with existing team objects
 const completeTeams = [...sortedTeams]; // assuming gameScores is in this shape
-const topThree = [...completeTeams].slice(0, 3);
 // Find missing teams
 const missingTeams = sectionTeams.filter(
   (teamName) => !sortedTeams.some((t) => t.section_team === teamName)
@@ -307,6 +306,7 @@ missingTeams.forEach((teamName) => {
     scores: [], // no individual scores yet
   });
 });
+const topThree = [...completeTeams].slice(0, 3);
 
     return (
       <div className="w-full px-[5vw] md:px-[10vw] flex flex-col gap-4 mb-6">
