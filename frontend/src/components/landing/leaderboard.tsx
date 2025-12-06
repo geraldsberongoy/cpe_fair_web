@@ -285,9 +285,7 @@ const Leaderboard = ({ selectedCategory }: LeaderboardProps) => {
     if (!aggregatedScores || aggregatedScores.length === 0) {
       if (!teams || teams.length === 0) {
         return (
-          <div className="text-white text-center">
-            No teams available.
-          </div>
+          <div className="text-white text-center">No teams available.</div>
         );
       }
 
@@ -298,7 +296,8 @@ const Leaderboard = ({ selectedCategory }: LeaderboardProps) => {
             Overall Leaderboard
           </h2>
           <p className="text-white/60 text-center mb-4">
-            No scores recorded yet. Teams will appear here once games are played.
+            No scores recorded yet. Teams will appear here once games are
+            played.
           </p>
           {teams.map((team) => {
             const bg = pickBg(team.name);
@@ -337,12 +336,14 @@ const Leaderboard = ({ selectedCategory }: LeaderboardProps) => {
                     </div>
                   </button>
                 </DialogTrigger>
-                <DialogContent className="max-w-[90%] sm:max-w-md max-h-[80vh] bg-[#2a2640]/10 bg-linear-to-b from-[#2a2640]/30 to-[#1a1630]/70 text-white" 
+                <DialogContent
+                  className="max-w-[90%] sm:max-w-md max-h-[80vh] bg-[#2a2640]/10 bg-linear-to-b from-[#2a2640]/30 to-[#1a1630]/70 text-white"
                   style={{
                     backgroundImage: `linear-gradient(rgba(0,0,0,0.30), rgba(0,0,0,0.30)), url(${bg})`,
                     backgroundSize: "cover",
                     backgroundPosition: "center",
-                  }}>
+                  }}
+                >
                   <BorderDesign />
                   <DialogHeader>
                     <DialogTitle className="px-2 text-2xl font-bold flex flex-col items-center text-transparent bg-clip-text bg-linear-to-b from-[#f0e6d2] via-[#d3bc8e] to-[#9d8f6f] drop-shadow-[0_0_30px_rgba(211,188,142,0.8)]">
@@ -354,7 +355,8 @@ const Leaderboard = ({ selectedCategory }: LeaderboardProps) => {
                   </DialogHeader>
                   <div className="p-4 text-center">
                     <p className="text-white/70 text-sm">
-                      This team hasn't participated in any games yet. Scores will appear here once they start competing.
+                      This team hasn't participated in any games yet. Scores
+                      will appear here once they start competing.
                     </p>
                   </div>
                 </DialogContent>
@@ -662,31 +664,36 @@ const Leaderboard = ({ selectedCategory }: LeaderboardProps) => {
   }
 
   const sectionTeams = [
-      "Fontaine", "Snezhnaya", "Sumeru", "Mondstadt",
-      "Liyue", "Inazuma", "Natlan"
-    ]
-// Start with existing scores
-const completeScores = [...gameScores];
+    "Fontaine",
+    "Snezhnaya",
+    "Sumeru",
+    "Mondstadt",
+    "Liyue",
+    "Inazuma",
+    "Natlan",
+  ];
+  // Start with existing scores
+  const completeScores = [...gameScores];
 
-// Find missing teams
-const missingTeams = sectionTeams.filter(
-  (teamName) => !gameScores.some((s) => s.teamName === teamName)
-);
+  // Find missing teams
+  const missingTeams = sectionTeams.filter(
+    (teamName) => !gameScores.some((s) => s.teamName === teamName)
+  );
 
-// Append missing teams with points = 0
-missingTeams.forEach((teamName) => {
-  completeScores.push({
-    id: Math.random(), // temporary unique id
-    teamName,
-    game: selectedGame || "",
-    category: "",
-    points: 0,
-    contributor: "",
-    isGroup: false,
-    members: [],
-    createdAt: new Date().toISOString(),
-  } as Score);
-});
+  // Append missing teams with points = 0
+  missingTeams.forEach((teamName) => {
+    completeScores.push({
+      id: Math.random(), // temporary unique id
+      teamName,
+      game: selectedGame || "",
+      category: "",
+      points: 0,
+      contributor: "",
+      isGroup: false,
+      members: [],
+      createdAt: new Date().toISOString(),
+    } as Score);
+  });
   return (
     <div className="w-full mb-6 px-[5vw] md:px-[10vw] ">
       <button
