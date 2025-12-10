@@ -17,7 +17,7 @@ const contributors = [
   {
     id: 5,
     name: "Charles DG Nudalo",
-    role: "Project Lead",
+    role: "Grand Master (Project Lead)",
     nation: "Inazuma",
     element: "Electro",
     color: "#9d7ad1",
@@ -27,7 +27,7 @@ const contributors = [
   {
     id: 3,
     name: "Gerald Berongoy",
-    role: "Fullstack Developer",
+    role: "Chief Alchemist (Full Stack)",
     nation: "Inazuma",
     element: "Electro",
     color: "#9d7ad1",
@@ -37,7 +37,7 @@ const contributors = [
   {
     id: 1,
     name: "Earl Clyde Bañez",
-    role: "Frontend Developer",
+    role: "Field Researcher (Frontend)",
     nation: "Snezhnaya",
     element: "Anemo",
     color: "#4fb3a8",
@@ -47,7 +47,7 @@ const contributors = [
   {
     id: 2,
     name: "Elton James Donato",
-    role: "Frontend Developer",
+    role: "Field Researcher (Frontend)",
     nation: "Snezhnaya",
     element: "Geo",
     color: "#f4a950",
@@ -58,7 +58,7 @@ const contributors = [
   {
     id: 4,
     name: "Timmy Gregorio",
-    role: "Design & Assets Contributor",
+    role: "Artisan (Design & Assets)",
     nation: "Inazuma",
     element: "Electro",
     color: "#9d7ad1",
@@ -69,7 +69,7 @@ const contributors = [
   {
     id: 6,
     name: "Ian Kylle Caones",
-    role: "Design & Assets Contributor",
+    role: "Artisan (Design & Assets)",
     nation: "Inazuma",
     element: "Electro",
     color: "#9d7ad1",
@@ -101,7 +101,7 @@ export default function ContributorsPage() {
         {/* Header */}
         <div className="text-center mb-12">
           <h1 className="text-4xl md:text-6xl font-bold text-[#f0e6d2] mb-4 drop-shadow-[0_0_30px_rgba(211,188,142,0.8)]">
-            The Six Gnosis
+            Favonius Development Unit
           </h1>
           <div className="flex items-center justify-center gap-3 mb-3">
             <div className="h-px flex-1 max-w-48 bg-gradient-to-r from-transparent via-[#d3bc8e] to-transparent" />
@@ -111,7 +111,7 @@ export default function ContributorsPage() {
             <div className="h-px flex-1 max-w-48 bg-gradient-to-r from-transparent via-[#d3bc8e] to-transparent" />
           </div>
           <p className="text-[#c8b896] text-sm md:text-base max-w-2xl mx-auto">
-            Meet the legendary Archons who brought this project to life. Each
+            Meet the Development Team who brought this project to life. Each
             wielding their unique powers to create this magnificent experience.
           </p>
         </div>

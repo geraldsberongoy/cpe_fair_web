@@ -82,10 +82,10 @@ const Footer: React.FC<FooterProps> = ({ onCategorySelect }) => {
               </li>
               <li>
                 <a
-                  href="/teams"
+                  href="/contributors"
                   className="text-[#c8b896] text-sm hover:text-[#f0e6d2] transition-all duration-300 hover:drop-shadow-[0_0_6px_rgba(211,188,142,0.5)]"
                 >
-                  Teams
+                  Contributors
                 </a>
               </li>
             </ul>
