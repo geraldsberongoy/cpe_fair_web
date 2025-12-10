@@ -4,6 +4,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./globals.css";
 import QueryProvider from "../providers/QueryProvider";
+import { Analytics } from "@vercel/analytics/next";
 
 import StarryBackground from "@/components/StarryBackground";
 
@@ -108,6 +109,7 @@ export default function RootLayout({
             theme="dark"
           />
         </QueryProvider>
+        <Analytics />
       </body>
     </html>
   );
