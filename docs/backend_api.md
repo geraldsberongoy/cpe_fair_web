@@ -24,6 +24,7 @@ Comprehensive guide for the CPE Fair Web Application backend API.
 The backend is built with **Express.js 5.x** and **TypeScript**, using **Supabase (PostgreSQL)** for data persistence. All endpoints follow RESTful conventions and return JSON responses.
 
 **Tech Stack:**
+
 - Express.js 5.1.0
 - TypeScript 5.9.3
 - Supabase (PostgreSQL)
@@ -35,11 +36,13 @@ The backend is built with **Express.js 5.x** and **TypeScript**, using **Supabas
 ## Base URL
 
 **Local Development:**
+
 ```
 http://localhost:3001/api
 ```
 
 **Production:**
+
 ```
 https://your-backend-url.vercel.app/api
 ```
@@ -53,27 +56,33 @@ All API endpoints are prefixed with `/api`.
 The API supports two authentication strategies:
 
 ### 1. Admin Secret Key (x-admin-key)
+
 Best for: Postman, scripts, hardware buttons, admin tools
 
 **Header:**
+
 ```
 x-admin-key: your_admin_secret_key
 ```
 
 **Example:**
+
 ```bash
 curl -H "x-admin-key: your_secret" http://localhost:3001/api/game
 ```
 
 ### 2. Supabase JWT (Bearer Token)
+
 Best for: Frontend applications with user authentication
 
 **Header:**
+
 ```
 Authorization: Bearer <supabase_jwt_token>
 ```
 
 **Example:**
+
 ```bash
 curl -H "Authorization: Bearer eyJ..." http://localhost:3001/api/game
 ```
@@ -93,17 +102,18 @@ Manage games available in the fair.
 
 #### Endpoints
 
-| Method | Endpoint | Description | Auth | Query Parameters |
-|--------|----------|-------------|------|------------------|
-| `GET` | `/` | List all games | 🌐 Public | `category` (optional) |
-| `GET` | `/:id` | Get game by ID | 🌐 Public | - |
-| `POST` | `/` | Create new game | 🔒 Admin | - |
-| `PUT` | `/:id` | Update game | 🔒 Admin | - |
-| `DELETE` | `/:id` | Delete game | 🔒 Admin | - |
+| Method   | Endpoint | Description     | Auth      | Query Parameters      |
+| -------- | -------- | --------------- | --------- | --------------------- |
+| `GET`    | `/`      | List all games  | 🌐 Public | `category` (optional) |
+| `GET`    | `/:id`   | Get game by ID  | 🌐 Public | -                     |
+| `POST`   | `/`      | Create new game | 🔒 Admin  | -                     |
+| `PUT`    | `/:id`   | Update game     | 🔒 Admin  | -                     |
+| `DELETE` | `/:id`   | Delete game     | 🔒 Admin  | -                     |
 
 #### Request/Response Examples
 
 **GET /api/game**
+
 ```bash
 # Get all games
 curl http://localhost:3001/api/game
@@ -113,6 +123,7 @@ curl http://localhost:3001/api/game?category=Sports
 ```
 
 **Response:**
+
 ```json
 {
   "data": [
@@ -134,6 +145,7 @@ curl http://localhost:3001/api/game?category=Sports
 ```
 
 **POST /api/game** (Admin Only)
+
 ```bash
 curl -X POST http://localhost:3001/api/game \
   -H "x-admin-key: your_secret" \
@@ -146,15 +158,22 @@ curl -X POST http://localhost:3001/api/game \
 ```
 
 **Request Body:**
+
 ```typescript
 {
-  name: string;        // Required - Game name
-  is_group: boolean;   // Required - Whether it's a team game
-  category: "Sports" | "Board" | "Quiz Bee" | "Esports" | "Talents" | "Mini Games"; // Required
+  name: string; // Required - Game name
+  is_group: boolean; // Required - Whether it's a team game
+  category: "Sports" |
+    "Board" |
+    "Quiz Bee" |
+    "Esports" |
+    "Talents" |
+    "Mini Games"; // Required
 }
 ```
 
 **PUT /api/game/:id** (Admin Only)
+
 ```bash
 curl -X PUT http://localhost:3001/api/game/uuid-string \
   -H "x-admin-key: your_secret" \
@@ -163,6 +182,7 @@ curl -X PUT http://localhost:3001/api/game/uuid-string \
 ```
 
 **DELETE /api/game/:id** (Admin Only)
+
 ```bash
 curl -X DELETE http://localhost:3001/api/game/uuid-string \
   -H "x-admin-key: your_secret"
@@ -176,17 +196,18 @@ Manage players participating in the fair.
 
 #### Endpoints
 
-| Method | Endpoint | Description | Auth | Query Parameters |
-|--------|----------|-------------|------|------------------|
-| `GET` | `/` | List all players | 🌐 Public | `page`, `limit`, `section_team` |
-| `GET` | `/:id` | Get player by ID | 🌐 Public | - |
-| `POST` | `/` | Create new player | 🔒 Admin | - |
-| `PUT` | `/:id` | Update player | 🔒 Admin | - |
-| `DELETE` | `/:id` | Delete player | 🔒 Admin | - |
+| Method   | Endpoint | Description       | Auth      | Query Parameters                |
+| -------- | -------- | ----------------- | --------- | ------------------------------- |
+| `GET`    | `/`      | List all players  | 🌐 Public | `page`, `limit`, `section_team` |
+| `GET`    | `/:id`   | Get player by ID  | 🌐 Public | -                               |
+| `POST`   | `/`      | Create new player | 🔒 Admin  | -                               |
+| `PUT`    | `/:id`   | Update player     | 🔒 Admin  | -                               |
+| `DELETE` | `/:id`   | Delete player     | 🔒 Admin  | -                               |
 
 #### Request/Response Examples
 
 **GET /api/player**
+
 ```bash
 # Get all players (paginated)
 curl http://localhost:3001/api/player?page=1&limit=20
@@ -196,6 +217,7 @@ curl http://localhost:3001/api/player?section_team=Fontaine
 ```
 
 **Response:**
+
 ```json
 {
   "data": [
@@ -220,6 +242,7 @@ curl http://localhost:3001/api/player?section_team=Fontaine
 ```
 
 **POST /api/player** (Admin Only)
+
 ```bash
 curl -X POST http://localhost:3001/api/player \
   -H "x-admin-key: your_secret" \
@@ -232,11 +255,12 @@ curl -X POST http://localhost:3001/api/player \
 ```
 
 **Request Body:**
+
 ```typescript
 {
-  full_name: string;     // Required - Player's full name
-  cys: string;           // Required - Course, Year, Section (e.g., "BSCpE-4A")
-  team_id: string;       // Optional - UUID of the team
+  full_name: string; // Required - Player's full name
+  cys: string; // Required - Course, Year, Section (e.g., "BSCpE-4A")
+  team_id: string; // Optional - UUID of the team
 }
 ```
 
@@ -248,21 +272,22 @@ Manage scores and track game results.
 
 #### Endpoints
 
-| Method | Endpoint | Description | Auth | Query Parameters |
-|--------|----------|-------------|------|------------------|
-| `GET` | `/` | List all scores | 🌐 Public | `type`, `category` |
-| `GET` | `/category-standings` | Get category standings | 🌐 Public | `category` |
-| `GET` | `/section_team` | Get aggregated scores | 🌐 Public | `game`, `category`, `includeMiniGames` |
-| `GET` | `/section_team/:team` | Get team scores | 🌐 Public | `game`, `category`, `includeMiniGames` |
-| `GET` | `/ledger` | Get master ledger | 🔒 Admin | - |
-| `GET` | `/export` | Export to Excel | 🔒 Admin | - |
-| `POST` | `/` | Create new score | 🔒 Admin | - |
-| `PUT` | `/:id` | Update score | 🔒 Admin | - |
-| `DELETE` | `/:id` | Delete score | 🔒 Admin | - |
+| Method   | Endpoint              | Description            | Auth      | Query Parameters                       |
+| -------- | --------------------- | ---------------------- | --------- | -------------------------------------- |
+| `GET`    | `/`                   | List all scores        | 🌐 Public | `type`, `category`                     |
+| `GET`    | `/category-standings` | Get category standings | 🌐 Public | `category`                             |
+| `GET`    | `/section_team`       | Get aggregated scores  | 🌐 Public | `game`, `category`, `includeMiniGames` |
+| `GET`    | `/section_team/:team` | Get team scores        | 🌐 Public | `game`, `category`, `includeMiniGames` |
+| `GET`    | `/ledger`             | Get master ledger      | 🔒 Admin  | -                                      |
+| `GET`    | `/export`             | Export to Excel        | 🔒 Admin  | -                                      |
+| `POST`   | `/`                   | Create new score       | 🔒 Admin  | -                                      |
+| `PUT`    | `/:id`                | Update score           | 🔒 Admin  | -                                      |
+| `DELETE` | `/:id`                | Delete score           | 🔒 Admin  | -                                      |
 
 #### Request/Response Examples
 
 **GET /api/score**
+
 ```bash
 # Get all scores
 curl http://localhost:3001/api/score
@@ -275,6 +300,7 @@ curl http://localhost:3001/api/score?type=group
 ```
 
 **GET /api/score/section_team** (Aggregated Scores)
+
 ```bash
 # Get overall standings (Mini Games excluded by default)
 curl http://localhost:3001/api/score/section_team
@@ -287,6 +313,7 @@ curl http://localhost:3001/api/score/section_team?category=Sports
 ```
 
 **Response:**
+
 ```json
 [
   {
@@ -310,6 +337,7 @@ curl http://localhost:3001/api/score/section_team?category=Sports
 ```
 
 **GET /api/score/section_team/:section_team**
+
 ```bash
 # Get specific team's scores
 curl http://localhost:3001/api/score/section_team/Fontaine
@@ -319,12 +347,14 @@ curl http://localhost:3001/api/score/section_team/Fontaine?game=Basketball
 ```
 
 **GET /api/score/category-standings**
+
 ```bash
 # Get standings for a category
 curl http://localhost:3001/api/score/category-standings?category=Sports
 ```
 
 **Response:**
+
 ```json
 {
   "Basketball": [
@@ -340,6 +370,7 @@ curl http://localhost:3001/api/score/category-standings?category=Sports
 ```
 
 **POST /api/score** (Admin Only)
+
 ```bash
 # Log individual score
 curl -X POST http://localhost:3001/api/score \
@@ -370,6 +401,7 @@ curl -X POST http://localhost:3001/api/score \
 ```
 
 **Request Body:**
+
 ```typescript
 {
   teamId: string;        // Required - UUID of the team
@@ -383,6 +415,7 @@ curl -X POST http://localhost:3001/api/score \
 ```
 
 **GET /api/score/export** (Admin Only - Excel Export)
+
 ```bash
 curl http://localhost:3001/api/score/export \
   -H "x-admin-key: your_secret" \
@@ -399,22 +432,24 @@ Manage teams (Genshin Impact nations).
 
 #### Endpoints
 
-| Method | Endpoint | Description | Auth |
-|--------|----------|-------------|------|
-| `GET` | `/` | List all teams | 🌐 Public |
-| `GET` | `/:id` | Get team by ID | 🌐 Public |
-| `POST` | `/` | Create new team | 🔒 Admin |
-| `PUT` | `/:id` | Update team | 🔒 Admin |
-| `DELETE` | `/:id` | Delete team | 🔒 Admin |
+| Method   | Endpoint | Description     | Auth      |
+| -------- | -------- | --------------- | --------- |
+| `GET`    | `/`      | List all teams  | 🌐 Public |
+| `GET`    | `/:id`   | Get team by ID  | 🌐 Public |
+| `POST`   | `/`      | Create new team | 🔒 Admin  |
+| `PUT`    | `/:id`   | Update team     | 🔒 Admin  |
+| `DELETE` | `/:id`   | Delete team     | 🔒 Admin  |
 
 #### Request/Response Examples
 
 **GET /api/team**
+
 ```bash
 curl http://localhost:3001/api/team
 ```
 
 **Response:**
+
 ```json
 {
   "data": [
@@ -435,6 +470,7 @@ curl http://localhost:3001/api/team
 ```
 
 **POST /api/team** (Admin Only)
+
 ```bash
 curl -X POST http://localhost:3001/api/team \
   -H "x-admin-key: your_secret" \
@@ -446,9 +482,10 @@ curl -X POST http://localhost:3001/api/team \
 ```
 
 **Request Body:**
+
 ```typescript
 {
-  name: string;               // Required - Team name (e.g., "Fontaine")
+  name: string; // Required - Team name (e.g., "Fontaine")
   section_represented: string; // Required - Section/class represented
 }
 ```
@@ -461,14 +498,15 @@ Authentication endpoints for admin access.
 
 #### Endpoints
 
-| Method | Endpoint | Description | Auth |
-|--------|----------|-------------|------|
-| `POST` | `/login` | Verify admin secret | 🌐 Public |
-| `POST` | `/logout` | Logout (stateless) | 🌐 Public |
+| Method | Endpoint  | Description         | Auth      |
+| ------ | --------- | ------------------- | --------- |
+| `POST` | `/login`  | Verify admin secret | 🌐 Public |
+| `POST` | `/logout` | Logout (stateless)  | 🌐 Public |
 
 #### Request/Response Examples
 
 **POST /api/auth/login**
+
 ```bash
 curl -X POST http://localhost:3001/api/auth/login \
   -H "Content-Type: application/json" \
@@ -476,6 +514,7 @@ curl -X POST http://localhost:3001/api/auth/login \
 ```
 
 **Request Body:**
+
 ```typescript
 {
   secret: string; // The admin secret key
@@ -483,6 +522,7 @@ curl -X POST http://localhost:3001/api/auth/login \
 ```
 
 **Response (Success):**
+
 ```json
 {
   "message": "Access granted",
@@ -491,6 +531,7 @@ curl -X POST http://localhost:3001/api/auth/login \
 ```
 
 **Response (Failure):**
+
 ```json
 {
   "error": "Invalid secret"
@@ -498,11 +539,13 @@ curl -X POST http://localhost:3001/api/auth/login \
 ```
 
 **POST /api/auth/logout**
+
 ```bash
 curl -X POST http://localhost:3001/api/auth/logout
 ```
 
 **Response:**
+
 ```json
 {
   "message": "Logged out successfully"
@@ -520,7 +563,13 @@ interface Game {
   id: string;
   name: string;
   is_group: boolean;
-  category: "Sports" | "Board" | "Quiz Bee" | "Esports" | "Talents" | "Mini Games";
+  category:
+    | "Sports"
+    | "Board"
+    | "Quiz Bee"
+    | "Esports"
+    | "Talents"
+    | "Mini Games";
   created_at: string;
 }
 ```
@@ -531,7 +580,7 @@ interface Game {
 interface Player {
   id: string;
   full_name: string;
-  cys: string;           // Course, Year, Section
+  cys: string; // Course, Year, Section
   team_id: string | null;
   created_at: string;
   team?: {
@@ -626,10 +675,12 @@ All endpoints return appropriate HTTP status codes:
 The backend allows requests from:
 
 **Allowed Origins:**
+
 - `http://localhost:3000` (Local development)
 - `https://cpefair2025.vercel.app` (Production frontend)
 
 **CORS Headers:**
+
 - Credentials: Enabled
 - Methods: GET, POST, PUT, DELETE, OPTIONS
 - Headers: Content-Type, Authorization, x-admin-key
@@ -667,14 +718,14 @@ GET /api/score/section_team?includeMiniGames=true
 
 ```javascript
 try {
-  const response = await fetch('http://localhost:3001/api/game');
+  const response = await fetch("http://localhost:3001/api/game");
   if (!response.ok) {
     const error = await response.json();
-    console.error('Error:', error.error);
+    console.error("Error:", error.error);
   }
   const data = await response.json();
 } catch (err) {
-  console.error('Network error:', err);
+  console.error("Network error:", err);
 }
 ```
 
@@ -682,17 +733,17 @@ try {
 
 ```javascript
 // Using x-admin-key
-const response = await fetch('http://localhost:3001/api/game', {
-  method: 'POST',
+const response = await fetch("http://localhost:3001/api/game", {
+  method: "POST",
   headers: {
-    'Content-Type': 'application/json',
-    'x-admin-key': 'your_admin_secret'
+    "Content-Type": "application/json",
+    "x-admin-key": "your_admin_secret",
   },
   body: JSON.stringify({
-    name: 'Basketball',
+    name: "Basketball",
     is_group: false,
-    category: 'Sports'
-  })
+    category: "Sports",
+  }),
 });
 ```
 
@@ -706,6 +757,7 @@ The backend uses **Winston** for logging:
 - Production: Structured JSON logs
 
 **Log Levels:**
+
 - `error` - Error conditions
 - `warn` - Warning conditions
 - `info` - Informational messages
