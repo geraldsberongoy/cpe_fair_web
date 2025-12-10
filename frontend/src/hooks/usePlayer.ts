@@ -1,4 +1,4 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient, keepPreviousData } from "@tanstack/react-query";
 import { playerService } from "@/services/player.service";
 import { Player, CreatePlayerDto, UpdatePlayerDto } from "@/types/player";
 
@@ -13,6 +13,7 @@ export const usePlayers = (
     queryKey: ["players", page, limit, teamName, search],
     queryFn: () => playerService.getPlayers(page, limit, teamName, search),
     staleTime: 5 * 60 * 1000, // 5 minutes
+    placeholderData: keepPreviousData,
   });
 };
 
