@@ -5,6 +5,8 @@ import { Score, CreateScoreDto, UpdateScoreDto } from "../types/score";
 export interface SectionTeamScoreResponse {
   section_team: string;
   totalPoints: number;
+  minigamePoints?: number;
+  minigameScores?: Score[];
   scores: Score[];
 }
 

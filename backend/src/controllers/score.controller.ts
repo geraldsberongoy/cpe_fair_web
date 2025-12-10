@@ -236,10 +236,10 @@ export const getScoresByAllSectionTeam = async (
     }
 
     // 3. Exclude Mini Games from overall calculations by default
-    // Only include if explicitly requested via includeMiniGames=true
-    if (includeMiniGames !== "true" && !category) {
-      query = query.neq("category", "Mini Games");
-    }
+    // We now FETCH them always (unless filtered OUT by other means), but we separate the points.
+    // if (includeMiniGames !== "true" && !category) {
+    //   query = query.neq("category", "Mini Games");
+    // }
 
     const { data, error } = await query;
 
@@ -264,20 +264,45 @@ export const getScoresByAllSectionTeam = async (
       sectionMap[nation].push(score);
     });
 
+    const isIncludeMiniGames = includeMiniGames === "true";
+
     const result = Object.entries(sectionMap).map(([teamName, scores]) => {
-      const totalPoints = scores.reduce((sum, s) => sum + (s.points ?? 0), 0);
+      // Separate scores
+      const minigameScores = scores.filter((s) => s.category === "Mini Games");
+      const regularScores = scores.filter((s) => s.category !== "Mini Games");
+
+      const minigamePoints = minigameScores.reduce(
+        (sum, s) => sum + (s.points ?? 0),
+        0
+      );
+      const regularPoints = regularScores.reduce(
+        (sum, s) => sum + (s.points ?? 0),
+        0
+      );
+
+      // totalPoints definition depends on the flag
+      // If includeMiniGames=true OR a category is selected (e.g. 'Mini Games'), we sum everything relevant.
+      // If false (default) and no category, we only take regular points (Main Games).
+      const shouldUseAll = isIncludeMiniGames || !!category;
+      const totalPoints = shouldUseAll
+        ? regularPoints + minigamePoints
+        : regularPoints;
 
       // Sort the internal list of scores if requested
       if (sort === "points") {
-        scores.sort((a, b) =>
-          order === "asc" ? a.points - b.points : b.points - a.points
-        );
+        const compareFn = (a: any, b: any) =>
+          order === "asc" ? a.points - b.points : b.points - a.points;
+
+        minigameScores.sort(compareFn);
+        regularScores.sort(compareFn);
       }
 
       return {
         section_team: teamName,
         totalPoints,
-        scores,
+        minigamePoints, // Return this separately
+        minigameScores, // Return specific minigame details
+        scores: regularScores, // Main 'scores' only contains regular games
       };
     });
 
