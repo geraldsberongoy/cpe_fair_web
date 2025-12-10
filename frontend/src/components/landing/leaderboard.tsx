@@ -520,56 +520,135 @@ const Leaderboard = ({ selectedCategory }: LeaderboardProps) => {
             <h2 className="text-2xl font-bold text-white text-center mb-6">
               Mini Games Leaderboard
             </h2>
-            <Podium topTeams={miniGamePodiumData} />
-            <div className="flex flex-col gap-4 mt-6">
-              {miniGamePodiumData.slice(3).map((team, index) => {
-                const bg = pickBg(team.section_team);
-                return (
-                  <Dialog key={team.section_team}>
-                    <DialogTrigger asChild>
-                      <button
-                        style={{
-                          backgroundImage: bg
-                            ? `linear-gradient(rgba(0,0,0,0.10), rgba(0,0,0,0.10)), url(${bg})`
-                            : undefined,
-                          backgroundSize: "cover",
-                          backgroundPosition: "center",
-                        }}
-                        className={`w-full flex items-center justify-between p-6 rounded-xl border border-white/20 transition-scale duration-300 scale-[1.01] hover:scale-[1.02] group relative overflow-hidden`}
-                      >
-                        <div className="absolute inset-0 bg-gradient-to-r from-[#d3bc8e]/0 via-[#f0e6d2]/30 to-[#d3bc8e]/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-500"></div>
-                        <StarryBackground starCount={10} />
-                        <div className="flex items-center gap-3 md:gap-6">
-                          <span className="text-lg md:text-3xl font-bold w-12 text-center text-white/60">
-                            #{index + 4}
-                          </span>
-                          <div className="text-left">
-                            <h3 className="text-md md:text-2xl font-bold text-white">
-                              {team.section_team}
-                            </h3>
-                            <p className="text-white/60 text-sm md:text-2xl">
-                              {team.scores.length} Games Played
+            {/* Check if there are any scores in Mini Games */}
+            {miniGamePodiumData.some((team) => team.totalPoints > 0) ? (
+              <>
+                <Podium topTeams={miniGamePodiumData} />
+                <div className="flex flex-col gap-4 mt-6">
+                  {miniGamePodiumData.slice(3).map((team, index) => {
+                    const bg = pickBg(team.section_team);
+                    return (
+                      <Dialog key={team.section_team}>
+                        <DialogTrigger asChild>
+                          <button
+                            style={{
+                              backgroundImage: bg
+                                ? `linear-gradient(rgba(0,0,0,0.10), rgba(0,0,0,0.10)), url(${bg})`
+                                : undefined,
+                              backgroundSize: "cover",
+                              backgroundPosition: "center",
+                            }}
+                            className={`w-full flex items-center justify-between p-6 rounded-xl border border-white/20 transition-scale duration-300 scale-[1.01] hover:scale-[1.02] group relative overflow-hidden`}
+                          >
+                            <div className="absolute inset-0 bg-gradient-to-r from-[#d3bc8e]/0 via-[#f0e6d2]/30 to-[#d3bc8e]/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-500"></div>
+                            <StarryBackground starCount={10} />
+                            <div className="flex items-center gap-3 md:gap-6">
+                              <span className="text-lg md:text-3xl font-bold w-12 text-center text-white/60">
+                                #{index + 4}
+                              </span>
+                              <div className="text-left">
+                                <h3 className="text-md md:text-2xl font-bold text-white">
+                                  {team.section_team}
+                                </h3>
+                                <p className="text-white/60 text-sm md:text-2xl">
+                                  {team.scores.length} Games Played
+                                </p>
+                              </div>
+                            </div>
+                            <div className="text-right">
+                              <p className="text-lg md:text-3xl font-bold text-white">
+                                {team.totalPoints.toLocaleString()}
+                              </p>
+                              <p className="text-[10px] md:text-sm text-white/60 uppercase tracking-wider">
+                                Total Points
+                              </p>
+                            </div>
+                          </button>
+                        </DialogTrigger>
+                        <TeamScoreModal
+                          teamName={team.section_team}
+                          scores={team.scores}
+                        />
+                      </Dialog>
+                    );
+                  })}
+                </div>
+              </>
+            ) : (
+              <>
+                <p className="text-white/60 text-center mb-4">
+                  No Mini Games scores recorded yet. Teams will appear here once
+                  games are played.
+                </p>
+                <div className="flex flex-col gap-4">
+                  {miniGamePodiumData.map((team) => {
+                    const bg = pickBg(team.section_team);
+                    return (
+                      <Dialog key={team.section_team}>
+                        <DialogTrigger asChild>
+                          <button
+                            style={{
+                              backgroundImage: bg
+                                ? `linear-gradient(rgba(0,0,0,0.10), rgba(0,0,0,0.10)), url(${bg})`
+                                : undefined,
+                              backgroundSize: "cover",
+                              backgroundPosition: "center",
+                            }}
+                            className="w-full flex items-center justify-between p-6 rounded-xl border border-white/20 transition-scale duration-300 scale-[1.01] hover:scale-[1.02] group relative overflow-hidden"
+                          >
+                            <div className="absolute inset-0 bg-gradient-to-r from-[#d3bc8e]/0 via-[#f0e6d2]/30 to-[#d3bc8e]/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-500"></div>
+                            <StarryBackground starCount={10} />
+                            <div className="flex items-center gap-3 md:gap-6">
+                              <div className="text-left">
+                                <h3 className="text-md md:text-2xl font-bold text-white">
+                                  {team.section_team}
+                                </h3>
+                                <p className="text-white/60 text-sm md:text-base">
+                                  0 Games Played
+                                </p>
+                              </div>
+                            </div>
+                            <div className="text-right">
+                              <p className="text-lg md:text-3xl font-bold text-white">
+                                0
+                              </p>
+                              <p className="text-[10px] md:text-sm text-white/60 uppercase tracking-wider">
+                                Points
+                              </p>
+                            </div>
+                          </button>
+                        </DialogTrigger>
+                        <DialogContent
+                          className="max-w-[90%] sm:max-w-md max-h-[80vh] bg-[#2a2640]/10 bg-linear-to-b from-[#2a2640]/30 to-[#1a1630]/70 text-white"
+                          style={{
+                            backgroundImage: `linear-gradient(rgba(0,0,0,0.30), rgba(0,0,0,0.30)), url(${bg})`,
+                            backgroundSize: "cover",
+                            backgroundPosition: "center",
+                          }}
+                        >
+                          <BorderDesign />
+                          <DialogHeader>
+                            <DialogTitle className="px-2 text-2xl font-bold flex flex-col items-center text-transparent bg-clip-text bg-linear-to-b from-[#f0e6d2] via-[#d3bc8e] to-[#9d8f6f] drop-shadow-[0_0_30px_rgba(211,188,142,0.8)]">
+                              <span>{team.section_team}</span>
+                              <span className="text-white/50 text-base font-normal">
+                                No Scores Yet
+                              </span>
+                            </DialogTitle>
+                          </DialogHeader>
+                          <div className="p-4 text-center">
+                            <p className="text-white/70 text-sm">
+                              This team hasn't participated in any Mini Games
+                              yet. Scores will appear here once they start
+                              competing.
                             </p>
                           </div>
-                        </div>
-                        <div className="text-right">
-                          <p className="text-lg md:text-3xl font-bold text-white">
-                            {team.totalPoints.toLocaleString()}
-                          </p>
-                          <p className="text-[10px] md:text-sm text-white/60 uppercase tracking-wider">
-                            Total Points
-                          </p>
-                        </div>
-                      </button>
-                    </DialogTrigger>
-                    <TeamScoreModal
-                      teamName={team.section_team}
-                      scores={team.scores}
-                    />
-                  </Dialog>
-                );
-              })}
-            </div>
+                        </DialogContent>
+                      </Dialog>
+                    );
+                  })}
+                </div>
+              </>
+            )}
           </div>
         )}
         <h3 className="text-2xl font-bold text-white mb-6 text-center">
@@ -681,7 +760,6 @@ const Leaderboard = ({ selectedCategory }: LeaderboardProps) => {
                     View Rankings
                   </p>
                 </div>
-
               </div>
 
               {/* Bottom ornamental dots */}

@@ -28,7 +28,7 @@ export const metadata: Metadata = {
     "BSCpE",
     "Team Rankings",
     "PUP",
-    "ACCESS"
+    "ACCESS",
   ],
   authors: [{ name: "CPE Fair Development Team" }],
   creator: "CPE Fair Team",
