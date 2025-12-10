@@ -104,39 +104,37 @@ export const TeamScoreModal = ({
         </DialogTitle>
       </DialogHeader>
       <ScrollArea className="h-[60vh] pr-4">
-          <div className="flex flex-col gap-3 mt-4">
-            {[...scores]
-              .sort((a, b) => b.points - a.points)
-              .map((score) => (
-                <div
-                  key={score.id}
-                  className="p-4 rounded-lg border border-white/10 flex justify-between items-center bg-linear-to-br from-[#FEF4BF]/30 to-transparent"
-                >
-                  <div>
-                    <p className="font-bold text-sm md:text-lg text-white">
-                      {score.game}
-                    </p>
-                    <div className="flex flex-col gap-1 text-[10px] md:text-sm text-white/60">
-                      <span className="bg-white/10 px-2 py-0.5 rounded text-[8px] md:text-xs w-fit">
-                        {score.category}
-                      </span>
-                      <span className="text-white/80">
-                        {getParticipants(score.details)}
-                      </span>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <p className="font-bold text-xl text-white/10 text-transparent bg-clip-text bg-linear-to-b from-[#f0e6d2] via-[#d3bc8e] to-[#9d8f6f]">
-                      {score.points}
-                    </p>
-                    <p className="text-[8px] md:text-xs text-white/40">
-                      Points
-                    </p>
+        <div className="flex flex-col gap-3 mt-4">
+          {[...scores]
+            .sort((a, b) => b.points - a.points)
+            .map((score) => (
+              <div
+                key={score.id}
+                className="p-4 rounded-lg border border-white/10 flex justify-between items-center bg-linear-to-br from-[#FEF4BF]/30 to-transparent"
+              >
+                <div>
+                  <p className="font-bold text-sm md:text-lg text-white">
+                    {score.game}
+                  </p>
+                  <div className="flex flex-col gap-1 text-[10px] md:text-sm text-white/60">
+                    <span className="bg-white/10 px-2 py-0.5 rounded text-[8px] md:text-xs w-fit">
+                      {score.category}
+                    </span>
+                    <span className="text-white/80">
+                      {getParticipants(score.details)}
+                    </span>
                   </div>
                 </div>
-              ))}
-          </div>
-        </ScrollArea>
+                <div className="text-right">
+                  <p className="font-bold text-xl text-white/10 text-transparent bg-clip-text bg-linear-to-b from-[#f0e6d2] via-[#d3bc8e] to-[#9d8f6f]">
+                    {score.points}
+                  </p>
+                  <p className="text-[8px] md:text-xs text-white/40">Points</p>
+                </div>
+              </div>
+            ))}
+        </div>
+      </ScrollArea>
     </DialogContent>
   );
 };
@@ -259,7 +257,7 @@ const Leaderboard = ({ selectedCategory }: LeaderboardProps) => {
     if (selectedCategory !== "Mini Games") return [];
 
     const sourceData = aggregatedScores || [];
-    
+
     // Map to podium format
     const podiumData = sourceData.map((team) => ({
       section_team: team.section_team,
