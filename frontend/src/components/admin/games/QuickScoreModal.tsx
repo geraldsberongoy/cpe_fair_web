@@ -2,11 +2,9 @@
 
 import { useState, useEffect, useMemo } from "react";
 import { useCreateScore } from "@/hooks/useScore";
-import { usePlayers } from "@/hooks/usePlayer";
 import { useTeams } from "@/hooks/useTeams";
 import { Trophy } from "lucide-react";
 import { Team } from "@/services/team.service";
-import { Player } from "@/services/player.service";
 import { Game } from "@/types/game";
 import { toast } from "react-toastify";
 import BaseModal from "@/components/ui/base-modal";
@@ -25,8 +23,6 @@ export default function QuickScoreModal({
   game,
 }: QuickScoreModalProps) {
   const { data: teams = [], isLoading: teamsLoading } = useTeams();
-  const { data: playersResponse } = usePlayers(1, 100);
-  const allPlayers = playersResponse?.data || [];
   const createScoreMutation = useCreateScore();
 
   // --- Form State ---
@@ -57,18 +53,11 @@ export default function QuickScoreModal({
     }
   }, [isOpen]);
 
-  // --- Filter Players by Team ---
-  const teamPlayers = useMemo(() => {
+  // --- Get selected team name for server-side player search ---
+  const selectedTeamName = useMemo(() => {
     const selectedTeam = teams.find((t: Team) => t.id === formData.teamId);
-    const targetName = selectedTeam?.section_represented || selectedTeam?.name;
-
-    if (!targetName) return [];
-
-    return allPlayers.filter(
-      (p: Player) =>
-        p.teamName === targetName || p.sectionRepresented === targetName
-    );
-  }, [teams, formData.teamId, allPlayers]);
+    return selectedTeam?.section_represented || selectedTeam?.name || "";
+  }, [teams, formData.teamId]);
 
   // --- Handlers ---
   const handleSubmit = (e: React.FormEvent) => {
@@ -179,14 +168,14 @@ export default function QuickScoreModal({
             }
             members={members}
             setMembers={setMembers}
-            players={teamPlayers}
+            teamName={selectedTeamName}
           />
         ) : (
           <PlayerSelector
             label="Contributor (Player)"
             value={formData.contributor}
             onChange={(val) => setFormData({ ...formData, contributor: val })}
-            players={teamPlayers}
+            teamName={selectedTeamName}
           />
         )}
 

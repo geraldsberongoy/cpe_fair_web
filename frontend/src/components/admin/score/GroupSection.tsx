@@ -9,7 +9,8 @@ interface GroupSectionProps {
   onGroupNameChange: (val: string) => void;
   members: string[];
   setMembers: (members: string[]) => void;
-  players: Player[];
+  teamName?: string; // For server-side player search
+  players?: Player[]; // For backward compatibility
 }
 
 export default function GroupSection({
@@ -17,6 +18,7 @@ export default function GroupSection({
   onGroupNameChange,
   members,
   setMembers,
+  teamName,
   players,
 }: GroupSectionProps) {
   const handleMemberChange = (index: number, val: string) => {
@@ -68,6 +70,7 @@ export default function GroupSection({
                 <PlayerSelector
                   value={member}
                   onChange={(val) => handleMemberChange(index, val)}
+                  teamName={teamName}
                   players={players}
                   placeholder={`Member ${index + 1}`}
                   showIcon={true}
