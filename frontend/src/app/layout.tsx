@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import localFont from "next/font/local";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -74,11 +74,13 @@ export const metadata: Metadata = {
       "max-snippet": -1,
     },
   },
-  viewport: {
-    width: "device-width",
-    initialScale: 1,
-    maximumScale: 5,
-  },
+};
+
+// Viewport configuration (separated in Next.js 14+)
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
   themeColor: [
     { media: "(prefers-color-scheme: dark)", color: "#1a1630" },
     { media: "(prefers-color-scheme: light)", color: "#2a2640" },

@@ -427,6 +427,121 @@
   background: radial-gradient(circle, var(--tw-gradient-stops));
 }
 
+/* --- Genshin Impact Themed Scrollbar --- */
+
+/* Webkit Browsers (Chrome, Safari, Edge) */
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: linear-gradient(
+    180deg,
+    rgba(26, 22, 48, 0.9) 0%,
+    rgba(42, 36, 64, 0.9) 50%,
+    rgba(26, 22, 48, 0.9) 100%
+  );
+  border: 1px solid rgba(211, 188, 142, 0.3);
+  border-radius: 6px;
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(
+    180deg,
+    #f0e6d2 0%,
+    #d3bc8e 25%,
+    #9d8f6f 50%,
+    #d3bc8e 75%,
+    #f0e6d2 100%
+  );
+  border-radius: 6px;
+  border: 2px solid rgba(26, 22, 48, 0.8);
+  box-shadow: 
+    0 0 8px rgba(211, 188, 142, 0.5),
+    inset 0 0 4px rgba(255, 255, 255, 0.3);
+  transition: all 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(
+    180deg,
+    #fff8e7 0%,
+    #f0e6d2 25%,
+    #d3bc8e 50%,
+    #f0e6d2 75%,
+    #fff8e7 100%
+  );
+  box-shadow: 
+    0 0 15px rgba(240, 230, 210, 0.8),
+    inset 0 0 6px rgba(255, 255, 255, 0.5);
+  border-color: rgba(211, 188, 142, 0.6);
+}
+
+::-webkit-scrollbar-thumb:active {
+  background: linear-gradient(
+    180deg,
+    #d3bc8e 0%,
+    #b5a070 25%,
+    #8a7850 50%,
+    #b5a070 75%,
+    #d3bc8e 100%
+  );
+  box-shadow: 
+    0 0 5px rgba(211, 188, 142, 0.4),
+    inset 0 0 8px rgba(0, 0, 0, 0.3);
+}
+
+::-webkit-scrollbar-corner {
+  background: rgba(26, 22, 48, 0.9);
+  border: 1px solid rgba(211, 188, 142, 0.3);
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #d3bc8e rgba(42, 36, 64, 0.9);
+}
+
+/* Genshin Scrollbar variant - for modal/dialog scroll areas */
+.genshin-scrollbar::-webkit-scrollbar {
+  width: 8px;
+}
+
+.genshin-scrollbar::-webkit-scrollbar-track {
+  background: linear-gradient(
+    180deg,
+    rgba(26, 22, 48, 0.95) 0%,
+    rgba(42, 36, 64, 0.95) 100%
+  );
+  border: 1px solid rgba(211, 188, 142, 0.2);
+  border-radius: 4px;
+}
+
+.genshin-scrollbar::-webkit-scrollbar-thumb {
+  background: linear-gradient(
+    180deg,
+    #d3bc8e 0%,
+    #b5a070 50%,
+    #d3bc8e 100%
+  );
+  border-radius: 4px;
+  border: 1px solid rgba(26, 22, 48, 0.6);
+  box-shadow: 0 0 6px rgba(211, 188, 142, 0.4);
+}
+
+.genshin-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(
+    180deg,
+    #f0e6d2 0%,
+    #d3bc8e 50%,
+    #f0e6d2 100%
+  );
+  box-shadow: 0 0 10px rgba(240, 230, 210, 0.6);
+}
+
+/* Hide scrollbar utility - keeps the existing functionality */
 .hide-scrollbar::-webkit-scrollbar {
   display: none; /* Chrome, Safari, Edge */
 }
@@ -436,3 +551,23 @@
   scrollbar-width: none; /* Firefox */
 }
 
+/* Thin scrollbar variant */
+.thin-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.thin-scrollbar::-webkit-scrollbar-track {
+  background: rgba(26, 22, 48, 0.8);
+  border-radius: 3px;
+}
+
+.thin-scrollbar::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #d3bc8e, #9d8f6f);
+  border-radius: 3px;
+  box-shadow: 0 0 4px rgba(211, 188, 142, 0.3);
+}
+
+.thin-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #f0e6d2, #d3bc8e);
+  box-shadow: 0 0 8px rgba(240, 230, 210, 0.5);
+}
