@@ -1,43 +1,14 @@
-import { Score } from "@/types/score";
-// Restoring original imports for regional backgrounds
-import FontaineBG from "@/assets/images/backgrounds/fontaine.jpg";
-import InazumaBG from "@/assets/images/backgrounds/inazuma.jpg";
-import LiyueBG from "@/assets/images/backgrounds/liyue.jpg";
-import MondstadtBG from "@/assets/images/backgrounds/mondstadt.jpg";
-import NatlanBG from "@/assets/images/backgrounds/natlan.jpg";
-import SumeruBG from "@/assets/images/backgrounds/sumeru.jpg";
-import SnezhnayaBG from "@/assets/images/backgrounds/snezhnaya.jpg";
-
+import { TeamScore } from "@/types/leaderboard";
+import { pickBg } from "./leaderboard/constants";
 import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { TeamScoreModal } from "./leaderboard";
 import StarryBackground from "../StarryBackground";
-
-// Restoring the original BG_MAP using .src properties
-const BG_MAP: Record<string, string> = {
-  fontaine: FontaineBG.src,
-  inazuma: InazumaBG.src,
-  liyue: LiyueBG.src,
-  mondstadt: MondstadtBG.src,
-  natlan: NatlanBG.src,
-  sumeru: SumeruBG.src,
-  snezhnaya: SnezhnayaBG.src,
-};
-
-// Restoring the original pickBg function
-const pickBg = (name?: string | null) => {
-  if (!name) return undefined;
-  const key = name.toLowerCase();
-  for (const k of Object.keys(BG_MAP)) {
-    if (key.includes(k)) return BG_MAP[k];
-  }
-  return undefined;
-};
 
 interface PodiumProps {
   topTeams: Array<{
     section_team: string;
     totalPoints: number;
-    scores: Score[];
+    scores: TeamScore[];
   }>;
 }
 
